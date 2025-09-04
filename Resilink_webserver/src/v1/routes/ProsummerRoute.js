@@ -328,9 +328,9 @@ router.get('/prosumers/:id/', prosumerController.getOneProsummerCustom);
 
 /**
  * @swagger
- * /v1/ODEP/prosumers/new:
+ * /v1/prosumers/new:
  *   post: 
- *     summary: Create a new Prosumer (from ODEP)
+ *     summary: Create a new Prosumer
  *     tags: [Prosumer]
  *     requestBody:
  *       required: true
@@ -345,6 +345,10 @@ router.get('/prosumers/:id/', prosumerController.getOneProsummerCustom);
  *                 type: number
  *               balance:
  *                 type: number
+ *               job:
+ *                 type: string
+ *               location:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Token of the user.
@@ -377,11 +381,11 @@ router.get('/prosumers/:id/', prosumerController.getOneProsummerCustom);
  *                   type: string
  */
 
-router.post('/ODEP/prosumers/new/', prosumerController.createProsumer);
+router.post('/prosumers/new/', prosumerController.createProsumer);
 
 /**
  * @swagger
- * /v1/prosumers/new:
+ * /v1/prosumers/newAccount:
  *   post: 
  *     summary: Create a new user and his prosumer profil
  *     tags: [Prosumer]
@@ -406,6 +410,8 @@ router.post('/ODEP/prosumers/new/', prosumerController.createProsumer);
  *               password:
  *                 type: string 
  *               phoneNumber:
+ *                 type: string
+ *               gps:
  *                 type: string
  *               job:
  *                 type: string
@@ -467,7 +473,7 @@ router.post('/ODEP/prosumers/new/', prosumerController.createProsumer);
  *                   type: string
  */
 
-router.post('/prosumers/new/', prosumerController.createProsumerCustom);
+router.post('/prosumers/newAccount/', prosumerController.createProsumerCustom);
 
 /**
  * @swagger

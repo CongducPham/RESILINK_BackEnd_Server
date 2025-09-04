@@ -287,7 +287,6 @@ const getAllUserCustom = async (url, token) => {
     if(response.status == 401) {
       getDataLogger.error('error: Unauthorize', { from: 'getAllUserCustom', dataReceived: data, username: Utils.getUserIdFromToken(token) ?? "no user associated with the token"});
     } else if(response.status != 200) {
-          console.log("aaa");
       getDataLogger.error('error accessing all user', { from: 'getAllUserCustom', dataReceived: data, username: Utils.getUserIdFromToken(token) ?? "no user associated with the token"});
     } else {
       getDataLogger.info('success accessing all user', { from: 'getAllUserCustom', username: Utils.getUserIdFromToken(token) ?? "no user associated with the token"});

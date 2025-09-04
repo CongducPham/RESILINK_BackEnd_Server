@@ -15,7 +15,7 @@ const getAllAssetMapped = async (req, res) => {
     const response = await assetService.getAllAssetResilink(req.header('Authorization'));
     res.status(response[1]).send(response[0]);
   } catch (error) {
-    getDataLogger.error('Catched error', { from: 'createRequest', data: error.message});
+    getDataLogger.error('Catched error', { from: 'getAllAssetMapped', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
     res.status(500).send({message: error.message});
   }
 };
@@ -55,7 +55,7 @@ const getOwnerAssetCustom = async (req, res) => {
       const response = await assetService.getOwnerAssetCustom(_pathAssetODEP, req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
-      getDataLogger.error('Catched error', { from: 'getOwnerAsset', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
+      getDataLogger.error('Catched error', { from: 'getOwnerAssetCustom', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
       res.status(500).send({message: error.message});
     }
 };
@@ -75,7 +75,7 @@ const getAllAssetCustom = async (req, res) => {
       const response = await assetService.getAllAssetCustom(_pathAssetODEP, req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
-      getDataLogger.error('Catched error', { from: 'getAllAsset', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : 'token not found'});
+      getDataLogger.error('Catched error', { from: 'getAllAssetCustom', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : 'token not found'});
       res.status(500).send({message: error.message});
     }
 };
@@ -125,7 +125,7 @@ const putAssetCustom = async (req, res) => {
       const response = await assetService.putAsset(_pathAssetODEP, req.body, req.params.id, req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
-      updateDataODEP.error('Catched error', { from: 'putAsset', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
+      updateDataODEP.error('Catched error', { from: 'putAssetCustom', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
       res.status(500).send({message: error.message});
     }
 };
@@ -135,7 +135,7 @@ const deleteAsset = async (req, res) => {
       const response = await assetService.deleteAsset(_pathAssetODEP, req.params.id, req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
-      deleteDataODEP.error('Catched error', { from: 'putAsset', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
+      deleteDataODEP.error('Catched error', { from: 'deleteAsset', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
       res.status(500).send({message: error.message});
     }
 };
@@ -145,7 +145,7 @@ const deleteAssetCustom = async (req, res) => {
       const response = await assetService.deleteAssetCustom(_pathAssetODEP, req.params.id, req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
-      deleteDataODEP.error('Catched error', { from: 'putAsset', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
+      deleteDataODEP.error('Catched error', { from: 'deleteAssetCustom', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
       res.status(500).send({message: error.message});
     }
 };

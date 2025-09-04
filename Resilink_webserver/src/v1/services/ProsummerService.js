@@ -12,9 +12,15 @@ const ProsummerDB = require("../database/ProsummerDB.js");
 const userService = require("./UserService.js");
 const Utils = require("./Utils.js");
 
-//Creates a prosumer in ODEP
+//Creates a prosumer
 const createProsummer = async (url, body, token) => {
-  patchDataODEP.warn('data to send to ODEP', { from: 'patchBalanceProsummer', dataToSend: body, username: Utils.getUserIdFromToken(token) ?? "no user associated with the token"});
+  patchDataODEP.warn('data to send to ODEP', { from: 'createProsummer', dataToSend: body, username: Utils.getUserIdFromToken(token) ?? "no user associated with the token"});
+  
+  const job = body["job"];
+  const location = body["location"];
+  delete body["job"];
+  delete body["location"];
+  
   const response = await Utils.fetchJSONData(
     "POST",
     url, 
@@ -31,6 +37,10 @@ const createProsummer = async (url, body, token) => {
   } else {
     updateDataODEP.info('success creating one prosummer', { from: 'createProsummer', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
   }
+
+  ProsummerDB.newProsumer(body['id'], job, location);
+  updateDataODEP.info('success creating one prosummer status in ODEP and Resilink DB', { from: 'createProsummer', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+
   return [data, response.status];
 };
 
@@ -249,7 +259,7 @@ const patchBalanceProsummer = async (url, body, id, token) => {
 const patchJobProsummer = async (body, id, token) => {
   try {
     const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
-    if (username == null) {
+    if (username == null || username != id || username != "admin") {
       return [{message: "no user associated with the token"}, 401]
     }
     patchDataODEP.warn('data & id to send to local DB', { from: 'patchJobProsummer', dataToSend: body, id: id, username: username});
@@ -292,7 +302,7 @@ const patchSharingProsummer = async (url, body, id, token) => {
 const patchBookmarkProsummer = async (body, id, token) => {
   try {
     const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
-    if (username == null) {
+    if (username == null || username != id || username != "admin") {
       return [{message: "no user associated with the token"}, 401]
     }
     if (isNaN(body['bookmarkId'])) {
@@ -316,7 +326,7 @@ const patchBookmarkProsummer = async (body, id, token) => {
 const deleteIdBookmarkedList = async (owner, id, token) => {
   try {
     const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
-    if (username == null) {
+    if (username == null || username != owner || username != "admin") {
       return [{message: "no user associated with the token"}, 401]
     }
     if (isNaN(id)) {
@@ -339,7 +349,7 @@ const deleteIdBookmarkedList = async (owner, id, token) => {
 const patchAddblockedOffersProsummer = async (body, id, token) => {
   try {
     const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
-    if (username == null) {
+    if (username == null || username != id || username != "admin") {
       return [{message: "no user associated with the token"}, 401]
     }
     if (isNaN(body['offerId'])) {
@@ -363,15 +373,15 @@ const patchAddblockedOffersProsummer = async (body, id, token) => {
 const deleteIdBlockedOffersList = async (owner, id, token) => {
   try {
     const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
-    if (username == null) {
+    if (username == null || username != owner || username != "admin") {
       return [{message: "no user associated with the token"}, 401]
     }
     if (isNaN(id)) {
       throw new notValidBody("it's not a number in a string");
     }
     await ProsummerDB.deleteBlockedOffersId(id, owner);
-    getDataLogger.info("success deleting a news from an owner's blocked offers list", {from: 'deleteIdBlockedOffersList', username: username});
-    return [{message: "news " + id + " correctly removed in " + owner + " prosumer account"}, 200];
+    getDataLogger.info("success deleting an offer from an owner's blocked offers list", {from: 'deleteIdBlockedOffersList', username: username});
+    return [{message: "offer " + id + " correctly removed in " + owner + " prosumer account"}, 200];
   } catch (e) {
     if (e instanceof notValidBody) {
       e.message = "id is not valid";

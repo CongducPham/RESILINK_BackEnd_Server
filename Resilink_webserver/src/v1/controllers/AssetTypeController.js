@@ -15,7 +15,7 @@ const createAssetTypes = async (req, res) => {
       res.status(response[1]).send(response[0]);
     } catch (error) {
       updateDataODEP.error('Error accessing ODEP', { from: 'createAssetTypes', data: error, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
-      res.status(500).send('Error accessing ODEP');
+      res.status(500).send({message: error.message});
     }
 };
 

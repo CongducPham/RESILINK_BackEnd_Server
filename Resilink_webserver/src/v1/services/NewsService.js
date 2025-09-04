@@ -14,13 +14,14 @@ const createNews = async (body, token) => {
     try {
         const tokenUsername = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
         if (tokenUsername == null) {
+            getDataLogger.error("token is not registered", {from: 'createNews', username: tokenUsername});
             return [{message: "token is not valid"}, 401];
         }
         const dataFinal = await NewsDB.createNews(body['url'] ?? "", body['country'], body['institute'] ?? "", body['img'] ?? "", body['platform'] ?? "", body['public'] ?? "true");
-        getDataLogger.info("success creating a news", {from: 'createNews', username: tokenUsername});
+        updateDataODEP.info("success creating a news", {from: 'createNews', username: tokenUsername});
         return [dataFinal, 200];
     } catch (e) {
-        getDataLogger.error("error creating a news", {from: 'createNews', dataReceiver: e, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+        updateDataODEP.error("error creating a news", {from: 'createNews', dataReceiver: e, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
         throw e;
     }
 };
@@ -29,16 +30,18 @@ const createPersonnalNews = async (username, body, token) => {
     try {
         const tokenUsername = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
         if (tokenUsername == null && tokenUsername != username) {
+            getDataLogger.error("token is not registered", {from: 'createPersonnalNews', username: tokenUsername});
             return [{message: "token is not valid"}, 401];
         } else if (body["public"] !== "true" && body["public"] !== "false") {
+            updateDataODEP.error("the “public” key does not have the value “true” or “false”.", {from: 'createPersonnalNews', userName: tokenUsername});
             return [{message: "the “public” key does not have the value “true” or “false”."}, 404];
         } 
         const dataFinal = await NewsDB.createNews(body['url'] ?? "", body['country'] ?? "", body['institute'] ?? "", body['img'] ?? "", body['platform'] ?? "", body['public'] ?? "true");
         await ProsumerDB.addbookmarked(username, dataFinal["_id"]);
-        getDataLogger.info("News created and successfully added to user's favorites.", {from: 'createPersonnalNews', userName: tokenUsername});
+        updateDataODEP.info("News created and successfully added to user's favorites.", {from: 'createPersonnalNews', userName: tokenUsername});
         return [{message: "News created and successfully added to user's favorites."}, 200];
     } catch (e) {
-        getDataLogger.error("error creating a news", {from: 'createPersonnalNews', dataReceiver: e, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+        updateDataODEP.error("error creating a news", {from: 'createPersonnalNews', dataReceiver: e, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
         throw e;
     }
 };
@@ -48,6 +51,7 @@ const updateNews = async (id, body, token) => {
     try {
         const tokenUsername = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
         if (tokenUsername == null) {
+            getDataLogger.error("token is not registered", {from: 'updateNews', username: tokenUsername});
             return [{message: "token is not valid"}, 401];
         } else if (Object.keys(body).length !== 5 && (body['url'] === null || body['img'] === null || body['country'] === null || body['institute'] === null || body['platform'] === null)) {
             return [{message: "body is not conform"}, 404]
@@ -66,6 +70,7 @@ const deleteNews = async (newsId, token) => {
     try {
         const tokenUsername = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
         if (tokenUsername == null) {
+            getDataLogger.error("token is not registered", {from: 'deleteNews', username: tokenUsername});
             return [{message: "token is not valid"}, 401];
         }
         const dataFinal = await NewsDB.deleteNewsById(newsId);
@@ -82,6 +87,7 @@ const getAllNews = async (Country, token) => {
     try {
         const tokenUsername = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
         if (tokenUsername == null) {
+            getDataLogger.error("token is not registered", {from: 'getAllNews', username: tokenUsername});
             return [{message: "token is not valid"}, 401];
         }
         const dataFinal = await NewsDB.getAllNews(Country);
@@ -98,6 +104,7 @@ const getNewsfromCountry = async (Country, token) => {
     try {
         const tokenUsername = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
         if (tokenUsername == null) {
+            getDataLogger.error("token is not registered", {from: 'getNewsfromCountry', username: tokenUsername});
             return [{message: "token is not valid"}, 401];
         }
         const dataFinal = await NewsDB.getNewsfromCountry(Country);
@@ -114,6 +121,7 @@ const getNewsfromIdList = async (ids, token) => {
     try {
         const tokenUsername = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
         if (tokenUsername == null) {
+            getDataLogger.error("token is not registered", {from: 'getNewsfromIdList', username: tokenUsername});
             return [{message: "token is not valid"}, 401];
         }
         const dataFinal = await NewsDB.getNewsfromIdList(ids);
@@ -130,8 +138,10 @@ const getNewsfromOwner = async (owner, token) => {
     try {
         const tokenUsername = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
         if (tokenUsername == null) {
+            getDataLogger.error("token is not registered", {from: 'getNewsfromOwner', username: tokenUsername});
             return [{message: "token is not valid"}, 401];
-        } else if (tokenUsername != username) {
+        } else if (tokenUsername != owner) {
+            getDataLogger.error("token is not associated with the owner", {from: 'getNewsfromOwner'});
             return [{message: "token is not associated with the owner"}, 401];
         }
         const prosumer = await ProsumerDB.getOneProsummerWithUsername(owner);
@@ -152,6 +162,7 @@ const getNewsfromCountryWithoutUserNews = async (owner, country, token) => {
     try {
         const tokenUsername = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
         if (tokenUsername == null) {
+            getDataLogger.error("token is not registered", {from: 'getNewsfromCountryWithoutUserNews'});
             return [{message: "token is not valid"}, 401];
         }
         const prosumer = await ProsumerDB.getOneProsummerWithUsername(owner);

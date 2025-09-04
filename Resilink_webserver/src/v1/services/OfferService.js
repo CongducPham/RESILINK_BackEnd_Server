@@ -43,17 +43,18 @@ const getAllOfferForResilinkCustom = async (url, token) => {
     for (const key in data) {
       const element = data[key];
       if (
-        new Date(element['validityLimit']) > new Date() && 
+        new Date(element['validityLimit']) > new Date() && allAssetType[0][allAssetResilink[0][element['assetId'].toString()]['assetType']]['description'] == "RESILINK" &&
         ( allAssetType[0][allAssetResilink[0][element['assetId'].toString()]['assetType']]['nature'] !== null ?  
           (allAssetType[0][allAssetResilink[0][element['assetId'].toString()]['assetType']]['nature'] == "measurableByQuantity" ? 
           (element['remainingQuantity'] !== null ? element['remainingQuantity'] > 0 : true) : true) : false
-        ) 
+        )
       ) 
       {
         await UserDB.insertUserPhoneNumber(element['offerer'].toString(), element);
         allOfferResilink[element['id'].toString()] = element;
       }
     }
+
     getDataLogger.info("successful data retrieval", { from: 'getAllOfferFilteredCustom', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
     return [allOfferResilink, allOffer.status];
 };
@@ -90,7 +91,7 @@ const getSuggestedOfferForResilinkCustom = async (url, owner, token) => {
     for (const key in data) {
       const element = data[key];
       if (
-        new Date(element['validityLimit']) > new Date() && 
+        new Date(element['validityLimit']) > new Date() && allAssetType[0][allAssetResilink[0][element['assetId'].toString()]['assetType']]['description'] == "RESILINK" &&
         ( allAssetType[0][allAssetResilink[0][element['assetId'].toString()]['assetType']]['nature'] !== null ?  
           (allAssetType[0][allAssetResilink[0][element['assetId'].toString()]['assetType']]['nature'] == "immaterial" ? 
           (element['remainingQuantity'] !== null ? element['remainingQuantity'] > 0 : true) : true) : false
@@ -149,7 +150,7 @@ const getLimitedOfferForResilinkCustom = async (url, offerNbr, iteration, token)
   for (const key in data) {
       const element = data[key];
       if (
-          new Date(element['validityLimit']) > new Date() &&
+          new Date(element['validityLimit']) > new Date() && allAssetType[0][allAssetResilink[0][element['assetId'].toString()]['assetType']]['description'] == "RESILINK" &&
           (allAssetType[0][allAssetResilink[0][element['assetId'].toString()]['assetType']]['nature'] !== null ?
               (allAssetType[0][allAssetResilink[0][element['assetId'].toString()]['assetType']]['nature'] == "measurableByQuantity" ?
                   (element['remainingQuantity'] !== null ? element['remainingQuantity'] > 0 : true) : true) : false

@@ -33,7 +33,7 @@ const getAllAssetTypesResilink = async (token) => {
           allAssetTypesResilink[element['name']] = element;
         }
     }
-    getDataLogger.info('success retrieving all assetTypes', { from: 'getAllAssetTypesResilink', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    getDataLogger.info('success retrieving all assetTypes', { from: 'getAllAssetTypesResilink', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
     return [allAssetTypesResilink, allAssetTypes.status];
   } catch (e) {
     getDataLogger.error('error retrieving all assetTypes', { from: 'getAllAssetTypesResilink', dataReceived: e, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});

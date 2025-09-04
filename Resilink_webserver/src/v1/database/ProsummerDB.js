@@ -353,7 +353,7 @@ const deleteBlockedOffersId  = async (id, owner) => {
     // Check if the ID exists in the blockedOffers list
     const prosumer = await _collection.findOne({ "_id": owner, "blockedOffers": { $in: [id] } });
     if (!prosumer) {
-      throw new IDNotFoundError(`ID ${id} does not exist in prosumer's bookMarked field`);
+      throw new IDNotFoundError(`ID ${id} does not exist in prosumer's blocked list`);
     }
 
     // Update the document to remove the specified ID from the 'blockOffers' field
@@ -363,16 +363,16 @@ const deleteBlockedOffersId  = async (id, owner) => {
     );
 
     if (result.modifiedCount !== 1) {
-      throw new UpdateDBError("Failed to update prosumer's bookMarked field");
+      throw new UpdateDBError("Failed to update prosumer's offers blocked list");
     }
 
-    updateData.info('Success adding new ID to prosumer\'s bookMarked field', { from: 'deleteBookmarkedId' });
+    updateData.info('Success adding offer ID to prosumer\'s blocked list', { from: 'deleteBookmarkedId' });
 
   } catch (e){
     if (e instanceof UpdateDBError) {
-      updateData.error('error creating one prosummer in Resilink DB', { from: 'deleteBookmarkedId'});
+      updateData.error('error deleting one offer in blocked list in Resilink DB', { from: 'deleteBookmarkedId'});
     } else if (e instanceof IDNotFoundError) {
-      updateData.error('id does\' not exist in bookmarklist', { from: 'deleteBookmarkedId'});
+      updateData.error('id does\' not exist in blocked list', { from: 'deleteBookmarkedId'});
     } else {
       connectDB.error('error connecting to DB ', { from: 'deleteBookmarkedId',  error: e});
     }
@@ -396,9 +396,7 @@ const checkIdInBlockedOffers  = async (id, owner) => {
     }
 
   } catch (e){
-    if (e instanceof UpdateDBError) {
-      updateData.error('error creating one prosummer in Resilink DB', { from: 'deleteBookmarkedId'});
-    } else if (e instanceof IDNotFoundError) {
+    if (e instanceof IDNotFoundError) {
       updateData.error('id does\' not exist in bookmarklist', { from: 'deleteBookmarkedId'});
     } else {
       connectDB.error('error connecting to DB ', { from: 'deleteBookmarkedId',  error: e});

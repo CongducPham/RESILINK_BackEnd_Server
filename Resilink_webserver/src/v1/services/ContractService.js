@@ -11,7 +11,7 @@ const AssetTypes = require("./AssetTypeService.js");
 
 //Creates a contract in ODEP
 const createContract = async (url, body, token) => {
-    updateDataODEP.warn('data to send to ODEP', { from: 'createAssetTypes', dataToSend: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    updateDataODEP.warn('data to send to ODEP', { from: 'createContract', dataToSend: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
     const response = await Utils.fetchJSONData(
         'POST',
         url, 
@@ -133,7 +133,7 @@ const getOwnerContractOngoing = async (url, id, token) => {
 
 //Patches a "Quantity" sale contract in ODEP
 const patchMeasurableByQuantityContract = async (url, body, id, token) => {
-  patchDataODEP.warn('data & id to send to ODEP', { from: 'measurableByQuantityContract', dataToSend: body, id: id, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+  patchDataODEP.warn('data & id to send to ODEP', { from: 'patchMeasurableByQuantityContract', dataToSend: body, id: id, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
     const response = await Utils.fetchJSONData(
         'PATCH',
         url + "measurableByQuantityContract/" + id, 
@@ -143,11 +143,11 @@ const patchMeasurableByQuantityContract = async (url, body, id, token) => {
         body);
     const data = await Utils.streamToJSON(response.body);
     if (response.status == 401) {
-      patchDataODEP.error('error: Unauthorize', { from: 'measurableByQuantityContract', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      patchDataODEP.error('error: Unauthorize', { from: 'patchMeasurableByQuantityContract', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
     } else if(response.status != 200) {
-        patchDataODEP.error('error patching immaterial contract', { from: 'measurableByQuantityContract', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+        patchDataODEP.error('error patching immaterial contract', { from: 'patchMeasurableByQuantityContract', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
       } else {
-        patchDataODEP.info('success patching immaterial contract', { from: 'measurableByQuantityContract', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+        patchDataODEP.info('success patching immaterial contract', { from: 'patchMeasurableByQuantityContract', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
       };
     return [data, response.status];
 }
@@ -175,7 +175,7 @@ const patchMeasurableByTimeContract = async (url, body, id, token) => {
 
 //Patches a contract in putting of cancel state
 const patchContractCancel = async (url, body, id, token) => {
-  patchDataODEP.warn('data & id to send to ODEP', { from: 'patchOneRegulator', dataToSend: body, id: id, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+  patchDataODEP.warn('data & id to send to ODEP', { from: 'patchContractCancel', dataToSend: body, id: id, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
     const response = await Utils.fetchJSONData(
         'PATCH',
         url + "cancelContract/" + id, 

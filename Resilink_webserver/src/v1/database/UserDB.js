@@ -161,6 +161,7 @@ const getAllUser = async (userList) => {
 // Retrieves a user phone number by id in RESILINK DB
 const insertUserPhoneNumber = async (userName, body) => {
   try {
+
     const _database = await connectToDatabase();
     const _collection = _database.collection('user');
 
@@ -168,7 +169,7 @@ const insertUserPhoneNumber = async (userName, body) => {
     if (user != null) {
       body['phoneNumber'] = user.phoneNumber.length > 15 ? cryptData.decryptAES(user.phoneNumber) : user.phoneNumber;
     } else {
-      throw new getDBError();
+      body['phoneNumber'] = "";
     }
 
     getDataLogger.info('succes retrieving an user phoneNumber in Resilink DB', { from: 'insertuserPhoneNumber'});

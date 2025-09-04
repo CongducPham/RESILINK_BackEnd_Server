@@ -13,7 +13,7 @@ const createRating = async (body, token) => {
     try {
         const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''))
         if (username == null) {
-            getDataLogger.error("token is not registered", {from: 'createRating', dataReceiver: e, username: username ?? "no user associated with the token"});
+            getDataLogger.error("token is not registered", {from: 'createRating', username: username});
             return [{message: "token is not registered"}, 401];
         }
         const dataFinal = await RatingDB.createNewRating(body['userId'], body['rating']);
@@ -30,7 +30,7 @@ const getAllRating = async (token) => {
     try {
         const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''))
         if (username == null) {
-            getDataLogger.error("token is not registered", {from: 'createRating', dataReceiver: e, username: username ?? "no user associated with the token"});
+            getDataLogger.error("token is not registered", {from: 'getAllRating', username: username});
             return [{message: "token is not registered"}, 401];
         }
         const dataFinal = await RatingDB.getAllRating();
@@ -47,7 +47,7 @@ const getIdRating = async (userId, token) => {
     try {
         const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''))
         if (username == null) {
-            getDataLogger.error("token is not registered", {from: 'createRating', dataReceiver: e, username: username ?? "no user associated with the token"});
+            getDataLogger.error("token is not registered", {from: 'getIdRating', username: username});
             return [{message: "token is not registered"}, 401];
         }
         const dataFinal = await RatingDB.getRatingByUserId(userId);
@@ -64,7 +64,7 @@ const getAverageRating = async (token) => {
     try {
         const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''))
         if (username == null) {
-            getDataLogger.error("token is not registered", {from: 'createRating', dataReceiver: e, username: username ?? "no user associated with the token"});
+            getDataLogger.error("token is not registered", {from: 'getAverageRating', username: username});
             return [{message: "token is not registered"}, 401];
         }
         const data = await RatingDB.getAllRating();
@@ -93,7 +93,7 @@ const putRating = async (userId, body, token) => {
     try {
         const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''))
         if (username != "admin" && username!= userId) {
-            getDataLogger.error("not admin or owner of rating", {from: 'createRating', dataReceiver: e, username: username ?? "no user associated with the token"});
+            getDataLogger.error("not admin or owner of rating", {from: 'putRating', username: username});
             return [{message: "not admin or owner of rating"}, 401];
         }
         
@@ -112,7 +112,7 @@ const deleteRating = async (userID, token) => {
     try {
         const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''))
         if (username != "admin" && username != userID) {
-            getDataLogger.error("not admin or owner of rating", {from: 'createRating', dataReceiver: e, username: username ?? "no user associated with the token"});
+            getDataLogger.error("not admin or owner of rating", {from: 'deleteRating', username: username});
             return [{message: "not admin or owner of rating"}, 401];
         }
         

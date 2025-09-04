@@ -126,12 +126,6 @@ const router = express.Router();
  *         assetType:
  *           type: string
  *           description: "The assetType of the offer being filtered"
- *         transactionType:
- *           type: string
- *           enum:
- *             - sale/purchase
- *             - rent
- *           description: "The type of transaction"
  *         latitude:
  *           type: string
  *           description: "Geographical point representing latitude of the search location"
@@ -278,9 +272,9 @@ router.post('/offers/', offerController.createOffer);
 
 /**
  * @swagger
- * /v1/offers/all:
+ * /v1/offers/all/Mapped:
  *   get:
- *     summary: Get valid offers in RESILINK perspective
+ *     summary: Get mapped valid offers in RESILINK perspective
  *     tags: [Offer]
  *     responses:
  *       200:
@@ -373,7 +367,7 @@ router.post('/offers/', offerController.createOffer);
  *                   type: string
  */
 
-router.get('/offers/all/', offerController.getAllOfferResilinkCustom);
+router.get('/offers/all/Mapped', offerController.getAllOfferResilinkCustom);
 
 /**
  * @swagger
@@ -484,7 +478,7 @@ router.get('/offers/suggested/:id', offerController.getSuggestedOfferForResilink
  * @swagger
  * /v1/offers/LimitedOffer:
  *   get:
- *     summary: Get a number of valid offers in RESILINK perspective
+ *     summary: Get multiple valid offers (per definable range) with their assets in the RESILINK perspective
  *     parameters:  
  *       - in: query
  *         name: offerNbr
@@ -855,8 +849,6 @@ router.get('/offers/owner/blockedOffer/:id/', offerController.getBlockedOfferFor
  *               name:
  *                 type: string
  *               assetType:
- *                 type: string
- *               transactionType:
  *                 type: string
  *               latitude:
  *                 type: string
@@ -1236,7 +1228,7 @@ router.get('/offers/owner/purchase/', offerController.getOwnerOfferPurchase);
 
 /**
  * @swagger
- * /v1/ODEP/offers/all:
+ * /v1/offers/all:
  *   get:
  *     summary: Get all offers (from ODEP)
  *     tags: [Offer]
@@ -1329,13 +1321,13 @@ router.get('/offers/owner/purchase/', offerController.getOwnerOfferPurchase);
  *                   type: string
  */
 
-router.get('/ODEP/offers/all/', offerController.getAllOffer);
+router.get('/offers/all/', offerController.getAllOffer);
 
 /**
  * @swagger
- * /v1/ODEP/offers/{id}:
+ * /v1/offers/{id}:
  *   get:
- *     summary: Get an offers by id (from ODEP)
+ *     summary: Get an offers by id
  *     tags: [Offer]
  *     parameters:
  *       - in: path
@@ -1433,13 +1425,13 @@ router.get('/ODEP/offers/all/', offerController.getAllOffer);
  *                   type: string
  */
 
-router.get('/ODEP/offers/:id/', offerController.getOneOffer);
+router.get('/offers/:id/', offerController.getOneOffer);
 
 /**
  * @swagger
  * /v1/offers/{id}:
  *   put: 
- *     summary: update an offer attributes (from ODEP)
+ *     summary: update an offer attributes
  *     tags: [Offer]
  *     parameters:
  *       - in: path

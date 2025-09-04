@@ -207,11 +207,13 @@ const createAsset = async (url, body, token) => {
 //Creates an asset in ODEP and RESILINK
 const createAssetCustom = async (url, body, token) => {
 
+  const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
+
   if (body['images'].length > 2) {
-    updateDataODEP.error('error creating one asset, contains more than 2 images', {from: 'createAssetCustom', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    updateDataODEP.error('error creating one asset, contains more than 2 images', {from: 'createAssetCustom', dataReceived: data, username: username ?? "no user associated with the token"});
     return [{message: "images contains more than 2 elements"}, (500)];
   } else if (!Utils.areAllBase64(body['images'])) {
-    updateDataODEP.error('error creating one asset, images list do not contains only base64 string', {from: 'createAssetCustom', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    updateDataODEP.error('error creating one asset, images list do not contains only base64 string', {from: 'createAssetCustom', dataReceived: data, username: username ?? "no user associated with the token"});
     return [{message: "images list do not contains only base64 string"}, (500)];
   }
 
@@ -220,7 +222,7 @@ const createAssetCustom = async (url, body, token) => {
   delete body['images'];
   delete body['unit'];
 
-  updateDataODEP.warn('data to send to ODEP', { from: 'createAssetCustom', dataToSend: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+  updateDataODEP.warn('data to send to ODEP', { from: 'createAssetCustom', dataToSend: body, username: username ?? "no user associated with the token"});
   const response = await Utils.fetchJSONData(
     'POST',
     url,
@@ -229,19 +231,20 @@ const createAssetCustom = async (url, body, token) => {
     'Authorization': token},
     body
   );
+
   const data = await Utils.streamToJSON(response.body);
   if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', {from: 'createAssetCustom', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    getDataLogger.error('error: Unauthorize', {from: 'createAssetCustom', dataReceived: data, username: username ?? "no user associated with the token"});
   } else if (response.status != 200) {
-    updateDataODEP.error('error creating one asset', {from: 'createAssetCustom', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    updateDataODEP.error('error creating one asset', {from: 'createAssetCustom', dataReceived: data, username: username ?? "no user associated with the token"});
   } else {
-    updateDataODEP.info('success creating one asset', {from: 'createAssetCustom', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    updateDataODEP.info('success creating one asset', {from: 'createAssetCustom', username: username ?? "no user associated with the token"});
 
     //Register images in server
     const img = await postImages({'assetId': data['assetId'].toString(), 'images': imgBase64}, token);
 
     //Register link to images in mongoDB
-    await AssetDB.newAsset(data['assetId'], img[0]['images'], unit);
+    await AssetDB.newAsset(data['assetId'], img[0]['images'], username, unit);
   };
   return [data, response.status];
 };

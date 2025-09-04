@@ -211,8 +211,7 @@ const deleteNewsById = async (NewsId) => {
     const db = await connectToDatabase();
     const _collection = db.collection('News');
 
-    const numericNewsId = parseInt(NewsId);
-    const result = await _collection.deleteOne({ _id: numericNewsId });
+    const result = await _collection.deleteOne({ _id: NewsId });
 
     if (result.deletedCount === 1) {
       deleteData.info(`Document with ID ${NewsId} successfully deleted`, { from: 'deleteNewsById' });
