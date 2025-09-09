@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 // ---------------------------------------------------
 // ---------------------------------------------------
 
@@ -5,6 +8,17 @@ const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const {customSorter} = require("./services/Utils.js");
 const config = require('./config.js');
+
+// Path to the folder containing route files
+const routesPath = path.join(__dirname, './routes');
+
+// Exclude these files from the swagger page display
+const excludedFiles = ['RequestRoute.js', 'RegulatorRoute.js', 'ContractRoute.js'];
+
+// Dynamically generate the list of files to include
+const apiFiles = fs.readdirSync(routesPath)
+  .filter(file => !excludedFiles.includes(file))
+  .map(file => path.join(routesPath, file));
 
 // Basic Meta Informations about our API
 let options = {
@@ -36,7 +50,7 @@ let options = {
         bearerAuth: []
       }]
     },
-    apis: ["./src/v1/routes/*.js"]
+    apis: apiFiles
 };
 
 // ---------------------------------------------------
@@ -46,7 +60,7 @@ const swaggerDocs = (app, port) => {
     // Add servers to options
     options.definition.servers = [
         {
-            url: "https://resilink-api.onrender.com", 
+            url: https://resilink-api.onrender.com/v1/api-docs, 
         },
     ];
 

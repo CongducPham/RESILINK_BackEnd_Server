@@ -4,7 +4,6 @@ const { notValidBody } = require('../errors.js');
 
 const getDataLogger = winston.loggers.get('GetDataLogger');
 const updateDataODEP = winston.loggers.get('UpdateDataODEPLogger');
-const deleteDataODEP = winston.loggers.get('DeleteDataODEPLogger');
 const deleteDataResilink = winston.loggers.get('DeleteDataResilinkLogger');
 const patchDataODEP = winston.loggers.get('PatchDataODEPLogger');
 
@@ -13,249 +12,181 @@ const userService = require("./UserService.js");
 const Utils = require("./Utils.js");
 
 //Creates a prosumer in ODEP
-const createProsummer = async (url, body, token) => {
-  patchDataODEP.warn('data to send to ODEP', { from: 'patchBalanceProsummer', dataToSend: body, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-    "POST",
-    url, 
-    headers = {'accept': 'application/json',
-     'Content-Type': 'application/json',
-     'Authorization': token},
-     body
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if(response.status == 401) {
-    updateDataODEP.error('error: Unauthorize', { from: 'createProsummer', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    updateDataODEP.error('error creating one prosummer', { from: 'createProsummer', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    updateDataODEP.info('success creating one prosummer', { from: 'createProsummer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  }
-  return [data, response.status];
-};
+const createProsummer = async (body, token) => {
+  try {
+    if(!Utils.validityToken(token)) {
+      updateDataODEP.error('error: Unauthorize', { from: 'createProsummer', dataReceived: body, tokenUsed: token != null ? token.replace(/^Bearer\s+/i, '') : ""});
+      return [{"message": "Unauthorize"}, 401];
+    } 
 
-//Retrieves all prosumers in ODEP
-const getAllProsummer = async (url, token) => {
-  const response = await Utils.fetchJSONData(
-    "GET",
-    url + "all", 
-    headers = {'accept': 'application/json',
-     'Authorization': token}
-     );
-  const data = await Utils.streamToJSON(response.body);
-  if(response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getAllProsummer', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving all prosummers', { from: 'getAllProsummer', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    getDataLogger.info('success retrieving all prosummers', { from: 'getAllProsummer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    const userExist = await userService.getUserByUsername(body["id"], token);
+    if(userExist[1] == 401) {
+      updateDataODEP.error('error: Unauthorize', { from: 'updateUserProsumer', dataReceived: userExist[0], tokenUsed: token == null ? "Token not given" : token});
+      return userExist;
+    } else if(userExist[1] != 200) {
+      updateDataODEP.error('error accessing one user by username ' + username, { from: 'updateUserProsumer', dataReceived: userExist[0], tokenUsed: token.replace(/^Bearer\s+/i, '')});
+      return [{message: 'No user with this username exists'}, 404];
+    } else {
+      updateDataODEP.info('success accessing one user by username', { from: 'updateUserProsumer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    }
+
+    const data = await ProsummerDB.newProsumer(body);
+    updateDataODEP.info('success creating user in ODEP', { from: 'createProsummer', tokenUsed: token.replace(/^Bearer\s+/i, '') ?? ""});
+
+    return [body, 200];
+  } catch (e) {
+    throw(e);
   }
-  return [data, response.status];
 };
 
 /*
- * Calls the function to create a user in ODEP and RESILINK
- * Then creates a prosumer profile in ODEP and RESILINK 
+ * Calls the function to create a user in RESILINK
+ * Then creates a prosumer profile in RESILINK 
  */
-const createProsumerCustom = async(url, urlUser, body, token) => {
-
-  //Calls the functions to get admin token then calls the function to create a user in ODEP & RESILINK
-  const admin = await userService.functionGetTokenUser({userName: "admin", password: "admin123"});
-  patchDataODEP.warn('data to send to Resilink DB & ODEP', { from: 'createProsumerCustom', dataToSend: body, tokenUsed: admin[0]["accessToken"]});
-
-  const job = body["job"];
-  const location = body["location"];
-  delete body["job"];
-  delete body["location"];
-
-  if (!Utils.containsNonRomanCharacters(body['userName']) || !Utils.containsNonRomanCharacters(body['password'])) {
-    return [{"message": "userName or password are not in roman caracters"}, 405]
-  } else if (!Utils.isNumeric(body['phoneNumber'] ?? "1" )) {
-    return [{"message": "phone number is not in digits caracters"}, 405]
+const createProsumerWithUser = async(body, token) => {
+  try {
+    if(!Utils.validityToken(token)) {
+      updateDataODEP.error('error: Unauthorize', { from: 'createProsumerWithUser', dataReceived: body, tokenUsed: token.replace(/^Bearer\s+/i, '') ?? ""});
+      return [{"message": "Unauthorize"}, 401];
+    } 
+  
+    if (!Utils.containsNonRomanCharacters(body['userName']) || !Utils.containsNonRomanCharacters(body['password'])) {
+      return [{"message": "userName or password are not in roman caracters"}, 405]
+    } else if (body['phoneNumber'].length !== 0 && !Utils.isNumeric(body['phoneNumber'])) {
+      return [{"message": "phone number is not in digits caracters"}, 405]
+    }
+  
+    const bodyProsumer = {
+      "id": body.userName,
+      "sharingAccount": 100,
+      "balance": 100,
+      "job": body.job,
+      "location": body.location
+    }
+    delete body.sharingAccount;
+    delete body.balance;
+    delete body.job;
+    delete body.location;
+  
+    const adminToken = await userService.functionGetTokenUser({userName: 'admin', password: 'admin123'});
+    const userResponse = await userService.createUser(body, adminToken[0]['accessToken']);
+    if(userResponse[1] == 401) {
+      updateDataODEP.error('error: Unauthorize', { from: 'createProsumerWithUser', dataReceived: userResponse[0], tokenUsed: token == null ? "Token not given" : token});
+      return userResponse;
+    } else if(userResponse[1] != 200) {
+      updateDataODEP.error('error creating one user' + body.userName, { from: 'createProsumerWithUser', dataReceived: userResponse[0], tokenUsed: token.replace(/^Bearer\s+/i, '')});
+      return userResponse;
+    } else {
+      updateDataODEP.info('success creating one user', { from: 'createProsumerWithUser', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    }
+    const prosumer = await ProsummerDB.newProsumer(bodyProsumer);
+    updateDataODEP.info('success creating one user and his prosummer status in Resilink DB', { from: 'createProsumerWithUser', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    userResponse[0]['password'] = body['password'];
+    return [{user: userResponse[0], prosumer: prosumer}, 200];
+  } catch (e) {
+    updateDataODEP.error('fail creating one user and his prosummer status in Resilink DB', { from: 'createProsumerWithUser', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    throw e;
   }
 
-  const user = await userService.createUserResilink(urlUser, body, admin[0]["accessToken"]);
-  if(user[1] == 401) {
-    updateDataODEP.error('error: Unauthorize', { from: 'createProsumerCustom', dataReceived: user[0], tokenUsed: admin[0]["accessToken"].replace(/^Bearer\s+/i, '')});
-    return user;
-  } else if(user[1] != 201) { 
-    updateDataODEP.error('error creating user in ODEP', { from: 'createProsumerCustom', dataReceived: user[0], tokenUsed: admin[0]["accessToken"].replace(/^Bearer\s+/i, '')});
-    return user;
-  } else {
-    updateDataODEP.info('success creating user in ODEP and Resilink DB', { from: 'createProsumerCustom', tokenUsed: admin[0]["accessToken"].replace(/^Bearer\s+/i, '')});
-  }
-
-  //Creates a prosumer profile in ODEP with the information from the user profile created
-  const response = await Utils.fetchJSONData(
-    "POST",
-    url, 
-    headers = {'accept': 'application/json',
-     'Authorization': 'Bearer ' + admin[0]["accessToken"],
-     'Content-Type': 'application/json'},
-    body = {'id': user[0].userName,
-    'sharingAccount': 100, 
-    "balance": 0}
-  );
-  const data = await Utils.streamToJSON(response.body);
-
-  //Calls the function to create a prosumer in RESILINK if no errors caught
-  if(response.status == 401) {
-    updateDataODEP.error('error: Unauthorize', { from: 'createProsumerCustom', dataReceived: data, tokenUsed: admin[0]["accessToken"]});
-    return [data, response.status];
-  } else if(response.status != 200) {
-    updateDataODEP.error('error creating one user but not his prosummer status', { from: 'createProsumerCustom', dataReceived: data, tokenUsed: admin[0]["accessToken"].replace(/^Bearer\s+/i, '')});
-    return [data, response.status];
-  } else {
-    updateDataODEP.info('success creating one user and his prosummer status in ODEP', { from: 'createProsumerCustom', tokenUsed: admin[0]["accessToken"].replace(/^Bearer\s+/i, '')});
-  }
-
-  ProsummerDB.newProsumer(user[0].userName, job, location);
-  updateDataODEP.info('success creating one user and his prosummer status in ODEP and Resilink DB', { from: 'createProsumerCustom', tokenUsed: admin[0]["accessToken"].replace(/^Bearer\s+/i, '')});
-  body['job'] = job ?? "";
-  body['location'] = location ?? "";
-  body['bookMarked'] = [];
-  return [{user: user[0], prosumer: body}, response.status];
+  
 };
 
 //Retrieves all prosumers in ODEP and RESILINK
-const getAllProsummerCustom = async (url, token) => {
-
-  const response = await Utils.fetchJSONData(
-    "GET",
-    url + "all", 
-    headers = 
-      {'accept': 'application/json',
-      'Authorization': token}
-  );
-  const data = await Utils.streamToJSON(response.body);
+const getAllProsummer = async (token) => {
+  try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'getAllProsummer', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
   
-  //Calls the function to retrieve all prosumers data in RESILINK if no errors caught
-  if(response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getAllProsummerCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving all prosummers and his data in Resilink DB', { from: 'getAllProsummerCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [data, response.status];
-  } else {
-    getDataLogger.info('success retrieving all prosummers and his data in Resilink DB', { from: 'getAllProsummerCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    await ProsummerDB.getAllProsummer(data);
+    //Calls the function to retrieve all prosumers data in RESILINK if no errors caught
+    const allProsummer = await ProsummerDB.getAllProsummer();
+    getDataLogger.info('success retrieving all prosummers in Resilink DB', { from: 'getAllProsummer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+  
+    return [allProsummer, 200];
+  } catch (e) {
+    getDataLogger.error('error retrieving all prosummers', { from: 'getAllProsummer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    throw(e);
   }
-
-  return [data, response.status];
 };
 
-//ODEP actually broken, don't know if the url is the same - have to check later
-//Updates user profile in ODEP & RESILINK
-const updateUserProsumerCustom = async (url, body, id, token) => {
+//Updates user profile in RESILINK
+const updateUserProsumer = async (body, id, token) => {
   try {
-    const userODEP = await userService.updateUserCustom(url, id, body['user'], token);
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'updateUserProsumer', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
+    const userODEP = await userService.updateUser(id, body['user'], token);
     if(userODEP[1] == 401) {
-      updateDataODEP.error('error: Unauthorize', { from: 'updateUserProsumerCustom', dataReceived: userODEP[0], tokenUsed: token == null ? "Token not given" : token});
+      updateDataODEP.error('error: Unauthorize', { from: 'updateUserProsumer', dataReceived: userODEP[0], tokenUsed: token == null ? "Token not given" : token});
       return userODEP;
     } else if(userODEP[1] != 200) {
-      updateDataODEP.error('error accessing one user by username ' + username, { from: 'updateUserProsumerCustom', dataReceived: userODEP[0], tokenUsed: token.replace(/^Bearer\s+/i, '')});
+      updateDataODEP.error('error accessing one user by username ' + username, { from: 'updateUserProsumer', dataReceived: userODEP[0], tokenUsed: token.replace(/^Bearer\s+/i, '')});
       return userODEP;
     } else {
-      updateDataODEP.info('success accessing one user by username', { from: 'updateUserProsumerCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+      updateDataODEP.info('success accessing one user by username', { from: 'updateUserProsumer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
     }
 
     await ProsummerDB.updateJob(body['user']['userName'], body['prosumer']['job']);
     await ProsummerDB.updateLocation(body['user']['userName'], body['prosumer']['location']);
+    getDataLogger.info('success updating user/prosumer data', { from: 'updateUserProsumer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
     return [{'user': userODEP[0], 'prosumer': body['prosumer']}, userODEP[1]];
   } catch (e) {
-    getDataLogger.error("error accessing ODEP", {from: 'updateUserProsumerCustom', dataReceiver: e.message});
+    getDataLogger.error("error updating user/prosumer data", {from: 'updateUserProsumer', dataReceiver: e.message});
     throw e;
   }
 }
 
-//Retrieves a prosumer by id in ODEP 
-const getOneProsummer = async (url, id, token) => {
-  const response = await Utils.fetchJSONData(
-    "GET",
-    url + id, 
-    headers = {'accept': 'application/json',
-     'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if(response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getOneProsummer', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving one prosummer', { from: 'getOneProsummer', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
+//Retrieves a prosumer by id in RESILINK
+const getOneProsummer= async (id, token) => {
+
+  try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'getOneProsummer', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+  
+    const prosumer = await ProsummerDB.getOneProsummer(id);
     getDataLogger.info('success retrieving one prosummer', { from: 'getOneProsummer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    return [prosumer, 200];
+  } catch (e) {
+    getDataLogger.error("error retrieving a prosummer", {from: 'getOneProsummer', dataReceiver: e.message});
+    throw (e);
   }
-  return [data, response.status];
-};
-
-//Retrieves a prosumer by id in ODEP and RESILINK
-const getOneProsummerCustom = async (url, id, token) => {
-
-  const response = await Utils.fetchJSONData(
-    "GET",
-    url + id, 
-    headers = {'accept': 'application/json',
-     'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body);
-
-  //Calls the function to retrieve prosumer data in RESILINK if no errors caught
-  if(response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getOneProsummerCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving one prosummer', { from: 'getOneProsummerCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    getDataLogger.info('success retrieving one prosummer', { from: 'getOneProsummerCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    await ProsummerDB.getOneProsummer(data);
-  }
-
-  return [data, response.status];
-};
-
-//Deletes a prosumer by id in ODEP
-const deleteOneProsummer = async (url, id, token) => {
-  deleteDataODEP.warn('id to send to ODEP', { from: 'deleteOneProsummer', id: id, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-    "DELETE",
-    url + id, 
-    headers = {'accept': 'application/json',
-     'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if(response.status == 401) {
-    deleteDataODEP.error('error: Unauthorize', { from: 'deleteOneProsummer', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    deleteDataODEP.error('error deleting one prosummer', { from: 'deleteOneProsummer', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    deleteDataODEP.info('success deleting one prosummer', { from: 'deleteOneProsummer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  }
-  return [data, response.status];
 };
 
 //Patches a prosumer balance in ODEP
-const patchBalanceProsummer = async (url, body, id, token) => {
-  patchDataODEP.warn('data & id to send to ODEP', { from: 'patchBalanceProsummer', dataToSend: body, id: id, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-    "PATCH",
-    url + id + "/balance", 
-    headers = {'accept': 'application/json',
-     'Content-Type': 'application/json',
-     'Authorization': token},
-    body
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if(response.status == 401) {
-    patchDataODEP.error('error: Unauthorize', { from: 'patchBalanceProsummer', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    patchDataODEP.error('error patching prosummer\'s balance', { from: 'patchBalanceProsummer', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    patchDataODEP.info('success patching prosummer\'s balance', { from: 'patchBalanceProsummer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+const patchBalanceProsummer = async (body, id, token) => {
+  try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'patchBalanceProsummer', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
+    patchDataODEP.warn('data & id to send to local DB', { from: 'patchBalanceProsummer', dataToSend: body, id: id});
+    const data = await ProsummerDB.updateSharingAccount(id, body['accountUnits']);
+    patchDataODEP.info('success patching prosummer\'s balance', { from: 'patchBalanceProsummer', /*tokenUsed: token.replace(/^Bearer\s+/i, '')*/});
+    return [{message: "Prosumer balance successfully changed"}, 200];
+  } catch (e) {
+    if (e instanceof notValidBody) {
+      patchDataODEP.error('body is not valid', { from: 'patchBalanceProsummer', dataReceived: body, /*tokenUsed: token.replace(/^Bearer\s+/i, '')*/});
+    } else {
+      patchDataODEP.error('error patching prosummer\'s balance', { from: 'patchBalanceProsummer', dataReceived: body, /*tokenUsed: token.replace(/^Bearer\s+/i, '')*/});
+    }
+    throw(e);
   }
-  return [data, response.status];
 };
 
 //Patches a prosumer job in RESILINK
-//Need to fin a way to check the token wihtout the user username and password
-const patchJobProsummer = async (body, id) => {
+const patchJobProsummer = async (body, id, token) => {
   try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'patchJobProsummer', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
     patchDataODEP.warn('data & id to send to local DB', { from: 'patchJobProsummer', dataToSend: body, id: id});
     const data = await ProsummerDB.updateJob(id, body['job']);
     patchDataODEP.info('success patching prosummer\'s bookmark list', { from: 'patchJobProsummer', /*tokenUsed: token.replace(/^Bearer\s+/i, '')*/});
@@ -272,33 +203,39 @@ const patchJobProsummer = async (body, id) => {
 
 //Patches a prosumer sharing score in ODEP
 const patchSharingProsummer = async (url, body, id, token) => {
-  patchDataODEP.warn('data & id to send to ODEP', { from: 'patchSharingProsummer', dataToSend: body, id: id, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-    "PATCH",
-    url + id + "/sharingAccount", 
-    headers = {'accept': 'application/json',
-     'Content-Type': 'application/json',
-     'Authorization': token},
-     body
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if(response.status == 401) {
-    patchDataODEP.error('error: Unauthorize', { from: 'patchSharingProsummer', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    patchDataODEP.error('error patching prosummer\'s sharing', { from: 'patchSharingProsummer', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    patchDataODEP.info('success patching prosummer\'s sharing', { from: 'patchSharingProsummer', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+  try {
+    patchDataODEP.warn('data & id to send to local DB', { from: 'patchSharingProsummer', dataToSend: body, id: id});
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'patchSharingProsummer', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
+    const data = await ProsummerDB.updateSharingAccount(id, body['sharingPoints']);
+    patchDataODEP.info('success patching prosummer\'s sharingAccount', { from: 'patchSharingProsummer', /*tokenUsed: token.replace(/^Bearer\s+/i, '')*/});
+    return [{message: "Prosumer sharingAccount successfully changed"}, 200];
+  } catch (e) {
+    if (e instanceof notValidBody) {
+      patchDataODEP.error('body is not valid', { from: 'patchSharingProsummer', dataReceived: body, /*tokenUsed: token.replace(/^Bearer\s+/i, '')*/});
+    } else {
+      patchDataODEP.error('error patching prosummer\'s sharingAccount', { from: 'patchSharingProsummer', dataReceived: body, /*tokenUsed: token.replace(/^Bearer\s+/i, '')*/});
+    }
+    throw(e);
   }
-  return [data, response.status];
 };
 
 //Patches a prosumer book marked list in RESILINK
-//Need to find a way to check the token wihtout the user username and password
-const patchBookmarkProsummer = async (body, id) => {
+const patchBookmarkProsummer = async (body, id, token) => {
   try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'patchBookmarkProsummer', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+    patchDataODEP.warn('juste avant logger', { from: 'patchBookmarkProsummer', tokenUsed: token == null ? "Token not given" : token});
+    patchDataODEP.warn('juste avant isNaN', { from: 'patchBookmarkProsummer', tokenUsed: token == null ? "Token not given" : token, nan: isNaN(body['bookmarkId'])});
     if (isNaN(body['bookmarkId'])) {
       throw new notValidBody("it's not a number in a string");
     }
+
     patchDataODEP.warn('data & id to send to local DB', { from: 'patchBookmarkProsummer', dataToSend: body, id: id});
     const data = await ProsummerDB.addbookmarked(id, body['bookmarkId']);
     patchDataODEP.info('success patching prosummer\'s bookmark list', { from: 'patchBookmarkProsummer', /*tokenUsed: token.replace(/^Bearer\s+/i, '')*/});
@@ -314,9 +251,13 @@ const patchBookmarkProsummer = async (body, id) => {
 };
 
 //Deletes a news id in prosumer book marked list in RESILINK
-//Need to fin a way to check the token without the user username and password
 const deleteIdBookmarkedList = async (owner, id, token) => {
   try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'deleteIdBookmarkedList', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
     if (isNaN(id)) {
       throw new notValidBody("it's not a number in a string");
     }
@@ -333,9 +274,12 @@ const deleteIdBookmarkedList = async (owner, id, token) => {
 };
 
 //Patches a prosumer book marked list in RESILINK
-//Need to find a way to check the token wihtout the user username and password
-const patchAddblockedOffersProsummer = async (body, id) => {
+const patchAddblockedOffersProsummer = async (body, id, token) => {
   try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'patchAddblockedOffersProsummer', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
     if (isNaN(body['offerId'])) {
       throw new notValidBody("it's not a number in a string");
     }
@@ -354,9 +298,12 @@ const patchAddblockedOffersProsummer = async (body, id) => {
 };
 
 //Deletes a news id in prosumer book marked list in RESILINK
-//Need to fin a way to check the token without the user username and password
 const deleteIdBlockedOffersList = async (owner, id, token) => {
   try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'deleteIdBlockedOffersList', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
     if (isNaN(id)) {
       throw new notValidBody("it's not a number in a string");
     }
@@ -373,35 +320,30 @@ const deleteIdBlockedOffersList = async (owner, id, token) => {
 };
 
 //Deletes a prosumer by id in ODEP & RESILINK
-const deleteProsumerODEPRESILINK = async (url, owner, token) => {
+const deleteProsumer = async (owner, token) => {
   try {
 
-    //Calls the function to delete a user in ODEP and if an error is caught, return the error
-    const delProsODEP = await deleteOneProsummer(url, owner, token);
-    if (delProsODEP[1] != 200) {
-      deleteDataODEP.error("error deleting a prosumer account in RESILINK DB", {from: 'deleteProsumerODEPRESILINK', dataReceiver: delProsODEP[0]});
-      return delProsODEP;
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'deleteProsumer', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
     }
 
     //Calls the function to delete a user in RESILINK
     await ProsummerDB.deleteProsumerODEPRESILINK(owner);
-    deleteDataResilink.info("success deleting a news from an owner's bookmarked list", {from: 'deleteProsumerODEPRESILINK'});
-    return [{message: owner + " prosumer account correctly removed in RESILINK and ODEP DB"}, 200];
+    deleteDataResilink.info("success deleting a prosumer with id " + owner, {from: 'deleteProsumer'});
+    return [{message: owner + " prosumer account correctly removed"}, 200];
   } catch (e) {
-    deleteDataResilink.error("error deleting a prosumer account in RESILINK and ODEP DB", {from: 'deleteProsumerODEPRESILINK', dataReceiver: e.message});
+    deleteDataResilink.error("error deleting a prosumer account", {from: 'deleteProsumer', dataReceiver: e.message});
     throw e;
   }
 }
 
 module.exports = {
     createProsummer,
+    createProsumerWithUser,
     getAllProsummer,
-    getAllProsummerCustom,
     getOneProsummer,
-    getOneProsummerCustom,
-    createProsumerCustom,
-    updateUserProsumerCustom,
-    deleteOneProsummer,
+    updateUserProsumer,
     patchBalanceProsummer,
     patchSharingProsummer,
     patchBookmarkProsummer,
@@ -409,5 +351,5 @@ module.exports = {
     patchAddblockedOffersProsummer,
     deleteIdBookmarkedList,
     deleteIdBlockedOffersList,
-    deleteProsumerODEPRESILINK
+    deleteProsumer 
 }

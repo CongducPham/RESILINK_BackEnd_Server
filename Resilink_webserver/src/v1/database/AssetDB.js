@@ -8,27 +8,38 @@ const deleteData = winston.loggers.get('DeleteDataResilinkLogger');
 const connectDB = winston.loggers.get('ConnectDBResilinkLogger');
 
 // Creates an asset in RESILINK DB 
-const newAsset = async (assetId, imgBase64, owner, unit) => {
+const newAsset = async (body) => {
   try {
-    const db = await connectToDatabase();
-    const _collection = db.collection('Asset');
-    updateData.warn('before inserting data', { from: 'newAsset', data: {assetId, imgBase64, owner}});
+    const _database = await connectToDatabase.connectToDatabase();
+    const _collection = _database.collection('Asset');
+    updateData.warn('before inserting data', { from: 'newAsset', data: body });
 
-    const numericAssetId = parseInt(assetId);
+    // Trouver le dernier asset inséré et récupérer son ID
+    const lastAsset = await _collection.find().sort({ id: -1 }).limit(1).toArray();
+    
+    // Vérifier si `lastAsset` est vide et attribuer `id = 1`
+    let newId = 1;
+    if (lastAsset.length > 0 && typeof lastAsset[0].id === "number") {
+      newId = lastAsset[0].id + 1;
+    }
 
-    // Insert an asset with its imgpath. Can be empty if default image from mobile app selected
-    const asset = await _collection.insertOne({
-      id: numericAssetId,
-      owner: owner, 
-      images: [...imgBase64],
-      unit: unit ?? ""
+    body.id = newId;
+
+    const result = await _collection.insertOne({
+      ...body,
+      remainingQuantity: body.remainingQuantity,
+      images: []
     });
 
-    if (!asset) {
-      throw new InsertDBError("asset not created in local DB");
+    if (!result.acknowledged) {
+      throw new InsertDBError("Asset not created in local DB");
     }  
 
     updateData.info('success creating an asset in Resilink DB', { from: 'newAsset' });
+
+    // Retourner le document inséré sans `_id`
+    return { ...body };
+
   } catch (e) {
     if (e instanceof InsertDBError) {
       updateData.error('error creating an asset in Resilink DB', { from: 'newAsset' });
@@ -39,68 +50,15 @@ const newAsset = async (assetId, imgBase64, owner, unit) => {
   }
 };
 
-// Retrieves an asset with its ODEP id in RESLINK DB
-const getAndCompleteOneAssetByAsset = async (asset) => {
-  try {
-    const db = await connectToDatabase();
-    const _collection = db.collection('Asset');
-    const numericAssetId = parseInt(asset["id"]);
-
-    const result = await _collection.findOne({ id: numericAssetId });
-
-    if (!result) {
-      throw new getDBError("asset didn't find in the Resilink DB");
-    } else {
-      getDataLogger.info('success retrieving an asset in Resilink DB', { from: 'getAndCompleteOneAssetByAsset' });
-    }
-
-    asset["images"] = result["images"];
-    asset["unit"] = result["unit"];
-  } catch (e) {
-    if (e instanceof getDBError) {
-      getDataLogger.error('error retrieving an asset in Resilink DB', { from: 'getAndCompleteOneAssetByAsset' });
-    } else {
-      connectDB.error('error connecting to DB', { from: 'getAndCompleteOneAssetByAsset', error: e });
-    }
-    throw e;
-  }
-};
-
-// Retrieves an img with its asset id in RESILINK DB
-const getOneAssetImageById = async (id) => {
-  try {
-    const db = await connectToDatabase();
-    const _collection = db.collection('Asset');
-    const numericAssetId = parseInt(id);
-
-    const result = await _collection.findOne({ id: numericAssetId });
-
-    if (!result) {
-      throw new getDBError("asset didn't find in the Resilink DB");
-    } else {
-      getDataLogger.info('success retrieving an asset in Resilink DB', { from: 'getOneAssetImageById' });
-    }
-
-    return result["images"];
-  } catch (e) {
-    if (e instanceof getDBError) {
-      getDataLogger.error('error retrieving an asset in Resilink DB', { from: 'getOneAssetImageById' });
-    } else {
-      connectDB.error('error connecting to DB', { from: 'getOneAssetImageById', error: e });
-    }
-    throw e;
-  }
-};
-
 // Retrieves all assets in RESILINK DB
 const getAllAsset = async () => {
   try {
-    const db = await connectToDatabase();
-    const _collection = db.collection('Asset');
+    const _database = await connectToDatabase.connectToDatabase();
+    const _collection = _database.collection('Asset');
 
     const result = await _collection.find({}).toArray();
 
-    if (!result || result.length === 0) {
+    if (result == null) {
       throw new getDBError("assets didn't find in the Resilink DB");
     } else {
       getDataLogger.info('success retrieving all assets in Resilink DB', { from: 'getAllAsset' });
@@ -117,43 +75,36 @@ const getAllAsset = async () => {
   }
 };
 
-// Retrieves and completes assets with images by assets
-const getAndCompleteAssetByAssets = async (ListAsset) => {
-  try {
-    const db = await connectToDatabase();
-    const _collection = db.collection('Asset');
+//Retrieves one asset
+const getOneAsset = async (assetId) => {
+    try {
+        const _database = await connectToDatabase.connectToDatabase();
+        const _collection = _database.collection('Asset');
+    
+        const numericAssetId = parseInt(assetId);
+        const valueAsset = await _collection.findOne({ id: numericAssetId});
 
-    for (const asset of ListAsset) {
-      const numericAssetId = parseInt(asset.id);
-      const result = await _collection.findOne({ id: numericAssetId });
-      if (result != null) {
-        asset['images'] = result.images != null ? result.images : [];
-        asset['unit'] = result['unit'];
+        if (valueAsset == null || valueAsset.length === 0) {
+          throw new getDBError("no asset with this id was found")
+        } 
+        getDataLogger.info('succes retrieving one prosummer in Resilink DB', { from: 'getOneAssetType'});
+        return valueAsset;
+
+    } catch (e) {
+      if (e instanceof getDBError) {
+        getDataLogger.error('error retrieving one prosummer in Resilink DB', { from: 'getOneAssetType'});
+      } else {
+        connectDB.error('error connecting to DB', { from: 'getOneAssetType',  error: e});
       }
+      throw(e);
     }
-
-    if (!ListAsset) {
-      throw new getDBError("assets didn't find / in the Resilink DB");
-    } else {
-      getDataLogger.info('success retrieving/processing all assets in Resilink DB', { from: 'getAndCompleteAssetWithImgByAssets' });
-    }
-
-    return ListAsset;
-  } catch (e) {
-    if (e instanceof getDBError) {
-      getDataLogger.error('error retrieving/processing all assets in Resilink DB', { from: 'getAndCompleteAssetWithImgByAssets' });
-    } else {
-      connectDB.error('error connecting to DB', { from: 'getAndCompleteAssetWithImgByAssets', error: e });
-    }
-    throw e;
-  }
 };
 
 // Deletes an asset by id in RESILINK DB
 const deleteAssetById = async (assetId) => {
   try {
-    const db = await connectToDatabase();
-    const _collection = db.collection('Asset');
+    const _database = await connectToDatabase.connectToDatabase();
+    const _collection = _database.collection('Asset');
 
     const numericAssetId = parseInt(assetId);
     const result = await _collection.deleteOne({ id: numericAssetId });
@@ -175,25 +126,23 @@ const deleteAssetById = async (assetId) => {
 };
 
 // Updates an asset by id in RESILINK DB
-const updateAssetById = async (assetId, assetImg, asset, unit) => {
+const updateAssetById = async (assetId, asset) => {
   try {
-    const db = await connectToDatabase();
-    const _collection = db.collection('Asset');
+    const _database = await connectToDatabase.connectToDatabase();
+    const _collection = _database.collection('Asset');
 
     const numericAssetId = parseInt(assetId);
 
     const result = await _collection.updateOne(
       { id: numericAssetId },
-      { $set: { images: assetImg, unit: unit} }
+      { $set: asset }
     );
-
     if (result.matchedCount === 1) {
       if (result.modifiedCount === 1) {
         updateData.info(`Document with ID ${assetId} successfully updated`, { from: 'updateAssetById' });
       } else {
         updateData.info(`Document with ID ${assetId} found but value unchanged`, { from: 'updateAssetById' });
       }
-      asset.images = result.images;
     } else {
       throw new UpdateDBError(`Failed to find document with ID ${assetId}`);
     }
@@ -207,12 +156,42 @@ const updateAssetById = async (assetId, assetImg, asset, unit) => {
   }
 };
 
+// Updates an asset by id in RESILINK DB
+const updateAssetImagesById = async (assetId, img) => {
+  try {
+    const _database = await connectToDatabase.connectToDatabase();
+    const _collection = _database.collection('Asset');
+
+    const numericAssetId = parseInt(assetId);
+
+    const result = await _collection.updateOne(
+      { id: numericAssetId },
+      { $set: { images: img} }
+    );
+    if (result.matchedCount === 1) {
+      if (result.modifiedCount === 1) {
+        updateData.info(`Document with ID ${assetId} successfully updated`, { from: 'updateAssetImagesById' });
+      } else {
+        updateData.info(`Document with ID ${assetId} found but value unchanged`, { from: 'updateAssetImagesById' });
+      }
+    } else {
+      throw new UpdateDBError(`Failed to find document with ID ${assetId}`);
+    }
+  } catch (e) {
+    if (e instanceof UpdateDBError) {
+      updateData.error('error updating asset in Resilink DB', { from: 'updateAssetImagesById' });
+    } else {
+      connectDB.error('error connecting to DB', { from: 'updateAssetImagesById', error: e });
+    }
+    throw e;
+  }
+};
+
 module.exports = {
   newAsset,
-  getAndCompleteOneAssetByAsset,
-  getOneAssetImageById,
   getAllAsset,
-  getAndCompleteAssetByAssets,
+  getOneAsset,
   deleteAssetById,
-  updateAssetById
+  updateAssetById,
+  updateAssetImagesById
 };

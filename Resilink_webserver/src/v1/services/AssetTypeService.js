@@ -4,236 +4,163 @@ const config = require('../config.js');
 
 const getDataLogger = winston.loggers.get('GetDataLogger');
 const updateDataODEP = winston.loggers.get('UpdateDataODEPLogger');
-const deleteDataODEP = winston.loggers.get('DeleteDataODEPLogger');
+const deleteDataResilink = winston.loggers.get('DeleteDataResilinkLogger');
 
 const Utils = require("./Utils.js");
 const User = require("./UserService.js");
 const AssetTypeDB = require("../database/AssetTypeDB.js");
+const UserDB = require("../database/UserDB.js");
 
-const pathOdepAssetType = config.PATH_ODEP_ASSETTYPE
+const pathOdepAssetType = config.PATH_ODEP_ASSETTYPE;
 
 // Same result as the function getAllAssetTypes except its not a list of object but juste an object with key and an asset type associeted
 const getAllAssetTypesResilink = async (token) => {
   try {
-    const urlGetALlAssetTypes = pathOdepAssetType + "all";
-    const allAssetTypes = await Utils.fetchJSONData(
-        'GET',
-        urlGetALlAssetTypes, 
-        headers = {'accept': 'application/json',
-        'Authorization': token});
-    var allAssetTypesResilink = {};
-    const data = await Utils.streamToJSON(allAssetTypes.body);
-    if (allAssetTypes.status == 401) {
-      getDataLogger.error('error: Unauthorize', { from: 'getAllAssetTypesResilink', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-      return [data, allAssetTypes.status];
-    } else if (allAssetTypes.status != 200) {
-      getDataLogger.warn('error retrieving all assetTypes', { from: 'getAllAssetTypesResilink', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-      return[data, allAssetTypes.status];
+
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'getAllAssetTypesResilink', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{"message" : "Unauthorize"}, 401];
     }
+
+    var allAssetTypesResilink = {};
+    const data = await AssetTypeDB.getAllAssetType();
+
     for (const key in data) {
         if (data.hasOwnProperty(key)) {
           const element = data[key];
           allAssetTypesResilink[element['name']] = element;
         }
     }
-    getDataLogger.info('success retrieving all assetTypes', { from: 'getAllAssetTypesResilink', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [allAssetTypesResilink, allAssetTypes.status];
+
+    getDataLogger.info('success retrieving all assetTypes', { from: 'getAllAssetTypesResilink', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    return [allAssetTypesResilink, 200];
   } catch (e) {
-    getDataLogger.error('error retrieving all assetTypes', { from: 'getAllAssetTypesResilink', dataReceived: e, tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    getDataLogger.error('error retrieving all assetTypes', { from: 'getAllAssetTypesResilink', dataReceived: e.message, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    throw e;
   }
 };
 
-//Creates an asset type in ODEP
-const createAssetTypes = async (url, body, token) => {
-  updateDataODEP.warn('data to send to ODEP', { from: 'createAssetTypes', dataToSend: body, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-      'POST',
-      url, 
-      headers = {'accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': token},
-      body);
-    const data = await Utils.streamToJSON(response.body);
-    if (response.status == 401) {
-      updateDataODEP.error('error: Unauthorize', { from: 'createAssetTypes', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-      return [data, response.status];
-    } else if(response.status != 200) {
-      updateDataODEP.error('error creating one assetType', { from: 'createAssetTypes', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    } else {
-      updateDataODEP.info('success creating one assetType', { from: 'createAssetTypes', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    };
-    return [data, response.status];
-};
-
-/* Create a child assetType for an existing assetType.
-* Look in ODEP to see if the assetType exists, 
-* If not, returns the error given by ODEP, 
-* If yes, creates the child assetType in the local Resilink DB.
-* URL of assetTypes not in parameters to not import it in all functiosn calling createAssetTypesCustom
+/* 
+  * Create an assetType
 */
-const createAssetTypesCustom = async (assetType, token) => {
+const createAssetTypes = async (token, body) => {
   try {
-    //Checks if the asset type exists and increments the asset type counter in RESILINK
-    const resultassetType = await getOneAssetTypes(pathOdepAssetType, assetType, token);
+
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'createAssetTypes', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+    
+    const resultassetType = await getOneAssetTypes(body['name'], token);
     if (resultassetType[1] == 401) {
-      getDataLogger.error('error: Unauthorize', { from: 'createAssetTypesCustom', dataReceived: resultassetType[0], tokenUsed: token == null ? "Token not given" : token});
-      return [resultassetType[0], resultassetType[1]];
-    } else if (resultassetType[1] != 200) {
-      getDataLogger.error('error retrieving an assetType', { from: 'createAssetTypesCustom', dataReceived: resultassetType[0], tokenUsed: token.replace(/^Bearer\s+/i, '')});
-      return [resultassetType[0], resultassetType[1]];
-    } else {
-
-      const resultDB = await AssetTypeDB.newAssetTypeDB(assetType);
-      //Change the name of the asset type to the new name, which is the counter at the end of the asset type and creates the new asset type 
-      resultassetType[0]["name"] = resultDB;
-      const adminToken = await User.functionGetTokenUser({
-        "userName": "admin",
-        "password": "admin123"
-      })
-      updateDataODEP.warn('data to send to ODEP', { from: 'createAssetTypesCustom', dataToSend: resultassetType[0], tokenUsed: token == null ? "Token not given" : token});
-      const response = await Utils.fetchJSONData(
-        'POST',
-        pathOdepAssetType, 
-        headers = {'accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + adminToken[0]["accessToken"]},
-        resultassetType[0]
-      );
-      const data = await Utils.streamToJSON(response.body);
-
-      if (response.status == 401) {
-        updateDataODEP.error('error: Unauthorize', { from: 'createAssetTypesCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-        return [data, response.status];
-      } else if (response.status != 200) {
-        updateDataODEP.error('error creating one assetType in ODEP or localDB', { from: 'createAssetTypesCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-      } else {
-        updateDataODEP.info('success creating one assetType in ODEP or localDB', { from: 'createAssetTypesCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-      }
-      data['assetType'] = resultDB;
-      return [data, response.status];
+      getDataLogger.error('error: Unauthorize', { from: 'createAssetTypes', dataReceived: resultassetType[0], username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return resultassetType;
+    } else if (resultassetType[1] == 200) {
+      updateDataODEP.error('assetType already exists', { from: 'createAssetTypes', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token" ?? ""});
+      return [{message: "assetType already exists"}, 404];
     }
+
+    await AssetTypeDB.newAssetType(body);
+    updateDataODEP.info('success creating an assetType', { from: 'createAssetTypes', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token" ?? ""});
+    return[body, 200];
   } catch (e) {
-    updateDataODEP.error('error creating one assetType or connecting with ODEP or localDB', { from: 'createAssetTypesCustom', dataReceived: e, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    throw ('error creating one assetType or connecting with ODEP or localDB');
+    getDataLogger.error("error accessing ODEP", {from: 'createAssetTypes', dataReceiver: e.message, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    throw e;
   }
-};
-
-//Retrieves all asset types with Resilink in their description in ODEP
-const getAllAssetTypes = async (url, token) => {
-  const response = await Utils.fetchJSONData(
-      'GET',
-      url + "all", 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getAllAssetTypes', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    return [data, response.status];
-  } else if (response.status != 200) {
-    getDataLogger.error('error retrieving/processing all assetTypes', { from: 'getAllAssetTypes', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [data, response.status];
-  } else {
-
-    //Push all assetTypes containing RESILINK in their description into a list
-    var allAssetTypesResilink = [];
-    for (const element in data) {
-      if (data[element].description.toUpperCase() === "RESILINK") {
-        allAssetTypesResilink.push(data[element]);
-      }
-    }
-    return [allAssetTypesResilink, response.status];
-  }  
 };
 
 //Retrieves all asset types in ODEP
-const getAllAssetTypesDev = async (url, token) => {
-  const response = await Utils.fetchJSONData(
-      'GET',
-      url + "all", 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getAllAssetTypes', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if (response.status != 200) {
-    getDataLogger.error('error retrieving/processing all assetTypes', { from: 'getAllAssetTypes', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    getDataLogger.info('success retrieving/processing all assetTypes', { from: 'getAllAssetTypes', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  }  
-  return [data, response.status];
+const getAllAssetTypes = async (token) => {
+  try {
+
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'getAllAssetTypes', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+    
+    const listAssetTypes = await AssetTypeDB.getAllAssetType();
+    getDataLogger.info('success accessing all users', { from: 'getAllAssetTypes', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token" ?? ""});
+
+    return [listAssetTypes, 200];
+  } catch (e) {
+    getDataLogger.error("error accessing ODEP", {from: 'getAllAssetTypes', dataReceiver: e.message, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    throw e;
+  }
 };
 
 //Retrieves an asset type by id in ODEP
-const getOneAssetTypes = async (url, id, token) => {
-  const response = await Utils.fetchJSONData(
-      'GET',
-      url + id, 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body)
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getOneAssetTypes', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    return [data, response.status];
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving one assetType', { from: 'getOneAssetTypes', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    getDataLogger.info('success retrieving one assetType', { from: 'getOneAssetTypes', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+const getOneAssetTypes = async (id, token) => {
+  try {
+
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'getOneAssetTypes', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
+    const data = await AssetTypeDB.getOneAssetType(id);
+    updateDataODEP.info('success accessing one assetType by id', { from: 'getOneAssetTypes', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token" ?? ""});
+    if (data === "0") {
+      return [{message: "This assetType doesn't exist"}, 404]
+    } else {
+      return [data, 200];
+    }
+
+  } catch (e) {
+    getDataLogger.error("error accessing ODEP", {from: 'getOneAssetTypes', dataReceiver: e.message, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    throw e;
   }
-  return [data, response.status];
 };
 
 //Updates an asset type by id in ODEP
-const putAssetTypes = async (url, body, id, token) => {
-  updateDataODEP.warn('data to send to ODEP', { from: 'putAssetTypes', dataToSend: body, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-      'PUT',
-      url + id, 
-      headers = {'accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': token},
-      body);
-      const data = await Utils.streamToJSON(response.body);
-      if (response.status == 401) {
-        updateDataODEP.error('error: Unauthorize', { from: 'putAssetTypes', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-        return [data, response.status];
-      } else if(response.status != 200) {
-        updateDataODEP.error('error updating one assetType', { from: 'putAssetTypes', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-      } else {
-        updateDataODEP.info('success updating one assetType', { from: 'putAssetTypes', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-      };
-      return [data, response.status];
+const putAssetTypes = async (body, id, token) => {
+  try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'deleteAssetTypes', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+    const adminToken = await UserDB.getUserByToken(token.replace(/^Bearer\s+/i, ''));
+    if (adminToken[0]['userName'] != "admin"){
+      updateDataODEP.error('error: not administrator', { from: 'deleteAssetTypes', dataReceived: "Unauthorize", username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{"message" : "not the owner or administrator"}, 402];
+    }
+    await AssetTypeDB.updateAssetType(id, body);
+    updateDataODEP.info('success updating one assetType', { from: 'putAssetTypes', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token" ?? ""});
+  
+    return [{"message": "successful update"}, 200];
+  } catch (e) {
+    updateDataODEP.error('error updating one assetType', { from: 'putAssetTypes', dataReceived: e.message, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    throw e
+  }
 };
 
 //Delete an asset type by id in ODEP
-const deleteAssetTypes = async (url, id, token) => {
-  updateDataODEP.warn('data to send to ODEP', { from: 'deleteAssetTypes', dataToSend: body, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-      'DELETE',
-      url + id, 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if (response.status == 401) {
-    deleteDataODEP.error('error: Unauthorize', { from: 'deleteAssetTypes', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    return [data, response.status];
-  } else if(response.status != 200) {
-    deleteDataODEP.error('error deleting one assetType', { from: 'deleteAssetTypes', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    deleteDataODEP.info('success deleting one assetType', { from: 'deleteAssetTypes', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  };
-  return [data, response.status];
+const deleteAssetTypes = async (id, token) => {
+  try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'deleteAssetTypes', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
+    const adminToken = await UserDB.getUserByToken(token.replace(/^Bearer\s+/i, ''));
+    if (adminToken[0]['userName'] != "admin") {
+      updateDataODEP.error('error: not administrator', { from: 'deleteAssetTypes', dataReceived: "Unauthorize", username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{"message" : "not the owner or administrator"}, 402];
+    }
+
+    await AssetTypeDB.deleteAssetType(id);
+    deleteDataResilink.info("success deleting an assetType in RESILINK", {from: 'deleteAssetTypes'});
+
+    return [{message: id + " user account correctly removed in RESILINK "}, 200];
+  } catch (e) {
+    deleteDataResilink.error("error deleting a user account in RESILINK", {from: 'deleteAssetTypes', dataReceiver: e.message});
+    throw e;
+  }
 };
 
 module.exports = {
     createAssetTypes,
-    createAssetTypesCustom,
     getAllAssetTypesResilink,
     getAllAssetTypes,
-    getAllAssetTypesDev,
     getOneAssetTypes,
     putAssetTypes,
     deleteAssetTypes,

@@ -11,8 +11,8 @@ const deleteData = winston.loggers.get('DeleteDataResilinkLogger');
 
 const createNews = async (url, country, institute, imgBase64, platform, public) => {
   try {
-    const db = await connectToDatabase();
-    const _collection = db.collection('News');
+    const _database = await connectToDatabase.connectToDatabase();
+    const _collection = _database.collection('News');
 
     const lastNews = await _collection.find().toArray();
 
@@ -27,7 +27,7 @@ const createNews = async (url, country, institute, imgBase64, platform, public) 
           nextId += lastId
         }
 
-    updateData.warn('before inserting data', { from: 'newNews', data: {url, country, institute, imgBase64, platform}});
+    updateData.warn('before inserting data', { from: 'newNews', data: {url, country, institute, imgBase64, platform, public}});
 
     // Insert an News with its imgpath. Can be empty if default image from mobile app selected
     const news = await _collection.insertOne({
@@ -67,8 +67,8 @@ const createNews = async (url, country, institute, imgBase64, platform, public) 
 
 const updateNews = async (id, body) => {
   try {
-    const db = await connectToDatabase();
-    const _collection = db.collection('News');
+    const _database = await connectToDatabase.connectToDatabase();
+    const _collection = _database.collection('News');
 
     // Remove any “_id” key from the body to avoid using it in the update    
     if (body.hasOwnProperty('_id')) {
@@ -102,7 +102,7 @@ const updateNews = async (id, body) => {
 // Retrieves the news account by a country 
 const getNewsfromCountry = async (country) => {
     try {
-        const _database = await connectToDatabase();
+        const _database = await connectToDatabase.connectToDatabase();
         const _collection = _database.collection('News');
   
         const result = await _collection.find({ country: country.charAt(0).toUpperCase() + country.slice(1).toLowerCase() }).toArray();
@@ -128,7 +128,7 @@ const getNewsfromCountry = async (country) => {
 // Retrieves all news
 const getAllNews = async (country) => {
   try {
-      const _database = await connectToDatabase();
+      const _database = await connectToDatabase.connectToDatabase();
       const _collection = _database.collection('News');
 
       const result = await _collection.find({}).toArray();
@@ -153,8 +153,8 @@ const getAllNews = async (country) => {
 // Retrieves a country's news account without those subscribed by the user from the RESILINK database.
 const getNewsfromCountryWithoutUserNews = async (country, IdList) => {
   try {
-      const db = await connectToDatabase();
-      const _collection = db.collection('News');
+      const _database = await connectToDatabase.connectToDatabase();
+      const _collection = _database.collection('News');
 
       const result = await _collection.find({ 
         country: country.charAt(0).toUpperCase() + country.slice(1).toLowerCase(),
@@ -182,7 +182,7 @@ const getNewsfromCountryWithoutUserNews = async (country, IdList) => {
 // Retrieves the news account by an id list 
 const getNewsfromIdList = async (IdList) => {
   try {
-      const _database = await connectToDatabase();
+      const _database = await connectToDatabase.connectToDatabase();
       const _collection = _database.collection('News');
 
       const result = await _collection.find({ _id: typeof IdList === 'string' ? IdList : { $in: IdList}}).toArray();
@@ -208,8 +208,8 @@ const getNewsfromIdList = async (IdList) => {
 // Deletes an News by id 
 const deleteNewsById = async (NewsId) => {
   try {
-    const db = await connectToDatabase();
-    const _collection = db.collection('News');
+    const _database = await connectToDatabase.connectToDatabase();
+    const _collection = _database.collection('News');
 
     const numericNewsId = parseInt(NewsId);
     const result = await _collection.deleteOne({ _id: numericNewsId });

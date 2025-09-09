@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const winston = require('winston');
 
 const connectDB = winston.loggers.get('ConnectDBResilinkLogger');
@@ -15,16 +15,33 @@ const connectToDatabase = async () => {
     try {
       client = new MongoClient(_url);
       await client.connect();
-      db = client.db('Resilink');
+      db = client.db('ResilinkWithoutODEP');
       connectDB.info('Connected to MongoDB');
     } catch (error) {
       connectDB.error('Failed to connect to MongoDB', { error });
       throw error;
     }
   } else {
-    connectDB.info('Reusing existing MongoDB connection');
+    //connectDB.info('Reusing existing MongoDB connection');
   }
   return db;
 };
 
-module.exports = connectToDatabase;
+// Generates a unique ObjectId and returns it as a string.
+const generateUniqueObjectId = async (collection) => {
+  let newObjectId;
+  let exists;
+
+  do {
+    newObjectId = new ObjectId();
+    // Check if ObjectId exists in collection
+    exists = await collection.findOne({ _id: newObjectId });
+  } while (exists); // Repeat until find a unique ObjectId
+
+  return newObjectId.toString();
+};
+
+module.exports = {
+  connectToDatabase,
+  generateUniqueObjectId
+};

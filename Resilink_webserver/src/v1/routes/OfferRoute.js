@@ -29,7 +29,7 @@ const router = express.Router();
  *         - price
  *         - cancellationFee
  *       properties:
- *         offerId:
+ *         id:
  *           type: integer
  *           description: ID of the offer
  *         offerer:
@@ -82,6 +82,15 @@ const router = express.Router();
  *           type: number
  *           format: float
  *           description: Fee to be paid in case of offer cancellation
+ *         paymentMethod:
+ *           type: string
+ *           enum:
+ *             - total
+ *             - periodic
+ *           description: "Type of payment"
+ *         paymentFrequency:
+ *           type: number
+ *           description: "Payment frequency for periodic payments"
  *         rentInformation:
  *           type: object
  *           description: Required information in case of rent
@@ -170,7 +179,7 @@ const router = express.Router();
  * @swagger
  * /v1/offers:
  *   post: 
- *     summary: create a new offer (from ODEP)
+ *     summary: create a new offer
  *     tags: [Offer]
  *     requestBody:
  *       description: offer's data.
@@ -180,8 +189,6 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               offerer:
- *                  type: string
  *               assetId:
  *                 type: integer
  *               beginTimeSlot: 
@@ -200,6 +207,13 @@ const router = express.Router();
  *               deposit:
  *                 type: number
  *               cancellationFee:
+ *                 type: number
+ *               paymentMethod:
+ *                 type: string
+ *                 enum:
+ *                   - total
+ *                   - periodic
+ *               paymentFrequency:
  *                 type: number
  *               rentInformation:
  *                 type: object
@@ -264,9 +278,9 @@ router.post('/offers/', offerController.createOffer);
 
 /**
  * @swagger
- * /v1/offers/all:
+ * /v1/offers/all/Mapped:
  *   get:
- *     summary: Get valid offers in RESILINK perspective
+ *     summary: Get all valid offers mapped
  *     tags: [Offer]
  *     responses:
  *       200:
@@ -305,6 +319,13 @@ router.post('/offers/', offerController.createOffer);
  *                   deposit:
  *                     type: number
  *                   cancellationFee:
+ *                     type: number
+ *                   paymentMethod:
+ *                     type: string
+ *                     enum:
+ *                       - total
+ *                       - periodic
+ *                   paymentFrequency:
  *                     type: number
  *                   phoneNumber:
  *                     type: string
@@ -352,7 +373,7 @@ router.post('/offers/', offerController.createOffer);
  *                   type: string
  */
 
-router.get('/offers/all/', offerController.getAllOfferResilinkCustom);
+router.get('/offers/all/Mapped', offerController.getAllOfferResilinkCustom);
 
 /**
  * @swagger
@@ -376,7 +397,7 @@ router.get('/offers/all/', offerController.getAllOfferResilinkCustom);
  *               additionalProperties:
  *                 type: object
  *                 properties:
- *                   offerId:
+ *                   id:
  *                     type: integer
  *                   offerer:
  *                     type: string
@@ -403,6 +424,13 @@ router.get('/offers/all/', offerController.getAllOfferResilinkCustom);
  *                   deposit:
  *                     type: number
  *                   cancellationFee:
+ *                     type: number
+ *                   paymentMethod:
+ *                     type: string
+ *                     enum:
+ *                       - total
+ *                       - periodic
+ *                   paymentFrequency:
  *                     type: number
  *                   phoneNumber:
  *                     type: string
@@ -456,7 +484,7 @@ router.get('/offers/suggested/:id', offerController.getSuggestedOfferForResilink
  * @swagger
  * /v1/offers/LimitedOffer:
  *   get:
- *     summary: Get a number of valid offers in RESILINK perspective
+ *     summary: Get multiple valid offers (per definable range) with their assets in the RESILINK perspective
  *     parameters:  
  *       - in: query
  *         name: offerNbr
@@ -523,6 +551,13 @@ router.get('/offers/suggested/:id', offerController.getSuggestedOfferForResilink
  *                       cancellationFee:
  *                         type: number
  *                         description: Fee for cancellation
+ *                       paymentMethod:
+ *                         type: string
+ *                         enum:
+ *                           - total
+ *                           - periodic
+ *                       paymentFrequency:
+ *                         type: number
  *                       phoneNumber:
  *                         type: string
  *                         description: Offerer's phone number
@@ -563,13 +598,14 @@ router.get('/offers/suggested/:id', offerController.getSuggestedOfferForResilink
  *                       owner:
  *                         type: string
  *                         description: Asset owner ID
- *                       transactionType:
+ *                       multiAccess:
+ *                         type: boolean
+ *                       regulatedId:
  *                         type: string
- *                         description: Type of transaction (e.g. sale/purchase)
  *                       totalQuantity:
  *                         type: number
  *                         description: Total quantity available
- *                       availableQuantity:
+ *                       remainingQuantity:
  *                         type: number
  *                         description: Quantity currently available
  *                       specificAttributes:
@@ -626,6 +662,7 @@ router.get('/offers/suggested/:id', offerController.getSuggestedOfferForResilink
  */
 
 router.get('/offers/LimitedOffer', offerController.getLimitedOfferForResilinkCustom);
+
 /**
  * @swagger
  * /v1/offers/owner/blockedOffer/{id}:
@@ -691,6 +728,13 @@ router.get('/offers/LimitedOffer', offerController.getLimitedOfferForResilinkCus
  *                       cancellationFee:
  *                         type: number
  *                         description: Fee for cancellation
+ *                       paymentMethod:
+ *                         type: string
+ *                         enum:
+ *                           - total
+ *                           - periodic
+ *                       paymentFrequency:
+ *                         type: number
  *                       phoneNumber:
  *                         type: string
  *                         description: Offerer's phone number
@@ -731,13 +775,14 @@ router.get('/offers/LimitedOffer', offerController.getLimitedOfferForResilinkCus
  *                       owner:
  *                         type: string
  *                         description: Asset owner ID
- *                       transactionType:
+ *                       multiAccess:
+ *                         type: boolean
+ *                       regulatedId:
  *                         type: string
- *                         description: Type of transaction (e.g. sale/purchase)
  *                       totalQuantity:
  *                         type: number
  *                         description: Total quantity available
- *                       availableQuantity:
+ *                       remainingQuantity:
  *                         type: number
  *                         description: Quantity currently available
  *                       specificAttributes:
@@ -852,7 +897,7 @@ router.get('/offers/owner/blockedOffer/:id/', offerController.getBlockedOfferFor
  *               items:
  *                 type: object
  *                 properties:
- *                   offerId:
+ *                   id:
  *                     type: number
  *                   publicationDate:
  *                     type: string
@@ -879,6 +924,13 @@ router.get('/offers/owner/blockedOffer/:id/', offerController.getBlockedOfferFor
  *                   deposit:
  *                     type: number
  *                   cancellationFee:
+ *                     type: number
+ *                   paymentMethod:
+ *                     type: string
+ *                     enum:
+ *                       - total
+ *                       - periodic
+ *                   paymentFrequency:
  *                     type: number
  *                   rentInformation:
  *                     type: object
@@ -928,17 +980,10 @@ router.post('/offers/all/resilink/filtered/', offerController.getOfferFiltered);
 
 /**
  * @swagger
- * /v1/offers/owner/{id}:
+ * /v1/offers/owner:
  *   get:
  *     summary: Get all offers from a prosumer
  *     tags: [Offer]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string 
- *         required: true
- *         description: the prosummer id
  *     responses:
  *       200:
  *         description: Successful transaction
@@ -949,7 +994,7 @@ router.post('/offers/all/resilink/filtered/', offerController.getOfferFiltered);
  *               additionalProperties:
  *                 type: object
  *                 properties:
- *                   offerId:
+ *                   id:
  *                     type: integer
  *                   offerer:
  *                     type: string
@@ -976,6 +1021,13 @@ router.post('/offers/all/resilink/filtered/', offerController.getOfferFiltered);
  *                   deposit:
  *                     type: number
  *                   cancellationFee:
+ *                     type: number
+ *                   paymentMethod:
+ *                     type: string
+ *                     enum:
+ *                       - total
+ *                       - periodic
+ *                   paymentFrequency:
  *                     type: number
  *                   rentInformation:
  *                     type: object
@@ -1021,21 +1073,14 @@ router.post('/offers/all/resilink/filtered/', offerController.getOfferFiltered);
  *                   type: string
  */
 
-router.get('/offers/owner/:id/', offerController.getOfferOwner);
+router.get('/offers/owner/', offerController.getOfferOwner);
 
 /**
  * @swagger
- * /v1/offers/owner/{id}/purchase:
+ * /v1/offers/owner/purchase:
  *   get:
  *     summary: Get all offers purchased from a prosumer
  *     tags: [Offer]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string 
- *         required: true
- *         description: the prosummer id
  *     responses:
  *       200:
  *         description: Successful transaction
@@ -1108,7 +1153,7 @@ router.get('/offers/owner/:id/', offerController.getOfferOwner);
  *                   items:
  *                     type: object
  *                     properties:
- *                       offerId:
+ *                       id:
  *                         type: integer
  *                       offerer:
  *                         type: string
@@ -1135,6 +1180,13 @@ router.get('/offers/owner/:id/', offerController.getOfferOwner);
  *                       deposit:
  *                         type: number
  *                       cancellationFee:
+ *                         type: number
+ *                       paymentMethod:
+ *                         type: string
+ *                         enum:
+ *                           - total
+ *                           - periodic
+ *                       paymentFrequency:
  *                         type: number
  *                       rentInformation:
  *                         type: object
@@ -1186,9 +1238,9 @@ router.get('/offers/owner/:id/purchase/', offerController.getOwnerOfferPurchase)
 
 /**
  * @swagger
- * /v1/ODEP/offers/all:
+ * /v1/offers/all:
  *   get:
- *     summary: Get all offers (from ODEP)
+ *     summary: Get all offers
  *     tags: [Offer]
  *     responses:
  *       200:
@@ -1200,7 +1252,7 @@ router.get('/offers/owner/:id/purchase/', offerController.getOwnerOfferPurchase)
  *               items:
  *                 type: object
  *                 properties:
- *                   offerId:
+ *                   id:
  *                     type: number
  *                   publicationDate:
  *                     type: string
@@ -1227,6 +1279,13 @@ router.get('/offers/owner/:id/purchase/', offerController.getOwnerOfferPurchase)
  *                   deposit:
  *                     type: number
  *                   cancellationFee:
+ *                     type: number
+ *                   paymentMethod:
+ *                     type: string
+ *                     enum:
+ *                       - total
+ *                       - periodic
+ *                   paymentFrequency:
  *                     type: number
  *                   rentInformation:
  *                     type: object
@@ -1272,13 +1331,13 @@ router.get('/offers/owner/:id/purchase/', offerController.getOwnerOfferPurchase)
  *                   type: string
  */
 
-router.get('/ODEP/offers/all/', offerController.getAllOffer);
+router.get('/offers/all/', offerController.getAllOffer);
 
 /**
  * @swagger
- * /v1/ODEP/offers/{id}:
+ * /v1/offers/{id}:
  *   get:
- *     summary: Get an offers by id (from ODEP)
+ *     summary: Get an offers by id
  *     tags: [Offer]
  *     parameters:
  *       - in: path
@@ -1295,7 +1354,7 @@ router.get('/ODEP/offers/all/', offerController.getAllOffer);
  *             schema:
  *               type: object
  *               properties:
- *                 offerId:
+ *                 id:
  *                   type: number
  *                 publicationDate:
  *                   type: string
@@ -1322,6 +1381,13 @@ router.get('/ODEP/offers/all/', offerController.getAllOffer);
  *                 deposit:
  *                   type: number
  *                 cancellationFee:
+ *                   type: number
+ *                 paymentMethod:
+ *                   type: string
+ *                   enum:
+ *                     - total
+ *                     - periodic
+ *                 paymentFrequency:
  *                   type: number
  *                 phoneNumber:
  *                   type: string
@@ -1369,13 +1435,13 @@ router.get('/ODEP/offers/all/', offerController.getAllOffer);
  *                   type: string
  */
 
-router.get('/ODEP/offers/:id/', offerController.getOneOffer);
+router.get('/offers/:id/', offerController.getOneOffer);
 
 /**
  * @swagger
  * /v1/offers/{id}:
  *   put: 
- *     summary: update an offer attributes (from ODEP)
+ *     summary: update an offer attributes
  *     tags: [Offer]
  *     parameters:
  *       - in: path
@@ -1412,6 +1478,13 @@ router.get('/ODEP/offers/:id/', offerController.getOneOffer);
  *               deposit:
  *                 type: number
  *               cancellationFee:
+ *                 type: number
+ *               paymentMethod:
+ *                 type: string
+ *                 enum:
+ *                   - total
+ *                   - periodic
+ *               paymentFrequency:
  *                 type: number
  *               rentInformation:
  *                 type: object
@@ -1502,19 +1575,10 @@ router.put('/offers/:id/', offerController.putOffer);
  *                     type: string
  *                   assetType:
  *                     type: string
- *                   owner:
- *                     type: string
- *                   transactionType:
- *                     type: string
- *                     enum:
- *                       - sale/purchase
- *                       - rent
+ *                   multiAccess:
+ *                     type: boolean
  *                   totalQuantity:
  *                     type: number
- *                   regulatedId:
- *                     type: string
- *                   regulator:
- *                     type: string
  *                   images:
  *                     type: string
  *                   unit:
@@ -1551,6 +1615,13 @@ router.put('/offers/:id/', offerController.putOffer);
  *                   deposit:
  *                     type: number
  *                   cancellationFee:
+ *                     type: number
+ *                   paymentMethod:
+ *                     type: string
+ *                     enum:
+ *                       - total
+ *                       - periodic
+ *                   paymentFrequency:
  *                     type: number
  *                   rentInformation:
  *                     type: object
@@ -1633,21 +1704,14 @@ router.put('/offers/:id/updateOfferAsset/', offerController.putOfferAsset);
  *                     type: string
  *                   assetType:
  *                     type: string
- *                   owner:
- *                     type: string
- *                   transactionType:
- *                     type: string
- *                     enum:
- *                       - sale/purchase
- *                       - rent
+ *                   multiAccess:
+ *                     type: boolean
  *                   totalQuantity:
  *                     type: number
- *                   regulatedId:
- *                     type: string
- *                   regulator:
- *                     type: string
  *                   images:
- *                     type: string
+ *                     type: array
+ *                     items:
+ *                       type: string
  *                   unit: 
  *                     type: string
  *                   specificAttributes:
@@ -1682,6 +1746,13 @@ router.put('/offers/:id/updateOfferAsset/', offerController.putOfferAsset);
  *                   deposit:
  *                     type: number
  *                   cancellationFee:
+ *                     type: number
+ *                   paymentMethod:
+ *                     type: string
+ *                     enum:
+ *                       - total
+ *                       - periodic
+ *                   paymentFrequency:
  *                     type: number
  *                   rentInformation:
  *                     type: object

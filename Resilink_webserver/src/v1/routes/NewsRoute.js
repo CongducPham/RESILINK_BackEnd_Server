@@ -33,6 +33,9 @@ const newsController = require("../controllers/NewsController.js");
  *         platform:
  *           type: string
  *           description: "The platform where the news is published, such as a website or app"
+ *         public:
+ *           type: string
+ *           description: "'false' or 'true'. Define if its a personnal news (unique to a user)"
  */
 
 /**
@@ -59,6 +62,8 @@ const newsController = require("../controllers/NewsController.js");
  *                    type: string
  *                platform:
  *                    type: string
+ *                public:
+ *                    type: string
  *     responses:
  *       200:
  *         description: News from a country.
@@ -78,6 +83,8 @@ const newsController = require("../controllers/NewsController.js");
  *                 img:
  *                   type: string
  *                 platform:
+ *                   type: string
+ *                 public:
  *                   type: string
  *       500:
  *         description: Error from RESILINK server.

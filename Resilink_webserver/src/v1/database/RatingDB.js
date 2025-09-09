@@ -11,8 +11,8 @@ const deleteData = winston.loggers.get('DeleteDataResilinkLogger');
 
 const createNewRating = async (userId, rating) => {
     try {
-      const db = await connectToDatabase();
-      const _collection = db.collection('Rating');
+      const _database = await connectToDatabase.connectToDatabase();
+      const _collection = _database.collection('Rating');
   
       updateData.warn('before inserting data', { from: 'createNewRating', data: {userId, rating}});
       const existingDocument = await _collection.findOne({ userId: userId });
@@ -45,8 +45,8 @@ const createNewRating = async (userId, rating) => {
 
 const updateRating = async (userId, Rating) => {
     try {
-      const db = await connectToDatabase();
-      const _collection = db.collection('Rating');
+      const _database = await connectToDatabase.connectToDatabase();
+      const _collection = _database.collection('Rating');
   
       updateData.warn('before updating rating', { from: 'updateRating', data: {userId, Rating} });
   
@@ -74,7 +74,7 @@ const updateRating = async (userId, Rating) => {
 // Retrieves all Rating
 const getAllRating = async () => {
     try {
-        const _database = await connectToDatabase();
+        const _database = await connectToDatabase.connectToDatabase();
         const _collection = _database.collection('Rating');
   
         const result = await _collection.find({}).toArray();
@@ -99,8 +99,8 @@ const getAllRating = async () => {
   // Retrieves a user rating
 const getRatingByUserId = async (userId) => {
   try {
-      const _database = await connectToDatabase();
-      const _collection = _database.collection('Rating');
+    const _database = await connectToDatabase.connectToDatabase();
+    const _collection = _database.collection('Rating');
 
       const result = await _collection.findOne({ userId: userId });
       if (result == null) {
@@ -123,8 +123,8 @@ const getRatingByUserId = async (userId) => {
 // Deletes a Rating by userId 
 const deleteRatingByUserId = async (userId) => {
     try {
-      const db = await connectToDatabase();
-      const _collection = db.collection('Rating');
+      const _database = await connectToDatabase.connectToDatabase();
+      const _collection = _database.collection('Rating');
   
       const numericUserId = parseInt(userId);
       const result = await _collection.deleteOne({ userId: numericUserId });

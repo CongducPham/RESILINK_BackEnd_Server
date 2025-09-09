@@ -1,7 +1,7 @@
 // In src/index.js 
 
-const bodyParser = require("body-parser");
 const cors = require('cors');
+const path = require('path');
 const config = require('./v1/config.js');
 
 const express = require("express"); 
@@ -17,8 +17,8 @@ const PORT = config.PORT;
 const app = express(); 
 
 //change request size limit for taking images
-app.use(bodyParser.json({limit: '4mb'}));
-app.use(bodyParser.urlencoded({ limit: '4mb', extended: true , parameterLimit: 10000000}));
+app.use(express.json({ limit: '4mb' }));
+app.use(express.urlencoded({ extended: true, limit: '4mb', parameterLimit: 10000000 }));
 
 app.use(express.json());
 
@@ -28,6 +28,8 @@ app.use(morgan('dev'));
 
 // Add CORS middleware
 app.use(cors());
+
+app.use('/public', express.static(path.join(__dirname, '..', 'public')));
 
 // --------------------------------------------------
 
@@ -62,7 +64,6 @@ app.use("/v1/", v1NewsRoute);
 const v1RatingRoute = require("./v1/routes/RatingRoute.js");
 app.use("/v1/", v1RatingRoute);
 
-//start application Express.js
 app.listen(PORT, '0.0.0.0', () => { 
     console.log(`API is listening on port ${PORT}`);
     V1SwaggerDocs(app, PORT); 

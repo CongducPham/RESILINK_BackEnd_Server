@@ -7,11 +7,10 @@ const updateDataODEP = winston.loggers.get('UpdateDataODEPLogger');
 const deleteDataODEP = winston.loggers.get('DeleteDataODEPLogger');
 
 const assettypeService = require("../services/AssetTypeService.js");
-const _pathassetTypesODEP = config.PATH_ODEP_ASSETTYPE; 
 
 const createAssetTypes = async (req, res) => { 
   try {
-      const response = await assettypeService.createAssetTypes(_pathassetTypesODEP, req.body, req.header('Authorization'));
+      const response = await assettypeService.createAssetTypes(req.header('Authorization') ?? "", req.body);
       res.status(response[1]).send(response[0]);
     } catch (error) {
       updateDataODEP.error('Error accessing ODEP', { from: 'createAssetTypes', data: error, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
@@ -21,17 +20,7 @@ const createAssetTypes = async (req, res) => {
 
 const getAllAssetTypes = async (req, res) => { 
   try {
-      const response = await assettypeService.getAllAssetTypes(_pathassetTypesODEP, req.header('Authorization'));
-      res.status(response[1]).send(response[0]);
-    } catch (error) {
-      getDataLogger.error('Error accessing ODEP', { from: 'getAllAssetTypes', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
-      res.status(500).send({message: error.message});
-    }
-};
-
-const getAllAssetTypesDev = async (req, res) => { 
-  try {
-      const response = await assettypeService.getAllAssetTypesDev(_pathassetTypesODEP, req.header('Authorization'));
+      const response = await assettypeService.getAllAssetTypes(req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
       getDataLogger.error('Error accessing ODEP', { from: 'getAllAssetTypes', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
@@ -41,7 +30,7 @@ const getAllAssetTypesDev = async (req, res) => {
 
 const getOneAssetTypes = async (req, res) => { 
   try {
-      const response = await assettypeService.getOneAssetTypes(_pathassetTypesODEP, req.params.id, req.header('Authorization'));
+      const response = await assettypeService.getOneAssetTypes(req.params.id, req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
       getDataLogger.error('Error accessing ODEP', { from: 'getOneAssetTypes', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
@@ -51,7 +40,7 @@ const getOneAssetTypes = async (req, res) => {
 
 const putAssetTypes = async (req, res) => { 
   try {
-      const response = await assettypeService.putAssetTypes(_pathassetTypesODEP, req.body, req.params.id, req.header('Authorization'));
+      const response = await assettypeService.putAssetTypes(req.body, req.params.id, req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
       updateDataODEP.error('Error accessing ODEP', { from: 'putAssetTypes', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
@@ -61,7 +50,7 @@ const putAssetTypes = async (req, res) => {
 
 const deleteAssetTypes = async (req, res) => { 
   try {
-      const response = await assettypeService.deleteAssetTypes(_pathassetTypesODEP, req.params.id, req.header('Authorization'));
+      const response = await assettypeService.deleteAssetTypes(req.params.id, req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
       deleteDataODEP.error('Error accessing ODEP', { from: 'deleteAssetTypes', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
@@ -71,20 +60,10 @@ const deleteAssetTypes = async (req, res) => {
 
 const getAllAssetTypesResilink = async (req, res) => { 
   try {
-      const response = await assettypeService.getAllAssetTypesResilink(req.header('Authorization'));
+      const response = await assettypeService.getAllAssetTypesResilink(req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
-      deleteDataODEP.error('Error accessing ODEP', { from: 'deleteAssetTypes', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
-      res.status(500).send({message: error.message});
-    }
-};
-
-const createAssetTypesCustom = async (req, res) => { 
-  try {
-      const response = await assettypeService.getAllAssetTypesResilink(req.params.assetType, req.header('Authorization'));
-      res.status(response[1]).send(response[0]);
-    } catch (error) {
-      deleteDataODEP.error('Error accessing ODEP', { from: 'deleteAssetTypes', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
+      deleteDataODEP.error('Error accessing ODEP', { from: 'getAllAssetTypesResilink', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
       res.status(500).send({message: error.message});
     }
 };
@@ -92,10 +71,8 @@ const createAssetTypesCustom = async (req, res) => {
 module.exports = {
     createAssetTypes,
     getAllAssetTypes,
-    getAllAssetTypesDev,
     getOneAssetTypes,
     putAssetTypes,
     deleteAssetTypes,
-    getAllAssetTypesResilink,
-    createAssetTypesCustom
+    getAllAssetTypesResilink
 }

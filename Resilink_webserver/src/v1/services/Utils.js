@@ -4,7 +4,10 @@ const http = require('http');
 const jwt = require('jsonwebtoken');
 const config = require('../config.js');
 
-const Token_key = config.TOKEN_KEY;
+const _Token_key = config.TOKEN_KEY;
+
+// ODEP token associated with its user (unique)
+const userTokenStore = new Map();
 
 /*
   Function to run a Curl command directly in the server
@@ -143,18 +146,55 @@ const areAllBase64 = (list) => {
 };
 
 const createJWSToken = (userId) => {
-  return jwt.sign({ userId: userId }, secretKey, { expiresIn: '2h' });
+  return jwt.sign({ userId: userId }, _Token_key, { expiresIn: '2h' });
 }
 
 const validityToken = (token) => {
   try {
-    const decoded = jwt.verify(token, secretKey);
-    console.log('Données décodées:', decoded);
-    return true;
+    if (token != null && token != "") {
+      const decoded = jwt.verify(token.replace(/^Bearer\s+/i, ''), _Token_key);
+      if (!decoded || Object.keys(decoded).length === 0) {
+        // If 'decoded' is null, undefined or an empty object, the token is invalid.
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
   } catch (e) {
-    return false;
+    throw e;
   }
 }
+
+const getDateGMT0 = () => {
+
+  const now = new Date();
+  return now.toISOString();
+}
+
+function isValidEmail(email) {
+  // Expression régulière pour valider un email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+const saveUserToken = (userId, token) => {
+  if (!userId || !token) {
+    throw new Error("userId and token are required");
+  }
+  userTokenStore.set(userId, token);
+};
+
+const getUserIdFromToken = (token) => {
+  for (const [userId, storedToken] of userTokenStore.entries()) {
+    if (storedToken === token) {
+      return userId;
+    }
+  }
+  return null;
+};
+
 
 module.exports = {
   executeCurl,
@@ -167,6 +207,10 @@ module.exports = {
   isBase64,
   areAllBase64,
   createJWSToken,
-  validityToken
+  validityToken,
+  getDateGMT0,
+  isValidEmail,
+  saveUserToken,
+  getUserIdFromToken
 }
 

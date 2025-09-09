@@ -1,504 +1,357 @@
 require('../loggers.js');
 const winston = require('winston');
 const config = require('../config.js');
+const fs = require('fs');
+const path = require('path');
 
 const getDataLogger = winston.loggers.get('GetDataLogger');
 const updateDataODEP = winston.loggers.get('UpdateDataODEPLogger');
-const deleteDataODEP = winston.loggers.get('DeleteDataODEPLogger');
-const patchDataODEP = winston.loggers.get('PatchDataODEPLogger');
+const deleteDataResilink = winston.loggers.get('DeleteDataODEPLogger');
 
 const Utils = require("./Utils.js");
 const AssetTypes = require("../services/AssetTypeService.js");
 const AssetDB = require("../database/AssetDB.js");
+const UserDB = require("../database/UserDB.js");
 
-const pathResilinkWebServer = "https://resilink-dp.org/v1/assets/img";
 const pathODEPAsset = config.PATH_ODEP_ASSET;
 
-//Retrieves all asset from a user in ODEP
-const getOwnerAsset = async (url, id, token) => {
-  const response = await Utils.fetchJSONData(
-      'GET',
-      url + "owner?idOwner=" + id, 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body)
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getOwnerAsset', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving assets owner', { from: 'getOwnerAsset', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    getDataLogger.info('success retrieving assets owner & image for each assets', { from: 'getOwnerAsset', tokenUsed: token.replace(/^Bearer\s+/i, '') });
-  }
-  return [data, response.status];
-};
+//Retrieves all asset from a user 
+const getOwnerAsset = async (token) => {
+  try {
 
-//Retrieves all asset from a user in ODEP and RESILINK
-const getOwnerAssetCustom = async (url, id, token) => {
-  const response = await Utils.fetchJSONData(
-      'GET',
-      url + "owner?idOwner=" + id, 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body)
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getOwnerAssetCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    return [data, response.status];
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving assets owner', { from: 'getOwnerAssetCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [data, response.status];
-  };
-  const dataFinal = await AssetDB.getAndCompleteAssetByAssets(data);
-  getDataLogger.info('success retrieving assets owner & image for each assets', { from: 'getOwnerAssetCustom', tokenUsed: token.replace(/^Bearer\s+/i, '') });
-  return [dataFinal, response.status];
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'getOwnerAsset', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
+    const data = await AssetDB.getAllAsset();
+    
+    var allAssetOwner = [];
+    for (const key in data) {
+      const asset = data[key];
+      if (asset["owner"] === id) {
+        allAssetOwner.push(asset);
+      }
+    }
+    getDataLogger.info('success retrieving all assets', { from: 'getOwnerAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    return [allAssetOwner, 200];
+    
+  } catch(e) {
+    getDataLogger.error('error retrieving all assets', { from: 'getOwnerAsset', dataReceived: e.message, tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    throw(e);
+  }
 };
  
-//Retrieves all asset in ODEP
-const getAllAsset = async (url, token) => {
-  const response = await Utils.fetchJSONData(
-    'GET',
-    url + "all", 
-    headers = {'accept': 'application/json',
-    'Authorization': token}
-  )
-  const data = await Utils.streamToJSON(response.body)
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getAllAsset', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving all assets', { from: 'getAllAsset', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    getDataLogger.info('success retrieving all assets', { from: 'getAllAsset', tokenUsed: token.replace(/^Bearer\s+/i, '') });
-  };
-  return [data, response.status];
+//Retrieves all asset 
+const getAllAsset = async (token) => {
+  try {
+
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'getAllAsset', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
+    const data = await AssetDB.getAllAsset();
+    getDataLogger.info('success retrieving all assets', { from: 'getAllAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    return [data, 200];
+    
+  } catch(e) {
+    getDataLogger.error('error retrieving all assets', { from: 'getAllAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    throw(e);
+  }
 };
 
-//Retrieves all asset in ODEP and RESILINK
-const getAllAssetCustom = async (url, token) => {
-  const response = await Utils.fetchJSONData(
-    'GET',
-    url + "all", 
-    headers = {'accept': 'application/json',
-    'Authorization': token}
-  )
-  const data = await Utils.streamToJSON(response.body)
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getAllAssetCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    return [data, response.status];
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving all assets', { from: 'getAllAssetCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [data, response.status];
-  };
-  const dataFinal = await AssetDB.getAndCompleteAssetByAssets(data);
-  getDataLogger.info('success retrieving all assets & image for each assets', { from: 'getAllAssetCustom', tokenUsed: token.replace(/^Bearer\s+/i, '') });
-  return [dataFinal, response.status];
-};
-
-/* Retrieves all asset in ODEP and RESILINK 
+/* Retrieves all asset and RESILINK 
  * Do the same as the getAllAssetCustom function but return a  a map of object asset instead of a list of object asset
  * No PATH in parameters since it's a function used in few other files
  */
 const getAllAssetResilink = async (token) => {
-    const allAsset = await Utils.fetchJSONData(
-        'GET',
-        pathODEPAsset + "all", 
-        headers = {'accept': 'application/json',
-        'Authorization': token});
+  try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'getAllAssetResilink', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
+    const data = await AssetDB.getAllAsset();
+    getDataLogger.info('success retrieving all assets', { from: 'getAllAssetResilink', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+
     var assetMapResilink = {};
-    const data = await Utils.streamToJSON(allAsset.body);
-    if (allAsset.status == 401) {
-      getDataLogger.error('error: Unauthorize', { from: 'getAllAssetResilink', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-      return [data, allAsset.status];
-    } else if(allAsset.status != 200) {
-      getDataLogger.error('error retrieving all assets', { from: 'getAllAssetResilink', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-      return [data, allAsset.status];
-    } 
-    const dataFinal = await AssetDB.getAndCompleteAssetByAssets(data);
-    for (const key in dataFinal) {
-        if (dataFinal.hasOwnProperty(key)) {
-          const element = dataFinal[key];
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          const element = data[key];
           assetMapResilink[element['id']] = element;
         }
     }
-    getDataLogger.info('success retrieving all assets', { from: 'getAllAssetResilink', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [assetMapResilink, allAsset.status];
-};
+    return [assetMapResilink, 200];
 
-//Retrieves an asset by id in ODEP
-const getOneAsset = async (url, id, token) => {
-  const response = await Utils.fetchJSONData(
-      'GET',
-      url + id, 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getOneAsset', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving one asset', { from: 'getOneAsset', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    getDataLogger.info('success retrieving one asset', { from: 'getOneAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  }
-  return [data, response.status];
-};
-
-//Retrieves an asset by id in ODEP and RESILINK
-const getOneAssetCustom = async (url, id, token) => {
-  const response = await Utils.fetchJSONData(
-      'GET',
-      url + id, 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'getOneAssetCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    return [data, response.status];
-  } else if(response.status != 200) {
-    getDataLogger.error('error retrieving one asset', { from: 'getOneAssetCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [data, response.status];
-  };
-  await AssetDB.getAndCompleteOneAssetByAsset(data);
-  getDataLogger.info('success retrieving one asset', { from: 'getOneAssetCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  return [data, response.status];
-};
-
-//Retrieves an img of an asset by id in RESILINK
-const getOneAssetImg = async (assetId, token) => {
-  try {
-    if (token == null ) {
-      getDataLogger.error('error: Unauthorize', { from: 'getOneAssetImg', tokenUsed: token == null ? "Token not given" : token});
-      return [{message: 'Token is not given'}, 401];
-    } else {
-      const data = await AssetDB.getOneAssetImageById(assetId);
-      getDataLogger.info('success retrieving one image from an asset', { from: 'getOneAssetImg', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-      return [{img: data}, 200];
-    }
   } catch(e) {
-    getDataLogger.error('error retrieving one image from an asset', { from: 'getOneAssetImg', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    getDataLogger.error('error retrieving all assets', { from: 'getAllAssetResilink', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
     throw(e);
   }
-  
 };
 
-//Creates an asset in ODEP
-const createAsset = async (url, body, token) => {
-  updateDataODEP.warn('data to send to ODEP', { from: 'createAsset', dataToSend: body, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-    'POST',
-    url, 
-    headers = {'accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': token},
-    body
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'createAsset', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    return [data, response.status];
-  } else if(response.status != 200) {
-    updateDataODEP.error('error creating one asset', { from: 'createAsset', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    updateDataODEP.info('success creating one asset', { from: 'createAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  };
-  return [data, response.status];
-};
+//Retrieves an asset by id 
+const getOneAsset = async (id, token) => {
+  try {
 
-//Creates an asset in ODEP and RESILINK
-const createAssetCustom = async (url, body, token) => {
-
-  if (body['images'].length > 2) {
-    updateDataODEP.error('error creating one asset, contains more than 2 images', {from: 'createAssetCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [{message: "images contains more than 2 elements"}, (500)];
-  } else if (!Utils.areAllBase64(body['images'])) {
-    updateDataODEP.error('error creating one asset, images list do not contains only base64 string', {from: 'createAssetCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [{message: "images list do not contains only base64 string"}, (500)];
-  }
-
-  const imgBase64 = body['images'];
-  const unit = body['unit'];
-  delete body['images'];
-  delete body['unit'];
-
-  updateDataODEP.warn('data to send to ODEP', { from: 'createAssetCustom', dataToSend: body, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-    'POST',
-    url, 
-    headers = {'accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': token},
-    body
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', {from: 'createAssetCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if (response.status != 200) {
-    updateDataODEP.error('error creating one asset', {from: 'createAssetCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    updateDataODEP.info('success creating one asset', {from: 'createAssetCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-
-    //Register images in o2switch server
-    const img = await postImages(pathResilinkWebServer, {'assetId': data['assetId'].toString(), 'images': imgBase64}, token);
-
-    //Register link to images in mongoDB
-    await AssetDB.newAsset(data['assetId'], img[0]['images'], body['owner'], unit);
-  };
-  return [data, response.status];
-};
-
-/*
- * Creates a clone/child of an asset type which will be identical except for its name 
- * which will have a number (asset type creation counter in RESILINK) at the end of its name.
- * Example: Fruits -> Fruits6 
- * Update the asset type counter, or create its own counter if it doesn't already exist
- * Creates an asset in ODEP and RESILINK 
- */
-const createAssetWithAssetTypeCustom = async (url, body, token) => {
-
-  /* 
-   * Calls the createAssetTypesCustom function to create and/or update assetType counter in ODEP and RESILINK
-   * Checks the value of the response status code 
-   */
-  const resultCreateAssetType = await AssetTypes.createAssetTypesCustom(body['assetType'], token);
-  if (resultCreateAssetType[1] == 401) {
-    updateDataODEP.error('error: Unauthorize', { from: 'createAssetWithAssetTypeCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    return [{assetType: resultCreateAssetType[0], asset: "no attempt executed"}, resultCreateAssetType[1]];
-  } else if(resultCreateAssetType[1] != 200) {
-    updateDataODEP.error('error creating one assetType', { from: 'createAssetWithAssetTypeCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [{assetType: resultCreateAssetType[0], asset: "no attempt executed"}, resultCreateAssetType[1]];
-  } else {
-
-    /* 
-     * If the status code is valid, calls the createAssetTypesCustom function to create and/or update assetType counter in ODEP and RESILINK
-     * Checks the value of the response status code 
-   */
-    updateDataODEP.info('success creating one assetType', { from: 'createAssetWithAssetTypeCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    body["assetType"] = resultCreateAssetType[0]["assetType"];
-    const resultCreateAsset = await createAssetCustom(url, body, token);
-    if (resultCreateAsset[1] == 401) {
-      updateDataODEP.error('error: Unauthorize', { from: 'createAssetWithAssetTypeCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    } else if(resultCreateAsset[1] != 200) {
-      updateDataODEP.info('error creating one asset', { from: 'createAssetWithAssetTypeCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    } else {
-      updateDataODEP.info('success creating one asset', { from: 'createAssetWithAssetTypeCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'getOneAsset', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
     }
-    return [{assetType: resultCreateAssetType[0], asset: resultCreateAsset[0]}, resultCreateAsset[1]];
-  }
-}
 
-//Update an asset by id in ODEP
-const putAsset = async (url, body, id, token) => {
-  updateDataODEP.warn('data to send to ODEP', { from: 'putAsset', dataToSend: body, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-      'PUT',
-      url + id, 
-      headers = {'accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': token},
-      body
-  );
-  const data = await Utils.streamToJSON(response.body)
-  if (response.status == 401) {
-    updateDataODEP.error('error: Unauthorize', { from: 'putAsset', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    updateDataODEP.error('error updating one asset', { from: 'putAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    updateDataODEP.info('success updating one asset', { from: 'putAsset', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    const data = await AssetDB.getOneAsset(id);
+    getDataLogger.info('success retrieving one image from an asset', { from: 'getOneAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    return [data, 200];
+    
+  } catch(e) {
+    getDataLogger.error('error retrieving one image from an asset', { from: 'getOneAsset', dataReceived: e.message, tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    throw(e);
   }
-  return [data, response.status];
 };
 
-//Update en asset by id in ODEP and RESILINK
-const putAssetCustom = async (url, body, id, token) => {
-  const imgBase64 = body['images'];
-  const unit = body['unit'];
-  delete body['images'];
-  delete body['unit'];
+//Creates an asset in RESILINK
+const createAsset = async (body, token) => {
+
+  try {
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'createAsset', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
+
+    if (body['images'].length > 2) {
+      updateDataODEP.error('error creating one asset, contains more than 2 images', {from: 'createAsset', dataReceived: body, tokenUsed: token.replace(/^Bearer\s+/i, '')});
+      return [{message: "images contains more than 2 elements"}, (500)];
+    } else if (!Utils.areAllBase64(body['images'])) {
+      updateDataODEP.error('error creating one asset, images list do not contains only base64 string', {from: 'createAsset', dataReceived: body, tokenUsed: token.replace(/^Bearer\s+/i, '')});
+      return [{message: "images list do not contains only base64 string"}, (500)];
+    }
+    
+    if (body['totalQuantity'] == null) {
+        body['totalQuantity'] = 1;
+    }
+
+    body['owner'] = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
+    const asset = await AssetDB.newAsset(body);
+
+    const img = await postImages({'assetId': asset['id'].toString(), 'images': body['images']}, token);
   
-  updateDataODEP.warn('data to send to ODEP', { from: 'putAssetCustom', dataToSend: body, tokenUsed: token == null ? "Token not given" : token});
-  const response = await Utils.fetchJSONData(
-      'PUT',
-      url + id, 
-      headers = {'accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': token},
-      body
-  );
-
-  const data = await Utils.streamToJSON(response.body)
-  if (response.status == 401) {
-    updateDataODEP.error('error: Unauthorize', { from: 'putAssetCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    return [data, response.status];
-  } else if(response.status != 200) {
-    updateDataODEP.error('error updating one asset', { from: 'putAssetCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    updateDataODEP.info('success updating one asset', { from: 'putAssetCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-
-    //Register images in o2switch server
-    const img = await postImages(pathResilinkWebServer, {'assetId': id.toString(), 'images': imgBase64}, token);
-    await AssetDB.updateAssetById(id, img[0]['images'], data, unit);
-  }
-  return [data, response.status];
-};
-
-//Deletes an asset by id in ODEP
-const deleteAsset = async (url, id, token) => {
-  try {
-    const response = await Utils.fetchJSONData(
-      'DELETE',
-      url + id, 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body)
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'deleteAsset', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    deleteDataODEP.error('error deleting one asset', { from: 'deleteAsset', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    deleteDataODEP.info('success deleting one asset', { from: 'deleteAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  }
-  return [data, response.status];
+    await AssetDB.updateAssetImagesById(asset['id'] ,img[0]['images']);
+    
+    // Register images in o2switch server
+    updateDataODEP.info("success creating one asset", {from: 'createAsset'});
+    asset['images'] = img[0]['images'];
+    return [asset, 200];
   } catch (e) {
-    throw(e)
+    updateDataODEP.error("error creating one asset", {from: 'createAsset', dataReceiver: e.message});
+    throw e;
   }
 };
 
-//Deletes an asset by id in ODEP and RESILINK
-const deleteAssetCustom = async (url, id, token) => {
+//Update en asset by id in RESILINK
+const putAsset = async (body, id, token) => {
   try {
-    const response = await Utils.fetchJSONData(
-      'DELETE',
-      url + id, 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-  );
-  const data = await Utils.streamToJSON(response.body)
-  if (response.status == 401) {
-    getDataLogger.error('error: Unauthorize', { from: 'deleteAssetCustom', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-  } else if(response.status != 200) {
-    deleteDataODEP.error('error deleting one asset', { from: 'deleteAssetCustom', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    deleteDataODEP.info('success deleting one asset', { from: 'deleteAssetCustom', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    await AssetDB.deleteAssetById(id);
-    await deleteImages(pathResilinkWebServer, id, token);
-  }
-  return [data, response.status];
-  } catch (e) {
-    throw(e)
-  }
+    if(!Utils.validityToken(token)) {
+      getDataLogger.error('error: Unauthorize', { from: 'putAsset', tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "Unauthorize"}, 401];
+    }
 
+    const userProfil = await UserDB.getUserByToken(token.replace(/^Bearer\s+/i, ''));
+    if (userProfil['userName'] != "admin" && userProfil['userName'] != body["owner"] ) {
+      updateDataODEP.error('error: not the owner or administrator', { from: 'putAsset', dataReceived: "Unauthorize", tokenUsed: token == null ? "Token not given" : token});
+      return [{"message" : "not the owner or administrator"}, 401];
+    }
+
+    //Register images in local folders
+    const img = await postImages({'assetId': id.toString(), 'images': body['images']}, token);
+    body['images'] = img[0]['images'];
+    await AssetDB.updateAssetById(id, body);
+
+    updateDataODEP.info("success updating one asset", {from: 'putAsset'});
+
+    return [{message: id + " asset correctly updated"}, 200];
+  } catch (e) {
+    updateDataODEP.error("error updating one asset", {from: 'putAsset', dataReceiver: e.message});
+    throw e;
+  }
 };
 
-//Patch an asset in ODEP
-const patchAsset = async (url, body, id, token) => {
-  const response = await Utils.fetchJSONData(
-      'PATCH',
-      url + id, 
-      headers = {'accept': 'application/json',
-      'Authorization': token},
-      body
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if (response.status == 401) {
-    patchDataODEP.error('error: Unauthorize', { from: 'patchAsset', dataReceived: data, tokenUsed: token == null ? "Token not given" : token});
-    return [data, response.status];
-  } else if(response.status != 200) {
-    patchDataODEP.error('error patching one asset', { from: 'patchAsset', dataReceived: data, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  } else {
-    patchDataODEP.info('success patching one asset', { from: 'patchAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-  }
-  return [data, response.status];
+//Deletes an asset by id and RESILINK
+const deleteAsset = async (id, token) => {
+  try {
+      if(!Utils.validityToken(token)) {
+        getDataLogger.error('error: Unauthorize', { from: 'deleteAsset', tokenUsed: token == null ? "Token not given" : token});
+        return [{"message" : "Unauthorize"}, 401];
+      }
+
+      const assetToDelete = await getOneAsset(id, token);
+      
+      const userProfil = await UserDB.getUserByToken(token.replace(/^Bearer\s+/i, ''));
+      if (userProfil['userName'] != "admin" && userProfil['userName'] != assetToDelete[0]['owner'] ) {
+        updateDataODEP.error('error: not the owner or administrator', { from: 'deleteAsset', dataReceived: "Unauthorize", tokenUsed: token == null ? "Token not given" : token});
+        return [{"message" : "not the owner or administrator"}, 401];
+      }
+  
+      await AssetDB.deleteAssetById(id);
+      
+      await deleteImagesAsset(id, true);
+      deleteDataResilink.info("success deleting an asset in RESILINK", {from: 'deleteAsset'});
+  
+      return [{message: id + " asset correctly removed in RESILINK "}, 200];
+    } catch (e) {
+      deleteDataResilink.error("error deleting an asset in RESILINK", {from: 'deleteAsset', dataReceiver: e.message});
+      throw e;
+    }
 };
 
 //Post images of an asset
-const postImagesAsset = async (url, body, token) => {
-
-  const asset = await getOneAsset(pathODEPAsset, body['assetId'], token);
-  if (asset[1] == 401) {
-    updateDataODEP.error('error: Unauthorize', { from: 'postImgAsset', dataReceived: newsAsset[0], tokenUsed: token == null ? "Token not given" : token});
-    return [asset[0], asset[1]];
-  } else if(asset[1] != 200) {
-    updateDataODEP.error('error updating one asset', { from: 'postImgAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [asset[0], asset[1]];
-  } else if (body['owner'] != asset[0]['owner']) {
-    updateDataODEP.error('the user is not the owner of the asset', { from: 'postImgAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [{'message': 'the user is not the owner of the asset'}, asset[1]];
-  }
-  // Check body.images: it must exist and be a list (array)
-  if (!body.images || !Array.isArray(body.images)) {
-    updateDataODEP.error('error posting one asset', { from: 'postImgAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [{ 'message': 'images must be a list' }, 500];
-  } else if (!Utils.areAllBase64(body['images'])) {
-    updateDataODEP.error('error posting one asset, images list do not contains only base64 string', {from: 'postImgAsset', dataReceived: body, tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [{message: "images list do not contains only base64 string"}, (500)];
-  }
-
-  const imgData = await postImages(url, {'assetId': body['assetId'], 'images': body['images']}, token);
-  if (imgData[1] == 401) {
-    updateDataODEP.error('error: Unauthorize', { from: 'postImgAsset', dataReceived: newsAsset[0], tokenUsed: token == null ? "Token not given" : token});
+const postImagesAsset = async (body, token) => {
+  try {
+    const asset = await getOneAsset(pathODEPAsset, body['assetId'], token);
+    if (asset[1] == 401) {
+      updateDataODEP.error('error: Unauthorize', { from: 'postImgAsset', dataReceived: newsAsset[0], tokenUsed: token == null ? "Token not given" : token});
+      return [asset[0], asset[1]];
+    } else if(asset[1] != 200) {
+      updateDataODEP.error('error updating one asset', { from: 'postImgAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+      return [asset[0], asset[1]];
+    } else if (body['owner'] != asset[0]['owner']) {
+      updateDataODEP.error('the user is not the owner of the asset', { from: 'postImgAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+      return [{'message': 'the user is not the owner of the asset'}, asset[1]];
+    }
+    // Check body.images: it must exist and be a list (array)
+    if (!body.images || !Array.isArray(body.images)) {
+      updateDataODEP.error('error posting one asset', { from: 'postImgAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+      return [{ 'message': 'images must be a list' }, 500];
+    } else if (!Utils.areAllBase64(body['images'])) {
+      updateDataODEP.error('error posting one asset, images list do not contains only base64 string', {from: 'postImgAsset', dataReceived: body, tokenUsed: token.replace(/^Bearer\s+/i, '')});
+      return [{message: "images list do not contains only base64 string"}, (500)];
+    }
+  
+    const imgData = await postImages({'assetId': body['assetId'], 'images': body['images']}, token);
+    if (imgData[1] == 401) {
+      updateDataODEP.error('error: Unauthorize', { from: 'postImgAsset', dataReceived: newsAsset[0], tokenUsed: token == null ? "Token not given" : token});
+    } else if(imgData[1] != 200) {
+      updateDataODEP.error('error posting images', { from: 'postImgAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    }
+    updateDataODEP.info('success posting images', { from: 'postImgAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
     return [imgData[0], imgData[1]];
-  } else if(imgData[1] != 200) {
+  } catch (e) {
     updateDataODEP.error('error posting images', { from: 'postImgAsset', tokenUsed: token.replace(/^Bearer\s+/i, '')});
-    return [imgData[0], imgData[1]];
+    throw e;
   }
-
-  return [imgData[0], imgData[1]];
 };
 
-//Call RESILINK on o2switch to post images on webserver
-const postImages = async (url, body, token) => {
-  const response = await Utils.fetchJSONData(
-      'POST',
-      url, 
-      headers = {'accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': token},
-      body
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if (response.status != 200) {
-    updateDataODEP.error('error posting images of asset', { from: 'postImg', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+// Saves base64 images on the server and returns their URLs
+const postImages = async (body, token) => {
+  try {
+    const data = await saveImagesAsset(body);
+
+    if (data[1] != 200) {
+      updateDataODEP.error('error posting images of asset', { from: 'postImages', tokenUsed: token.replace(/^Bearer\s+/i, '') });
+      return [{ message: 'error during process to post new images' }, 402];
+    }
+
+    return [data[0], data[1]];
+  } catch (e) {
+    updateDataODEP.error('error posting images of asset', { from: 'postImages', tokenUsed: token.replace(/^Bearer\s+/i, '') });
+    throw e;
   }
-  return [data, response.status];
 };
 
-//Call RESILINK on o2switch to delete images associated to an asset on webserver
-const deleteImages = async (url, assetId, token) => {
+// Saves base64-encoded images to disk and returns their file URLs
+const saveImagesAsset = async (body) => {
+  const baseDir = 'public/images';
+  const assetDir = path.join(baseDir, body.assetId);
 
-  const response = await Utils.fetchJSONData(
-      'DELETE',
-      url + "/" + assetId, 
-      headers = {'accept': 'application/json',
-      'Authorization': token}
-  );
-  const data = await Utils.streamToJSON(response.body);
-  if (response.status != 200) {
-    updateDataODEP.error('error deleting images of asset', { from: 'deleteImages', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+  if (fs.existsSync(assetDir)) {
+    fs.readdirSync(assetDir).forEach(file => {
+      const filePath = path.join(assetDir, file);
+      if (fs.lstatSync(filePath).isFile()) {
+        fs.unlinkSync(filePath);
+      }
+    });
   } else {
-    updateDataODEP.info('success deleting images of asset', { from: 'deleteImages', tokenUsed: token.replace(/^Bearer\s+/i, '')});
+    fs.mkdirSync(assetDir, { recursive: true });
   }
-  return [data, response.status];
+
+  const savedImages = [];
+
+  for (let i = 0; i < body.images.length; i++) {
+    const base64Image = body.images[i];
+    const fileName = `image${i + 1}.png`;
+    const filePath = path.join(assetDir, fileName);
+    const imageBuffer = Buffer.from(base64Image, 'base64');
+
+    try {
+      fs.writeFileSync(filePath, imageBuffer);
+      savedImages.push(config.SWAGGER_URL + "/" + filePath);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  return [{ 'assetId': body.assetId, 'images': savedImages }, 200];
 };
+
+// Deletes all images associated with an asset from the server
+const deleteImages = async (assetId, token) => {
+  try {
+
+    const asset = await getOneAsset(body['assetId'], token);
+    if (asset[1] == 401) {
+      updateDataODEP.error('error: Unauthorize', { from: 'deleteImages', dataReceived: newsAsset[0], username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [asset[0], asset[1]];
+    } else if(asset[1] != 200) {
+      updateDataODEP.error('error updating one asset', { from: 'deleteImages', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [asset[0], asset[1]];
+    } else if (body['owner'] != asset[0]['owner']) {
+      updateDataODEP.error('the user is not the owner of the asset', { from: 'deleteImages', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{'message': 'the user is not the owner of the asset'}, asset[1]];
+    }
+
+    const data = await deleteImagesAsset(assetId, true);
+
+    if (data[1] != 200) {
+      updateDataODEP.error('error deleting images of asset', { from: 'deleteImages', tokenUsed: token.replace(/^Bearer\s+/i, '') });
+    } else {
+      updateDataODEP.info('success deleting images of asset', { from: 'deleteImages', tokenUsed: token.replace(/^Bearer\s+/i, '') });
+    }
+
+    return [data[0], data[1]];
+  } catch (e) {
+    updateDataODEP.error('error deleting images of asset', { from: 'deleteImages', tokenUsed: token.replace(/^Bearer\s+/i, '') });
+  }
+};
+
+// Deletes the folder and all images related to an asset
+const deleteImagesAsset = async (assetId, fromBackUpServer) => {
+
+  const baseDir = fromBackUpServer ? 'public/imagesBackUp' : 'public/images';
+  const assetDir = path.join(baseDir, assetId);
+
+  if (fs.existsSync(assetDir)) {
+    try {
+      fs.rmSync(assetDir, { recursive: true, force: true });
+      return [{ message: 'Images associated with assetId ${assetId} have been deleted.' }, 200];
+    } catch (err) {
+      return [{ message: 'Error deleting images for assetId ${assetId}.', error: err.message }, 500];
+    }
+  } else {
+    return [{ message: 'The images for assetId ${assetId} do not exist.' }, 404];
+  }
+};
+
 
 module.exports = {
     getAllAssetResilink,
     getAllAsset,
-    getAllAssetCustom,
-    getOneAssetImg,
     getOneAsset,
-    getOneAssetCustom,
     getOwnerAsset,
-    getOwnerAssetCustom,
     createAsset,
-    createAssetCustom,
-    createAssetWithAssetTypeCustom,
     putAsset,
-    putAssetCustom,
-    patchAsset,
     deleteAsset,
-    deleteAssetCustom,
     postImagesAsset,
-    deleteImages
+    postImages,
+    deleteImages,
+    saveImagesAsset,
+    deleteImagesAsset
 }

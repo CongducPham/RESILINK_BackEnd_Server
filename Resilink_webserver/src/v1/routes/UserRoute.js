@@ -91,6 +91,9 @@ const router = express.Router();
  *         phoneNumber: 
  *           type: string
  *           description: "The phone number of the user"
+ *         gps: 
+ *           type: string
+ *           description: "The gps of the user"
  */
 
 /**
@@ -99,7 +102,7 @@ const router = express.Router();
  *   post: 
  *     security:
  *         - noAuth: []
- *     summary: Retrieve data and access token from a user (from ODEP)
+ *     summary: Retrieve data and access token from a user
  *     tags: [users]
  *     requestBody:
  *       description: Sign in to get access token.
@@ -147,6 +150,8 @@ const router = express.Router();
  *                   type: string
  *                 phoneNumber:
  *                   type: string
+ *                 gps:
+ *                   type: string
  *       401:
  *         description: Unauthorized.
  *       500:
@@ -159,93 +164,14 @@ const router = express.Router();
  *                    message:
  *                        type: string
  */
-
 
 router.post('/users/auth/sign_in/', userController.getTokenUser);
 
 /**
  * @swagger
- * /v1/ODEP/users/:
+ * /v1/users/:
  *   post: 
- *     summary: Create a new User (from ODEP)
- *     tags: [users]
- *     parameters:
- *       - in: query
- *         name: status
- *         schema:
- *            type: string
- *            enum: [http://localhost:22000, http://localhost:22001, http://localhost:22002, http://localhost:22003, http://localhost:22004, http://localhost:22005, http://localhost:22006]
- *         description: provider value that needs to be considered for account allocation
- *     requestBody:
- *       description: User object that needs to be added to the application
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               userName:
- *                 type: string
- *               firstName:
- *                 type: string
- *               lastName:
- *                 type: string
- *               roleOfUser:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string 
- *     responses:
- *       200:
- *         description: successful operation
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                 userName:
- *                   type: string
- *                 firstName:
- *                   type: string
- *                 lastName:
- *                   type: string
- *                 roleOfUser:
- *                   type: string
- *                 email:
- *                   type: string
- *                 password:
- *                   type: string 
- *                 provider:
- *                   type: string
- *                 account:
- *                   type: string
- *                 createdAt:
- *                   type: string
- *                 updatedAt:
- *                   type: string
- *       401:
- *         description: Unauthorized.
- *       500:
- *         description: Error from RESILINK server.
- *         content:
- *           application/json:
- *             schema:
- *                type: object
- *                properties:
- *                    message:
- *                        type: string
- */
-
-router.post('/ODEP/users/', userController.createUser);
-
-/**
- * @swagger
- * /v1/users:
- *   post: 
- *     summary: Create a new User
+ *     summary: Create a new User 
  *     tags: [users]
  *     parameters:
  *       - in: query
@@ -275,6 +201,8 @@ router.post('/ODEP/users/', userController.createUser);
  *               password:
  *                 type: string 
  *               phoneNumber:
+ *                 type: string
+ *               gps: 
  *                 type: string
  *     responses:
  *       200:
@@ -308,6 +236,8 @@ router.post('/ODEP/users/', userController.createUser);
  *                   type: string
  *                 phoneNumber:
  *                   type: string
+ *                 gps: 
+ *                   type: string
  *       401:
  *         description: Unauthorized.
  *       500:
@@ -321,66 +251,13 @@ router.post('/ODEP/users/', userController.createUser);
  *                        type: string
  */
 
-router.post('/users/', userController.createUserCustom);
-
-/**
- * @swagger
- * /v1/ODEP/users/:
- *   get:
- *     summary: Return list of users (from ODEP)
- *     tags: [users]
- *     responses:
- *       200:
- *         description: successful operation
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items: 
- *                 type: object
- *                 properties:
- *                   _id:
- *                     type: string
- *                   userName:
- *                     type: string
- *                   firstName:
- *                     type: string
- *                   lastName:
- *                     type: string
- *                   roleOfUser:
- *                     type: string
- *                   email:
- *                     type: string
- *                   password:
- *                     type: string 
- *                   provider:
- *                     type: string
- *                   account:
- *                     type: string
- *                   createdAt:
- *                     type: string
- *                   updatedAt:
- *                     type: string
- *       401:
- *         description: Unauthorized
- *       500:
- *         description: Error from RESILINK server.
- *         content:
- *           application/json:
- *             schema:
- *                type: object
- *                properties:
- *                    message:
- *                        type: string
- */
-
-router.get('/ODEP/users/', userController.getAllUser);
+router.post('/users/', userController.createUser);
 
 /**
  * @swagger
  * /v1/users/:
  *   get:
- *     summary: Return list of users
+ *     summary: Return list of users 
  *     tags: [users]
  *     responses:
  *       200:
@@ -416,6 +293,8 @@ router.get('/ODEP/users/', userController.getAllUser);
  *                     type: string
  *                   phoneNumber:
  *                     type: string
+ *                   gps: 
+ *                     type: string
  *       401:
  *         description: Unauthorized
  *       500:
@@ -429,13 +308,13 @@ router.get('/ODEP/users/', userController.getAllUser);
  *                        type: string
  */
 
-router.get('/users/', userController.getAllUserCustom);
+router.get('/users/', userController.getAllUser);
 
 /**
  * @swagger
- * /v1/ODEP/users/{userId}/:
+ * /v1/users/{userId}/:
  *   get: 
- *     summary: Find user by ID (from ODEP)
+ *     summary: Find user by ID 
  *     tags: [users]
  *     parameters:
  *       - in: path
@@ -474,63 +353,9 @@ router.get('/users/', userController.getAllUserCustom);
  *                   type: string
  *                 updatedAt:
  *                   type: string
- *       401:
- *         description: Unauthorized.
- *       500:
- *         description: Error from RESILINK server.
- *         content:
- *           application/json:
- *             schema:
- *                type: object
- *                properties:
- *                    message:
- *                        type: string
- */
-
-router.get('/ODEP/users/:userId', userController.getUserById);
-
-/**
- * @swagger
- * /v1/ODEP/users/getUserByEmail/{userEmail}/:
- *   get: 
- *     summary: get user by Email (from ODEP)
- *     tags: [users]
- *     parameters:
- *       - in: path
- *         name: userEmail
- *         schema:
- *           type: string 
- *         required: true
- *         description: Email of user to return
- *     responses:
- *       200:
- *         description: successful operation
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
+ *                 phoneNumber:
  *                   type: string
- *                 userName:
- *                   type: string
- *                 firstName:
- *                   type: string
- *                 lastName:
- *                   type: string
- *                 roleOfUser:
- *                   type: string
- *                 email:
- *                   type: string
- *                 password:
- *                   type: string 
- *                 provider:
- *                   type: string
- *                 account:
- *                   type: string
- *                 createdAt:
- *                   type: string
- *                 updatedAt:
+ *                 gps: 
  *                   type: string
  *       401:
  *         description: Unauthorized.
@@ -545,13 +370,13 @@ router.get('/ODEP/users/:userId', userController.getUserById);
  *                        type: string
  */
 
-router.get('/ODEP/users/getUserByEmail/:userEmail', userController.getUserByEmail);
+router.get('/users/:userId', userController.getUserById);
 
 /**
  * @swagger
  * /v1/users/getUserByEmail/{userEmail}/:
  *   get: 
- *     summary: get user by Email
+ *     summary: get user by Email 
  *     tags: [users]
  *     parameters:
  *       - in: path
@@ -592,63 +417,7 @@ router.get('/ODEP/users/getUserByEmail/:userEmail', userController.getUserByEmai
  *                   type: string
  *                 phoneNumber:
  *                   type: string
- *       401:
- *         description: Unauthorized.
- *       500:
- *         description: Error from RESILINK server.
- *         content:
- *           application/json:
- *             schema:
- *                type: object
- *                properties:
- *                    message:
- *                        type: string
- */
-
-router.get('/users/getUserByEmail/:userEmail', userController.getUserByEmailCustom);
-
-/**
- * @swagger
- * /v1/ODEP/users/getUserByUserName/{userName}/:
- *   get: 
- *     summary: Username of user to return (from ODEP)
- *     tags: [users]
- *     parameters:
- *       - in: path
- *         name: userName
- *         schema:
- *           type: string 
- *         required: true
- *         description: the user username
- *     responses:
- *       200:
- *         description: successful operation
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                 userName:
- *                   type: string
- *                 firstName:
- *                   type: string
- *                 lastName:
- *                   type: string
- *                 roleOfUser:
- *                   type: string
- *                 email:
- *                   type: string
- *                 password:
- *                   type: string 
- *                 provider:
- *                   type: string
- *                 account:
- *                   type: string
- *                 createdAt:
- *                   type: string
- *                 updatedAt:
+ *                 gps: 
  *                   type: string
  *       401:
  *         description: Unauthorized.
@@ -663,13 +432,13 @@ router.get('/users/getUserByEmail/:userEmail', userController.getUserByEmailCust
  *                        type: string
  */
 
-router.get('/ODEP/users/getUserByUserName/:userName', userController.getUserByUsername);
+router.get('/users/getUserByEmail/:userEmail', userController.getUserByEmail);
 
 /**
  * @swagger
  * /v1/users/getUserByUserName/{userName}/:
  *   get: 
- *     summary: Username of user to return
+ *     summary: Username of user to return 
  *     tags: [users]
  *     parameters:
  *       - in: path
@@ -710,6 +479,8 @@ router.get('/ODEP/users/getUserByUserName/:userName', userController.getUserByUs
  *                   type: string
  *                 phoneNumber:
  *                   type: string
+ *                 gps: 
+ *                   type: string
  *       401:
  *         description: Unauthorized.
  *       500:
@@ -723,13 +494,13 @@ router.get('/ODEP/users/getUserByUserName/:userName', userController.getUserByUs
  *                        type: string
  */
 
-router.get('/users/getUserByUserName/:userName', userController.getUserByUsernameCustom);
+router.get('/users/getUserByUserName/:userName', userController.getUserByUsername);
 
 /**
  * @swagger
- * /v1/ODEP/users/{userId}/:
+ * /v1/users/{userName}/:
  *   delete: 
- *     summary: Delete user in ODEP
+ *     summary: Delete user
  *     tags: [users]
  *     parameters:
  *       - in: path
@@ -752,89 +523,11 @@ router.get('/users/getUserByUserName/:userName', userController.getUserByUsernam
  *                        type: string
  */
 
-router.delete('/ODEP/users/:userId', userController.deleteUser);
+router.delete('/users/:userName', userController.deleteUser);
 
 /**
  * @swagger
- * /v1/users/{userId}/:
- *   delete: 
- *     summary: Delete user profil 
- *     tags: [users]
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: string 
- *         required: true
- *         description: ID of user to delete
- *     responses:
- *       401:
- *         description: Unauthorized.
- *       500:
- *         description: Error from RESILINK server.
- *         content:
- *           application/json:
- *             schema:
- *                type: object
- *                properties:
- *                    message:
- *                        type: string
- */
-
-router.delete('/users/:userId', userController.deleteUserODEPRESILINK);
-
-/**
- * @swagger
- * /v1/ODEP/users/{userId}/:
- *   put: 
- *     summary: Update an existing user in ODEP
- *     tags: [users]
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: string 
- *         required: true
- *         description: ID of user to update
- *     requestBody:
- *       description: User object that needs to be added to the application
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               userName:
- *                 type: string
- *               firstName:
- *                 type: string
- *               lastName:
- *                 type: string
- *               roleOfUser:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string 
- *     responses:
- *       401:
- *         description: Unauthorized.
- *       500:
- *         description: Error from RESILINK server.
- *         content:
- *           application/json:
- *             schema:
- *                type: object
- *                properties:
- *                    message:
- *                        type: string
- */
-
-router.put('/ODEP/users/:userId', userController.updateUser);
-
-/**
- * @swagger
- * /v1/users/{userId}:
+ * /v1/users/{userName}/:
  *   put: 
  *     summary: Update an existing user
  *     tags: [users]
@@ -867,6 +560,8 @@ router.put('/ODEP/users/:userId', userController.updateUser);
  *                 type: string 
  *               phoneNumber:
  *                 type: string
+ *               gps:
+ *                 type: string
  *     responses:
  *       401:
  *         description: Unauthorized.
@@ -881,66 +576,6 @@ router.put('/ODEP/users/:userId', userController.updateUser);
  *                        type: string
  */
 
-router.put('/users/:userId/', userController.updateUserCustom);
-
-/**
- * @swagger
- * /v1/users/{userId}/:
- *   get: 
- *     summary: Find user by ID in ODEP and RESILINK
- *     tags: [users]
- *     parameters:
- *       - in: path
- *         name: userId
- *         schema:
- *           type: string 
- *         required: true
- *         description: ID of user to return
- *     responses:
- *       200:
- *         description: successful operation
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                 userName:
- *                   type: string
- *                 firstName:
- *                   type: string
- *                 lastName:
- *                   type: string
- *                 roleOfUser:
- *                   type: string
- *                 email:
- *                   type: string
- *                 password:
- *                   type: string 
- *                 provider:
- *                   type: string
- *                 account:
- *                   type: string
- *                 createdAt:
- *                   type: string
- *                 updatedAt:
- *                   type: string
- *                 phoneNumber:
- *                   type: string
- *       401:
- *         description: Unauthorized.
- *       500:
- *         description: Error from RESILINK server.
- *         content:
- *           application/json:
- *             schema:
- *                type: object
- *                properties:
- *                    message:
- *                        type: string
- */
-
-router.get('/users/:userId/', userController.getUserbyIdCustom);
+router.put('/users/:userName', userController.updateUser);
 
 module.exports = router;

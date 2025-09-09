@@ -1,0 +1,1767 @@
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'delete',
+    firstName: 'UserToDelete',
+    lastName: 'us',
+    roleOfUser: 'prosumer',
+    email: 'gete@lkej.gt',
+    password: '123456',
+    phoneNumber: '06000000'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTA0Mjc1MjMsImV4cCI6MTcxMDQzNDcyM30.QTdKCJlztNdFHiRYNTNUX1jOVeqOZbe2Fid0BrgrkHw',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-14T14:45:23.980Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'delete',
+    firstName: 'UserToDelete',
+    lastName: 'us',
+    roleOfUser: 'prosumer',
+    email: 'gete@lkej.gt',
+    password: '123456',
+    phoneNumber: '06000000'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTA0Mjg1MzAsImV4cCI6MTcxMDQzNTczMH0.E-QpL0G1-Il7VH3ElxxGHa6fSGZ29JQfHMEFHW4XmbQ',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-14T15:02:10.976Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'axelc',
+    firstName: 'axel',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'eeee@hfr.fr',
+    password: '123456',
+    phoneNumber: '06201111'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTA0MjkxMzQsImV4cCI6MTcxMDQzNjMzNH0.2Q0mhsDOy8pJB7jidn-6GlWWfzcyHpd0L7y7uM_akig',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-14T15:12:14.810Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'axelc',
+    firstName: 'axel',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'eeee@hfr.fr',
+    password: '123456',
+    phoneNumber: '06201111'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTA0MzEwNzAsImV4cCI6MTcxMDQzODI3MH0.49Hrxj8zn4oyMSgQrXHTcPyTayZCEBnh2_oOHxNfIZA',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-14T15:44:30.135Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'axelc',
+    firstName: 'axel',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'eeee@hfr.fr',
+    password: '123456',
+    phoneNumber: '06201111'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTA0MzEzNDgsImV4cCI6MTcxMDQzODU0OH0.IR4JQCELdF5LMTyQ3jliX3Q6Z8cjKiwssUAV2UGGhto',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-14T15:49:08.671Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'axelc',
+    firstName: 'axel',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'eeee@hfr.fr',
+    password: '123456',
+    phoneNumber: '06201111'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTA0MzE0NzMsImV4cCI6MTcxMDQzODY3M30.edDOyFP2bE2H1DrzUOb6zCaJ8ktDtqjUDm6ps72ERS8',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-14T15:51:13.686Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'axelc',
+    firstName: 'axel',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'eeee@hfr.fr',
+    password: '123456',
+    phoneNumber: '06201111'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTA0MzE2ODAsImV4cCI6MTcxMDQzODg4MH0.6rfiQ8WNxx-WqN7ve8ImuJkxUcsW4KEXUVHnbbPw2q8',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-14T15:54:40.546Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'axelc',
+    firstName: 'axel',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'eeee@hfr.fr',
+    password: '123456',
+    phoneNumber: '06201111'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTA0MzE3MjksImV4cCI6MTcxMDQzODkyOX0.5VpnbKZQEHoymVAGc5W0wNdE4X5tdlv_oHIJbVFJRus',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-14T15:55:29.453Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'axelc',
+    firstName: 'axel',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'eeee@hfr.fr',
+    password: '123456',
+    phoneNumber: '06201111'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTA0MzE3ODMsImV4cCI6MTcxMDQzODk4M30.CLsJH9fV3M-gy2LRBC1sW1nm5EtPsdpRw1A5mOEpXqQ',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-14T15:56:23.493Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'UserD',
+    firstName: 'User',
+    lastName: 'D',
+    roleOfUser: 'prosumer',
+    email: 'sefsf@test.fr',
+    password: '123456',
+    phoneNumber: '063333333'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTA1MTA5MzUsImV4cCI6MTcxMDUxODEzNX0.G1c4MIDDwm1CbWqxFYtl6wpzZ34MIEdWipme7c2IuVY',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-15T13:55:35.512Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-18T13:19:08.655Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-03-18T13:19:08.931Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '5' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-18T13:21:18.369Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-03-18T13:21:18.837Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T08:41:59.085Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-03-20T08:41:59.526Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T08:44:17.856Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-03-20T08:44:18.159Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T08:44:19.499Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-03-20T08:44:19.818Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T08:44:22.164Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-03-20T08:44:22.432Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T08:50:30.210Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:213:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T08:50:30.711Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T08:59:03.463Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:213:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T08:59:04.026Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T08:59:30.102Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:213:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T08:59:30.417Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:00:00.721Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:213:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:00:01.011Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:05:58.225Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:213:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:05:59.541Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:06:20.199Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:213:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:06:20.506Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:07:07.604Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:213:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:07:08.090Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:07:35.470Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:213:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:07:35.815Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:07:47.620Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:213:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:07:47.971Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:08:47.384Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:214:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:08:47.896Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:09:30.654Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:214:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:09:30.996Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:09:40.600Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:214:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:09:40.953Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:17:18.097Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:214:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:17:18.561Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:17:34.799Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:214:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:17:35.169Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:21:13.815Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:214:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:21:14.317Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:21:27.457Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: ReferenceError: notValidBody is not defined
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:214:22)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:21:27.770Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:31:44.282Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: TypeError: Right-hand side of 'instanceof' is not an object
+      at Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:215:11)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:31:44.758Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '1' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-03-20T09:32:41.731Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataReceived: { bookmarkId: '1' },
+  level: 'error',
+  message: "error patching prosummer's bookmark list",
+  timestamp: '2024-03-20T09:32:42.109Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsumer',
+  data: IDNotFoundError: ID 1 already does exist in prosumer's bookMarked field
+      at Object.addbookmarked (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/database/ProsummerDB.js:124:13)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async Object.patchBookmarkProsummer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/services/ProsummerService.js:204:18)
+      at async patchBookmarkProsumer (/home/acazaux007/Bureau/Resilink/Mid_Plateforme/Resilink_webserver/src/v1/controllers/ProsummerController.js:95:22),
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-03-20T09:32:42.109Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'UserD',
+    firstName: 'User',
+    lastName: 'D',
+    roleOfUser: 'prosumer',
+    email: 'efsf@dtgd.gf',
+    phone: '000000000',
+    password: 'UserD123',
+    phoneNumber: '000000000'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTE0NDM5MTMsImV4cCI6MTcxMTQ1MTExM30.52tpuQILJiiAI0Kvk-50Cleu9cyCkAbD9ryZOEE2CXk',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-26T09:05:13.674Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'UserD',
+    firstName: 'User',
+    lastName: 'D',
+    roleOfUser: 'prosumer',
+    email: 'sef@fgrt.gt',
+    password: '123456',
+    phoneNumber: '000000000'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTE0NDQ4MjIsImV4cCI6MTcxMTQ1MjAyMn0.lqHq_WcAp6BhV-MsilxIepgxLKRMNNba9GYPoAr7aJI',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-26T09:20:22.934Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBalanceProsummer',
+  dataToSend: {
+    userName: 'UserD',
+    firstName: 'User',
+    lastName: 'D',
+    roleOfUser: 'prosumer',
+    email: 'efs@rdg.fr',
+    password: '123456',
+    phoneNumber: '000000000'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTE0NDU3ODQsImV4cCI6MTcxMTQ1Mjk4NH0.XBgbrpsjLVZeFDYlgir_lxrDoTX_0gevjHfwCaPSp2g',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-26T09:36:24.427Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'UserD',
+    firstName: 'User',
+    lastName: 'D',
+    roleOfUser: 'prosumer',
+    email: 'efs@rdg.fr',
+    password: '123456',
+    phoneNumber: '000000000'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTE0NDc4OTAsImV4cCI6MTcxMTQ1NTA5MH0.ESbV0gvihHdyBUg6CYhAWKF1Iz-3q1yr7bYBRZ0GeUw',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-26T10:11:30.849Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'USerD',
+    firstName: 'USer',
+    lastName: 'D',
+    roleOfUser: 'prosumer',
+    email: 'sef@rgd.fr',
+    password: '123456',
+    phoneNumber: '0000000000'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTE0NTc5NjksImV4cCI6MTcxMTQ2NTE2OX0.QzebhtnqiXvnZ83JHGE5m5VyzoSDLoN_dmZqWcGj7T8',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-26T12:59:30.001Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'UserD',
+    firstName: 'UserD',
+    lastName: 'UserD',
+    roleOfUser: 'prosumer',
+    email: 'ssefs@gdrgd.fr',
+    password: '123456',
+    phoneNumber: '000000000'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTE0NjEwNzEsImV4cCI6MTcxMTQ2ODI3MX0.AgBI-VjkdQeCaPi1YHD24COWWVtDe8mXLcDTo3ALH-s',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-03-26T13:51:11.762Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchOneRegulator',
+  dataToSend: { state: 'beginDelivery' },
+  id: '5',
+  tokenUsed: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFjMTNmNmRmZTQ1OTkxNTljNzY1OWIiLCJpYXQiOjE3MTI2NzIxOTksImV4cCI6MTcxMjY3OTM5OX0.gIp79emdQl3EEwy8ODkv6VcMe8Rt3i0QSJDBn08BMuM',
+  level: 'warn',
+  message: 'data & id to send to ODEP',
+  timestamp: '2024-04-09T14:23:56.800Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchContractImmaterial',
+  dataReceived: {
+    code: 400,
+    message: 'Unauthorized. You are not the offerer in this contract'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFjMTNmNmRmZTQ1OTkxNTljNzY1OWIiLCJpYXQiOjE3MTI2NzIxOTksImV4cCI6MTcxMjY3OTM5OX0.gIp79emdQl3EEwy8ODkv6VcMe8Rt3i0QSJDBn08BMuM',
+  level: 'error',
+  message: 'error patching immaterial contract',
+  timestamp: '2024-04-09T14:23:58.860Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchOneRegulator',
+  dataToSend: { state: 'beginDelivery' },
+  id: '5',
+  tokenUsed: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWRlZmZkYjYwYzRjNzA5ODdlN2M5NTUiLCJpYXQiOjE3MTI2NzI2NzgsImV4cCI6MTcxMjY3OTg3OH0.uh_tmBgXmucz5yxbXGDVQE5wmicTJPsO_S5Mg2e8qFs',
+  level: 'warn',
+  message: 'data & id to send to ODEP',
+  timestamp: '2024-04-09T14:24:49.483Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchContractImmaterial',
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWRlZmZkYjYwYzRjNzA5ODdlN2M5NTUiLCJpYXQiOjE3MTI2NzI2NzgsImV4cCI6MTcxMjY3OTg3OH0.uh_tmBgXmucz5yxbXGDVQE5wmicTJPsO_S5Mg2e8qFs',
+  level: 'info',
+  message: 'success patching immaterial contract',
+  timestamp: '2024-04-09T14:24:52.539Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchOneRegulator',
+  dataToSend: { state: 'endDelivery' },
+  id: '5',
+  tokenUsed: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWRlZmZkYjYwYzRjNzA5ODdlN2M5NTUiLCJpYXQiOjE3MTI2NzI2NzgsImV4cCI6MTcxMjY3OTg3OH0.uh_tmBgXmucz5yxbXGDVQE5wmicTJPsO_S5Mg2e8qFs',
+  level: 'warn',
+  message: 'data & id to send to ODEP',
+  timestamp: '2024-04-09T14:25:06.272Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchContractImmaterial',
+  dataReceived: {
+    code: 400,
+    message: 'The end Time Slot is not yet reached!!, use cancelContract functionnality if you want to abort'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWRlZmZkYjYwYzRjNzA5ODdlN2M5NTUiLCJpYXQiOjE3MTI2NzI2NzgsImV4cCI6MTcxMjY3OTg3OH0.uh_tmBgXmucz5yxbXGDVQE5wmicTJPsO_S5Mg2e8qFs',
+  level: 'error',
+  message: 'error patching immaterial contract',
+  timestamp: '2024-04-09T14:25:10.294Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchOneRegulator',
+  dataToSend: { state: 'endOfConsumption' },
+  id: '5',
+  tokenUsed: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWRlZmZkYjYwYzRjNzA5ODdlN2M5NTUiLCJpYXQiOjE3MTI2NzI2NzgsImV4cCI6MTcxMjY3OTg3OH0.uh_tmBgXmucz5yxbXGDVQE5wmicTJPsO_S5Mg2e8qFs',
+  level: 'warn',
+  message: 'data & id to send to ODEP',
+  timestamp: '2024-04-09T14:25:27.415Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchContractImmaterial',
+  dataReceived: {
+    code: 400,
+    message: 'Unauthorized. You are not the requestor in this contract'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWRlZmZkYjYwYzRjNzA5ODdlN2M5NTUiLCJpYXQiOjE3MTI2NzI2NzgsImV4cCI6MTcxMjY3OTg3OH0.uh_tmBgXmucz5yxbXGDVQE5wmicTJPsO_S5Mg2e8qFs',
+  level: 'error',
+  message: 'error patching immaterial contract',
+  timestamp: '2024-04-09T14:25:31.367Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchOneRegulator',
+  dataToSend: { state: 'endDelivery' },
+  id: '5',
+  tokenUsed: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFjMTNmNmRmZTQ1OTkxNTljNzY1OWIiLCJpYXQiOjE3MTI2NzI3NTMsImV4cCI6MTcxMjY3OTk1M30.zrM2OIen67o_ifHGPQVsmGqQUzWAoAIUk6rzoUGDuX4',
+  level: 'warn',
+  message: 'data & id to send to ODEP',
+  timestamp: '2024-04-09T14:26:25.129Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchContractImmaterial',
+  dataReceived: {
+    code: 400,
+    message: 'Unauthorized. You are not the offerer in this contract'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFjMTNmNmRmZTQ1OTkxNTljNzY1OWIiLCJpYXQiOjE3MTI2NzI3NTMsImV4cCI6MTcxMjY3OTk1M30.zrM2OIen67o_ifHGPQVsmGqQUzWAoAIUk6rzoUGDuX4',
+  level: 'error',
+  message: 'error patching immaterial contract',
+  timestamp: '2024-04-09T14:26:29.114Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchOneRegulator',
+  dataToSend: { state: 'endOfConsumption' },
+  id: '5',
+  tokenUsed: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFjMTNmNmRmZTQ1OTkxNTljNzY1OWIiLCJpYXQiOjE3MTI2NzI3NTMsImV4cCI6MTcxMjY3OTk1M30.zrM2OIen67o_ifHGPQVsmGqQUzWAoAIUk6rzoUGDuX4',
+  level: 'warn',
+  message: 'data & id to send to ODEP',
+  timestamp: '2024-04-09T14:26:34.240Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchContractImmaterial',
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFjMTNmNmRmZTQ1OTkxNTljNzY1OWIiLCJpYXQiOjE3MTI2NzI3NTMsImV4cCI6MTcxMjY3OTk1M30.zrM2OIen67o_ifHGPQVsmGqQUzWAoAIUk6rzoUGDuX4',
+  level: 'info',
+  message: 'success patching immaterial contract',
+  timestamp: '2024-04-09T14:26:38.198Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T07:30:12.661Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T07:30:13.016Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '5' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T07:47:47.242Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T07:47:47.568Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T07:47:50.050Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T07:47:50.330Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '5' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T08:26:06.198Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T08:26:06.520Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T08:35:01.560Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T08:35:01.902Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '5' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T08:35:02.199Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T08:35:02.511Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T08:38:10.047Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T08:38:10.881Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T08:48:30.722Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T08:48:31.064Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '5' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T08:48:31.474Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T08:48:31.812Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchOneRegulator',
+  dataToSend: {},
+  id: '6',
+  tokenUsed: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFjMTNmNmRmZTQ1OTkxNTljNzY1OWIiLCJpYXQiOjE3MTMxODA4NjEsImV4cCI6MTcxMzE4ODA2MX0.bWizGXLf9Ec4lnd8umMz2pwvdQ5AeaaB7M4VDL_4eOI',
+  level: 'warn',
+  message: 'data & id to send to ODEP',
+  timestamp: '2024-04-15T11:34:51.840Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchContractCancel',
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFjMTNmNmRmZTQ1OTkxNTljNzY1OWIiLCJpYXQiOjE3MTMxODA4NjEsImV4cCI6MTcxMzE4ODA2MX0.bWizGXLf9Ec4lnd8umMz2pwvdQ5AeaaB7M4VDL_4eOI',
+  level: 'info',
+  message: 'success patching/cancel contract',
+  timestamp: '2024-04-15T11:34:55.877Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '5' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T14:51:57.869Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T14:51:58.210Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T14:53:35.455Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T14:53:35.769Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '5' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-15T14:53:36.032Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-15T14:53:36.372Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-17T07:34:06.275Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-17T07:34:06.602Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-17T07:40:30.464Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-17T07:40:30.795Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-17T07:41:20.571Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-17T07:41:20.892Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '5' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-17T07:41:21.622Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-17T07:41:21.936Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '4' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-17T07:54:32.462Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-17T07:54:32.821Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '5' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-04-17T07:54:33.596Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-04-17T07:54:33.911Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'testunit',
+    firstName: 'test',
+    lastName: 'unit',
+    roleOfUser: 'prosumer',
+    email: 'testunit@grg.fr',
+    password: '123456',
+    phoneNumber: ''
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTM5MDEyODMsImV4cCI6MTcxMzkwODQ4M30.kto-bbrZyv0PqLeCryR6HIJgryNOJmdWp0g0tMyPP-c',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-04-23T19:41:23.211Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'testunit',
+    firstName: 'test',
+    lastName: 'unit',
+    roleOfUser: 'prosumer',
+    email: 'testunit@grg.fr',
+    password: '123456',
+    phoneNumber: ''
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTM5MDEzODIsImV4cCI6MTcxMzkwODU4Mn0.0jGnM0NGljc_1Q0YK883Dl6DhkJN9KDOsRTYXO4wMtk',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-04-23T19:43:02.743Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'testunit',
+    firstName: 'test',
+    lastName: 'unit',
+    roleOfUser: 'prosumer',
+    email: 'testunit@grg.fr',
+    password: '123456',
+    phoneNumber: ''
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTM5MDE0OTYsImV4cCI6MTcxMzkwODY5Nn0.M_0172IAZxYj-r7qxA6yWN1pY36MHlKrngk0_LaDUDE',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-04-23T19:44:57.026Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'testU',
+    firstName: 'test',
+    lastName: 'User',
+    roleOfUser: 'prosumer',
+    email: 'testU@gkg.fr',
+    password: '123456',
+    phoneNumber: ''
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTM5MDY3MjYsImV4cCI6MTcxMzkxMzkyNn0.XvwKf9pAVsP7S3ih_s4p8zfq1GEtCbsj16bAc2rCuvs',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-04-23T21:12:06.740Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'testU',
+    firstName: 'test',
+    lastName: 'User',
+    roleOfUser: 'prosumer',
+    email: 'testU@gkg.fr',
+    password: '123456',
+    phoneNumber: ''
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGNiYjU3Yzc4ZTcxYTQzNzFlMDdlMWMiLCJpYXQiOjE3MTM5MDY4NjAsImV4cCI6MTcxMzkxNDA2MH0.uNh7MezeCMBwO-BmHzXTOASjGo1akjca8m1ITziXriw',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-04-23T21:14:20.634Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchOneRegulator',
+  dataToSend: {},
+  id: '7',
+  tokenUsed: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFjMTNmNmRmZTQ1OTkxNTljNzY1OWIiLCJpYXQiOjE3MTQ0ODUzOTksImV4cCI6MTcxNDQ5MjU5OX0.D7sbuvQbIySSA7jBnGDd-npz-XXp3llL3_TA03G7mkA',
+  level: 'warn',
+  message: 'data & id to send to ODEP',
+  timestamp: '2024-04-30T14:13:11.124Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchContractCancel',
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFjMTNmNmRmZTQ1OTkxNTljNzY1OWIiLCJpYXQiOjE3MTQ0ODUzOTksImV4cCI6MTcxNDQ5MjU5OX0.D7sbuvQbIySSA7jBnGDd-npz-XXp3llL3_TA03G7mkA',
+  level: 'info',
+  message: 'success patching/cancel contract',
+  timestamp: '2024-04-30T14:13:14.147Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'resilink-test',
+    firstName: 'resilink',
+    lastName: 'test',
+    roleOfUser: 'prosumer',
+    email: 'resilink.test@gmail.com',
+    password: '123456',
+    phoneNumber: '000000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NTQ3NzYsImV4cCI6MTcxNjU2MTk3Nn0.iOvPdOrAs0gdE92hrti3BR2Pv3zF5J1UAN4XenB_K48',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T12:46:16.598Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'resilink-test',
+    firstName: 'resilink',
+    lastName: 'test',
+    roleOfUser: 'prosumer',
+    email: 'resilink.test@gmail.com',
+    password: '123456',
+    phoneNumber: '000000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NTcyMjAsImV4cCI6MTcxNjU2NDQyMH0.EKthjcafBZj6BdeY368_NGn4c4dHf_L6aNp6-xniHNA',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T13:27:01.044Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'resilinkTes',
+    firstName: 'resilink',
+    lastName: 'test',
+    roleOfUser: 'prosumer',
+    email: 'resilink.test@gmail.com',
+    password: '123456',
+    phoneNumber: '000000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NTcyNTUsImV4cCI6MTcxNjU2NDQ1NX0.sUdduDuj2a9wcVOFKBbzequqwgESlmkkSSlg1-TAJzc',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T13:27:36.299Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'ac',
+    firstName: 'a',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'rand@efs.de',
+    password: '123456',
+    phoneNumber: '00000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NTc1MzIsImV4cCI6MTcxNjU2NDczMn0.-k9DIBCZuNLuouLNt5KeErn0Qri9igOG7n8LVQJBcTI',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T13:32:13.011Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'a',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'rand@efs.de',
+    password: '123456',
+    phoneNumber: '00000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NTk2NTksImV4cCI6MTcxNjU2Njg1OX0.VlEIVj4KFd8OdlwUbYLcSpW2K0ecjIO27QCTN9vRAw4',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T14:07:40.599Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'a',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'sefs@sefs.fe',
+    password: '123456',
+    phoneNumber: '00000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NTk3NzIsImV4cCI6MTcxNjU2Njk3Mn0.iJqEqhWQEr2T3ij7ZTgWUf1mSX9v_4ZnMrHPisMHifM',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T14:09:32.966Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'a',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'sefs@sefs.fe',
+    password: '123456',
+    phoneNumber: '00000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NjAxNzAsImV4cCI6MTcxNjU2NzM3MH0.QYxpKbm9sEFqtFqkSHzhRDHxa_jO6Gyra7NrVDIFbBY',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T14:16:10.627Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'a',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'sefs@sefs.fe',
+    password: '123456',
+    phoneNumber: '00000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NjA0NjIsImV4cCI6MTcxNjU2NzY2Mn0.W3WaeTNw2PJULZ-N9Znu99YBi4qHF-3F6sOTvvX-6UM',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T14:21:03.325Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'a',
+    lastName: 'c',
+    roleOfUser: 'prosumer',
+    email: 'sefs@sefs.fe',
+    password: '123456',
+    phoneNumber: '00000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NjIwNjgsImV4cCI6MTcxNjU2OTI2OH0.LjeZUxqm4l8uiLWD9PUrGwbPpq_kaqf-XQOWlAq4zkA',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T14:47:49.317Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'ac',
+    lastName: 'test',
+    roleOfUser: 'prosumer',
+    email: 'dsef@sefs.fr',
+    password: '123456',
+    phoneNumber: '0000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NjI0ODUsImV4cCI6MTcxNjU2OTY4NX0.R98bo1-dtJalzqwsnaihDksmJ7KKiE6ja7ptpLE5S3Y',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T14:54:46.304Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'ac',
+    lastName: 'test',
+    roleOfUser: 'prosumer',
+    email: 'sefs@sef.fr',
+    password: '123456',
+    phoneNumber: '00000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NjM4NjYsImV4cCI6MTcxNjU3MTA2Nn0.MJ_QH20PEEoFQtTluW8DWkGIkfl0P0oBXFY_rJTx8js',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T15:17:47.501Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'ac',
+    lastName: 'test',
+    roleOfUser: 'prosumer',
+    email: 'sefs@sef.fr',
+    password: '123456',
+    phoneNumber: '00000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NjQwNDAsImV4cCI6MTcxNjU3MTI0MH0.pGssoxsHDf3mqEVGyRNrqlj1EUUx-Aryh0JE6evoRP0',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T15:20:40.770Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'ac',
+    lastName: 'test',
+    roleOfUser: 'prosumer',
+    email: 'qefsef@esf.fr',
+    password: '123456',
+    phoneNumber: '0000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NjQzNTMsImV4cCI6MTcxNjU3MTU1M30.8CT1fIjlCpR5gIm2ZmzuoKWc8a85FzgL7PV03zsbIk4',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T15:25:54.114Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'ac',
+    lastName: 'test',
+    roleOfUser: 'prosumer',
+    email: 'qzdq@gdrg.fr',
+    password: '123456',
+    phoneNumber: '0000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NjQ3NzgsImV4cCI6MTcxNjU3MTk3OH0.9ewUm3D81fy_1FMdgcnHGH-3Fo50i32Oje6itmgMKf0',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T15:32:58.542Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'actest',
+    firstName: 'ac',
+    lastName: 'test',
+    roleOfUser: 'prosumer',
+    email: 'qzdq@gdrg.fr',
+    password: '123456',
+    phoneNumber: '0000000',
+    job: 'farmer'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTY1NjQ4NjAsImV4cCI6MTcxNjU3MjA2MH0.mzViWQ4tCnFFvj4zerZ66RD-j3CBcbnH1KthJY46n3E',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-05-24T15:34:20.847Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'resilinkT',
+    firstName: 'resilink',
+    lastName: 't',
+    roleOfUser: 'prosumer',
+    email: 'qzdqd@efsfs.fr',
+    password: '123456',
+    phoneNumber: '22222222222',
+    job: 'worker'
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTkzMzA4MzUsImV4cCI6MTcxOTMzODAzNX0.H7seKVodJjn0_b9HF1rBNexuP7AWYCkNrkpFPjYek2o',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-06-25T15:53:56.382Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'aze',
+    firstName: 'ee',
+    lastName: 'ee',
+    roleOfUser: 'prosumer',
+    email: 'qzdq@yjg.fr',
+    password: '123456',
+    phoneNumber: '',
+    job: ''
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTk0MDgzNzksImV4cCI6MTcxOTQxNTU3OX0.KVuWt7MP85JLA-nAvN3oA1lJEPrJymIOpjSslVEUqHM',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-06-26T13:26:20.529Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'aze',
+    firstName: 'ee',
+    lastName: 'ee',
+    roleOfUser: 'prosumer',
+    email: 'qzdq@yjg.fr',
+    password: '123456',
+    phoneNumber: '',
+    job: ''
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTk0MDk4NzAsImV4cCI6MTcxOTQxNzA3MH0.txH_9ZJrX0SwlKLovbSQd_cE1wYAr1i4V_DR_hlHJeU',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-06-26T13:51:11.314Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'createProsumerCustom',
+  dataToSend: {
+    userName: 'aze',
+    firstName: 'aze',
+    lastName: 'aze',
+    roleOfUser: 'prosumer',
+    email: 'aze@thj.fr',
+    password: '123456',
+    phoneNumber: '',
+    job: ''
+  },
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjMzYjVlNmNmYTNlZjFkY2VhMmRhNzUiLCJpYXQiOjE3MTk0MTA1MjksImV4cCI6MTcxOTQxNzcyOX0.jZNMU6Z7yxkOaoSU2RMNsnmQxmb2wM0ogryQeHV_uxQ',
+  level: 'warn',
+  message: 'data to send to Resilink DB & ODEP',
+  timestamp: '2024-06-26T14:02:12.951Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '5' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-07-08T13:56:45.788Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-07-08T13:56:46.097Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '2' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-07-08T14:58:37.865Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-07-08T14:58:38.163Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  dataToSend: { bookmarkId: '3' },
+  id: 'acazaux',
+  level: 'warn',
+  message: 'data & id to send to local DB',
+  timestamp: '2024-07-08T14:58:38.782Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchBookmarkProsummer',
+  level: 'info',
+  message: "success patching prosummer's bookmark list",
+  timestamp: '2024-07-08T14:58:39.077Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchOneRegulator',
+  dataToSend: { quantity: 0 },
+  id: '14',
+  tokenUsed: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjUwODlhZGMyYzM4NTFlMmY5M2U2ZGQiLCJpYXQiOjE3MjA1MjE4ODksImV4cCI6MTcyMDUyOTA4OX0.LlzL0nxK-pkIohzZ281g5KS4_MMwGDSk-7AkCHYlNbI',
+  level: 'warn',
+  message: 'data & id to send to ODEP',
+  timestamp: '2024-07-09T10:45:24.984Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'patchContractCancel',
+  tokenUsed: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjUwODlhZGMyYzM4NTFlMmY5M2U2ZGQiLCJpYXQiOjE3MjA1MjE4ODksImV4cCI6MTcyMDUyOTA4OX0.LlzL0nxK-pkIohzZ281g5KS4_MMwGDSk-7AkCHYlNbI',
+  level: 'info',
+  message: 'success patching/cancel contract',
+  timestamp: '2024-07-09T10:45:27.034Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'saveImageAsset',
+  data: 'path is not defined',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-16T07:16:14.207Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'saveImageAsset',
+  data: 'path is not defined',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-16T07:35:40.535Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'saveImageAsset',
+  data: 'path is not defined',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-16T07:54:43.700Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'deleteImagesAsset',
+  data: 'Invalid status code: undefined',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-16T15:13:35.337Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'deleteImagesAsset',
+  data: 'Invalid status code: undefined',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-16T15:16:48.459Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'deleteImagesAsset',
+  data: 'Invalid status code: undefined',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-16T15:21:09.225Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'saveImageAsset',
+  data: 'The "path" argument must be of type string. Received type number (42)',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-22T09:03:27.257Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'saveImageAsset',
+  data: 'The "path" argument must be of type string. Received type number (43)',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-22T09:08:14.733Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'saveImageAsset',
+  data: 'The "path" argument must be of type string. Received type number (43)',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-22T09:12:04.426Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'saveImageAsset',
+  data: 'The "path" argument must be of type string. Received type number (43)',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-22T09:12:48.828Z'
+}
+{
+  service: 'PatchDataODEPService',
+  from: 'saveImageAsset',
+  data: 'The "path" argument must be of type string. Received type number (43)',
+  level: 'error',
+  message: 'Catched error',
+  timestamp: '2024-10-22T09:37:57.522Z'
+}
