@@ -35,7 +35,7 @@ module.exports = {
     ENCRYPTION_KEY,
     TOKEN_KEY,
     DB_URL,
-    DB_LOGS_URL
+    DB_LOGS_URL,
     PATH_ODEP_USER,
     PATH_ODEP_PROSUMER,
     PATH_ODEP_REGULATOR,
