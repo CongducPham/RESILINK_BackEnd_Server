@@ -43,7 +43,7 @@ const ratingController = require("../controllers/RatingController.js");
  *               userId: 
  *                 type: string
  *               rating: 
- *                 type: double
+ *                 type: number
  *     responses:
  *       200:
  *         description: New Rating.
@@ -57,7 +57,7 @@ const ratingController = require("../controllers/RatingController.js");
  *                 userId: 
  *                    type: string
  *                 rating: 
- *                    type: double
+ *                    type: number
  *       500:
  *         description: Error from RESILINK server.
  *         content:
@@ -93,7 +93,7 @@ router.post('/rating/', ratingController.createRating);
  *             type: object
  *             properties:
  *                rating: 
- *                  type: double
+ *                  type: number
  *     responses:
  *       200:
  *         description: Success
@@ -169,7 +169,7 @@ router.get('/rating/all', ratingController.getAllRating);
  *                  type: object
  *                  properties:
  *                    averageRating
- *                      type: double
+ *                      type: number
  *       500:
  *         description: Error from RESILINK server.
  *         content:
