@@ -12,9 +12,6 @@ const config = require('./config.js');
 // Path to the folder containing route files
 const routesPath = path.join(__dirname, './routes');
 
-// Exclude these files from the swagger page display
-const excludedFiles = ['RequestRoute.js', 'RegulatorRoute.js', 'ContractRoute.js'];
-
 // Dynamically generate the list of files to include
 const apiFiles = fs.readdirSync(routesPath)
   .filter(file => !excludedFiles.includes(file))
@@ -60,7 +57,7 @@ const swaggerDocs = (app, port) => {
     // Add servers to options
     options.definition.servers = [
         {
-            url: https://resilink-api.onrender.com/v1/api-docs, 
+            url: "https://resilink-api.onrender.com/v1/api-docs", 
         },
     ];
 
