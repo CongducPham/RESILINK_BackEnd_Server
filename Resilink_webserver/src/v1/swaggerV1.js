@@ -13,9 +13,7 @@ const config = require('./config.js');
 const routesPath = path.join(__dirname, './routes');
 
 // Dynamically generate the list of files to include
-const apiFiles = fs.readdirSync(routesPath)
-  .filter(file => !excludedFiles.includes(file))
-  .map(file => path.join(routesPath, file));
+const apiFiles = fs.readdirSync(routesPath).map(file => path.join(routesPath, file));
 
 // Basic Meta Informations about our API
 let options = {
