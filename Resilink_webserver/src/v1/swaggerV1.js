@@ -55,7 +55,7 @@ const swaggerDocs = (app, port) => {
     // Add servers to options
     options.definition.servers = [
         {
-            url: "https://resilink-api.onrender.com/v1/api-docs", 
+            url: "https://resilink-api.onrender.com", 
         },
     ];
 
