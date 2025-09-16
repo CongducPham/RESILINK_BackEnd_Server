@@ -1234,7 +1234,7 @@ router.get('/offers/owner/', offerController.getOfferOwner);
  *                   type: string
  */
 
-router.get('/offers/owner/:id/purchase/', offerController.getOwnerOfferPurchase);
+router.get('/offers/owner/purchase/', offerController.getOwnerOfferPurchase);
 
 /**
  * @swagger
