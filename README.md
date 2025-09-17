@@ -15,7 +15,7 @@ RESILINK is an API built with **Node.js** and **Express**, using **Swagger** for
 ## Prerequisites
 
 - **Node.js** (v18.20 or later)
-- **MongoDB** (Cloud MongoDB cluster or local instance)
+- **MongoDB** (Cloud MongoDB cluster(may be on a local MongoDB instance in the future if needed))
 - **ODEP API** (URLs to be requested from ORANGE)
 
 ## Installation
@@ -39,9 +39,13 @@ npm install
 Create a file named **`RESILINK_Server.env`** at the root of the project with the following variables:
 
 ```
-ENCRYPTION_KEY=your_encryption_key_here
-PORT=your_server_port_here
+IP_ADDRESS= 0.0.0.0
+PORT=3000
+SWAGGER_URL=http://0.0.0.0:3000
+ENCRYPTION_KEY=b32c32aac9c6afd06ab3554415de5edbafc14ef97cc6d0e4ffa678220a57b39f
+TOKEN_KEY=f0d8cd085ada735ac45c30e3368b5b4c87a8e7fb9828a2289af5065bad05b015
 DB_URL= e.g. mongodb+srv://username:password@cluster.mongodb.net/db_name
+DB_LOGS_URL= e.g. mongodb+srv://username:password@cluster.mongodb.net/db_name
 # URLs to access the ODEP API (must be requested from ORANGE or the following address: axel.cazaux@univ-pau.fr)
 PATH_ODEP_USER=https://api.orange.com/odep/user
 PATH_ODEP_PROSUMER=https://api.orange.com/odep/prosumer
@@ -83,24 +87,25 @@ The main routes manage:
 - **Requests** (REQUEST)
 - **Contracts** (CONTRACT)
 - **News** (NEWS)
+- **Rating** (RATING)
 
 ## Project Structure
 
 ```
-/v1
-    /src
+/src
+    /v1
         /controllers      # Handles HTTP requests and responses, interacts with services
         /services         # Business logic for the API
         /database         # Manage data in MongoDB
         /models           # Entity models
         /routes           # API route definitions with swagger annotations
-    config.js           # Configuration variable
-    errors.js           # Definitions of the various errors
-    loggers.js          # Log management
-    swaggersV1.js       # Definition of the swagger page 
-.env                  # Environment variables configuration file
-config.js             # Global configuration file
-server.js             # Main entry point of the API
+        config.js         # Configuration variable
+        errors.js         # Definitions of the various errors
+        loggers.js        # Log management
+        swaggersV1.js     # Definition of the swagger page 
+    index.js            # Main entry point of the API
+RESILINK_Server.env   # Environment variables configuration file
+package.json	      # Packages files
 ```
 
 ## API Documentation
@@ -119,4 +124,4 @@ To deploy this API in a production environment, ensure that all environment vari
 
 ## License
 
-Add license.
+University of Pau and the Pays de l'Adour.
