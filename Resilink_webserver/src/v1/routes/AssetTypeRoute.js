@@ -78,7 +78,7 @@ const router = express.Router();
  * @swagger
  * /v1/ODEP/assetTypes:
  *   post: 
- *     summary: Create a new assetType (from ODEP)
+ *     summary: Create a new assetType
  *     tags: [AssetType]
  *     requestBody:
  *       required: true
@@ -251,7 +251,7 @@ router.get('/assetTypes/all', assetTypeController.getAllAssetTypes);
  * @swagger
  * /v1/ODEP/assetTypes/all/:
  *   get:
- *     summary: Get all asset types (from ODEP)
+ *     summary: Get all asset types
  *     tags: [AssetType]
  *     responses:
  *       200:
@@ -334,7 +334,7 @@ router.get('/ODEP/assetTypes/all/', assetTypeController.getAllAssetTypesDev);
  * @swagger
  * /v1/assetTypes/{id}:
  *   get:
- *     summary: Get an asset type by id (from ODEP)
+ *     summary: Get an asset type by id
  *     tags: [AssetType]
  *     parameters:
  *       - in: path
@@ -421,7 +421,7 @@ router.get('/assetTypes/:id/', assetTypeController.getOneAssetTypes);
  * @swagger
  * /v1/assetTypes/{id}:
  *   put:
- *     summary: update asset type attributes (from ODEP)
+ *     summary: update asset type attributes
  *     tags: [AssetType]
  *     parameters:
  *       - in: path
@@ -516,7 +516,7 @@ router.put('/assetTypes/:id/', assetTypeController.putAssetTypes);
  * @swagger
  * /v1/assetTypes/{id}/:
  *   delete: 
- *     summary: delete an asset type (from ODEP)
+ *     summary: delete an asset type
  *     tags: [AssetType]
  *     parameters:
  *       - in: path

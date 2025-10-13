@@ -32,7 +32,7 @@ const getAllContract = async (req, res) => {
 
 const getOwnerContractOngoing = async (req, res) => {
   try {
-    const response = await ContractService.getOwnerContractOngoing(_pathContractODEP, req.params.id, req.header('Authorization') ?? "");
+    const response = await ContractService.getOwnerContractOngoing(_pathContractODEP, req.header('Authorization') ?? "");
     res.status(response[1]).send(response[0]);
   } catch (error) {
     getDataLogger.error('Catched error', { from: 'getOwnerContractOngoing', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
@@ -52,7 +52,7 @@ const getOneContract = async (req, res) => {
 
 const getContractFromOwner = async (req, res) => {
     try {
-      const response = await ContractService.getContractFromOwner(_pathContractODEP, req.params.id, req.header('Authorization') ?? "");
+      const response = await ContractService.getContractFromOwner(_pathContractODEP, req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
       getDataLogger.error('Catched error', { from: 'getContractFromOwner', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});

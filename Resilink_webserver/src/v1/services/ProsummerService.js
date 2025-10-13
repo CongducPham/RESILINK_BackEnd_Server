@@ -16,9 +16,11 @@ const Utils = require("./Utils.js");
 const createProsummer = async (url, body, token) => {
   patchDataODEP.warn('data to send to ODEP', { from: 'createProsummer', dataToSend: body, username: Utils.getUserIdFromToken(token) ?? "no user associated with the token"});
   
-  const job = body["job"];
+  const activityDomain = body["activityDomain"];
+  const specificActivity = body["specificActivity"];
   const location = body["location"];
-  delete body["job"];
+  delete body["activityDomain"];
+  delete body["specificActivity"];
   delete body["location"];
   
   const response = await Utils.fetchJSONData(
@@ -27,7 +29,7 @@ const createProsummer = async (url, body, token) => {
     headers = {'accept': 'application/json',
      'Content-Type': 'application/json',
      'Authorization': token},
-     body
+    body
   );
   const data = await Utils.streamToJSON(response.body);
   if(response.status == 401) {
@@ -38,7 +40,7 @@ const createProsummer = async (url, body, token) => {
     updateDataODEP.info('success creating one prosummer', { from: 'createProsummer', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
   }
 
-  ProsummerDB.newProsumer(body['id'], job, location);
+  ProsummerDB.newProsumer(body['id'], location, activityDomain, specificActivity);
   updateDataODEP.info('success creating one prosummer status in ODEP and Resilink DB', { from: 'createProsummer', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
 
   return [data, response.status];
@@ -73,9 +75,11 @@ const createProsumerCustom = async(url, urlUser, body, token) => {
   const admin = await userService.functionGetTokenUser({userName: "admin", password: "admin123"});
   patchDataODEP.warn('data to send to Resilink DB & ODEP', { from: 'createProsumerCustom', dataToSend: body, username: Utils.getUserIdFromToken(admin[0]["accessToken"]) ?? "no user associated with the token"});
 
-  const job = body["job"];
+  const activityDomain = body["activityDomain"];
+  const specificActivity = body["specificActivity"];
   const location = body["location"];
-  delete body["job"];
+  delete body["activityDomain"];
+  delete body["specificActivity"];
   delete body["location"];
 
   const user = await userService.createUserResilink(urlUser, body, admin[0]["accessToken"]);
@@ -113,11 +117,13 @@ const createProsumerCustom = async(url, urlUser, body, token) => {
     updateDataODEP.info('success creating one user and his prosummer status in ODEP', { from: 'createProsumerCustom', username: Utils.getUserIdFromToken(admin[0]["accessToken"]) ?? "no user associated with the token".replace(/^Bearer\s+/i, '')});
   }
 
-  ProsummerDB.newProsumer(user[0].userName, job, location);
+  await ProsummerDB.newProsumer(user[0].userName, location, activityDomain, specificActivity);
   updateDataODEP.info('success creating one user and his prosummer status in ODEP and Resilink DB', { from: 'createProsumerCustom', username: Utils.getUserIdFromToken(admin[0]["accessToken"]) ?? "no user associated with the token".replace(/^Bearer\s+/i, '')});
-  body['job'] = job ?? "";
+  body['activityDomain'] = activityDomain ?? "";
+  body['specificActivity'] = specificActivity ?? "";
   body['location'] = location ?? "";
   body['bookMarked'] = [];
+  body['blockedOffer'] = [];
   return [{user: user[0], prosumer: body}, response.status];
 };
 
@@ -161,7 +167,8 @@ const updateUserProsumerCustom = async (url, body, id, token) => {
       updateDataODEP.info('success accessing one user by username', { from: 'updateUserProsumerCustom', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
     }
 
-    await ProsummerDB.updateJob(body['user']['userName'], body['prosumer']['job']);
+    await ProsummerDB.updateActivityDomain(body['user']['userName'], body['prosumer']['activityDomain']);
+    await ProsummerDB.updateSpecificActivity(body['user']['userName'], body['prosumer']['specificActivity']);
     await ProsummerDB.updateLocation(body['user']['userName'], body['prosumer']['location']);
     return [{'user': userODEP[0], 'prosumer': body['prosumer']}, userODEP[1]];
   } catch (e) {
@@ -255,22 +262,22 @@ const patchBalanceProsummer = async (url, body, id, token) => {
   return [data, response.status];
 };
 
-//Patches a prosumer job in RESILINK
-const patchJobProsummer = async (body, id, token) => {
+//Patches a prosumer activityDomain in RESILINK
+const patchActivityDomainProsummer = async (body, id, token) => {
   try {
     const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
-    if (username == null || username != id || username != "admin") {
+    if (username == null || (username != id && username != "admin")) {
       return [{message: "no user associated with the token"}, 401]
     }
-    patchDataODEP.warn('data & id to send to local DB', { from: 'patchJobProsummer', dataToSend: body, id: id, username: username});
-    const data = await ProsummerDB.updateJob(id, body['job']);
-    patchDataODEP.info('success patching prosummer\'s bookmark list', { from: 'patchJobProsummer', username: username});
-    return [{message: "Prosumer job successfully changed"}, 200];
+    patchDataODEP.warn('data & id to send to local DB', { from: 'patchActivityDomainProsummer', dataToSend: body, id: id, username: username});
+    const data = await ProsummerDB.updateActivityDomain(id, body['activityDomain']);
+    patchDataODEP.info('success patching prosummer\'s activityDomain', { from: 'patchActivityDomainProsummer', username: username});
+    return [{message: "Prosumer activityDomain successfully changed"}, 200];
   } catch (e) {
     if (e instanceof notValidBody) {
-      patchDataODEP.error('body is not valid', { from: 'patchJobProsummer', dataReceived: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      patchDataODEP.error('body is not valid', { from: 'patchActivityDomainProsummer', dataReceived: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
     } else {
-      patchDataODEP.error('error patching prosummer\'s job', { from: 'patchJobProsummer', dataReceived: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      patchDataODEP.error('error patching prosummer\'s activityDomain', { from: 'patchActivityDomainProsummer', dataReceived: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
     }
     throw(e);
   }
@@ -302,7 +309,7 @@ const patchSharingProsummer = async (url, body, id, token) => {
 const patchBookmarkProsummer = async (body, id, token) => {
   try {
     const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
-    if (username == null || username != id || username != "admin") {
+    if (username == null || (username != id && username != "admin")) {
       return [{message: "no user associated with the token"}, 401]
     }
     if (isNaN(body['bookmarkId'])) {
@@ -326,7 +333,7 @@ const patchBookmarkProsummer = async (body, id, token) => {
 const deleteIdBookmarkedList = async (owner, id, token) => {
   try {
     const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
-    if (username == null || username != owner || username != "admin") {
+    if (username == null || (username != id && username != "admin")) {
       return [{message: "no user associated with the token"}, 401]
     }
     if (isNaN(id)) {
@@ -349,7 +356,7 @@ const deleteIdBookmarkedList = async (owner, id, token) => {
 const patchAddblockedOffersProsummer = async (body, id, token) => {
   try {
     const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
-    if (username == null || username != id || username != "admin") {
+    if (username == null || (username != id && username != "admin")) {
       return [{message: "no user associated with the token"}, 401]
     }
     if (isNaN(body['offerId'])) {
@@ -373,7 +380,7 @@ const patchAddblockedOffersProsummer = async (body, id, token) => {
 const deleteIdBlockedOffersList = async (owner, id, token) => {
   try {
     const username = Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, ''));
-    if (username == null || username != owner || username != "admin") {
+    if (username == null || (username != id && username != "admin")) {
       return [{message: "no user associated with the token"}, 401]
     }
     if (isNaN(id)) {
@@ -425,7 +432,7 @@ module.exports = {
     patchBalanceProsummer,
     patchSharingProsummer,
     patchBookmarkProsummer,
-    patchJobProsummer,
+    patchActivityDomainProsummer,
     patchAddblockedOffersProsummer,
     deleteIdBookmarkedList,
     deleteIdBlockedOffersList,

@@ -38,6 +38,12 @@ const router = express.Router();
  *         assetId:
  *           type: integer
  *           description: ID of the asset
+ *         transactionType:
+ *           type: string
+ *           enum:
+ *             - rent
+ *             - sale/purchase
+ *           description: Defines the type of transaction ("rent" or "sale/purchase")
  *         beginTimeSlot:
  *           type: string
  *           format: date-time
@@ -91,6 +97,9 @@ const router = express.Router();
  *         paymentFrequency:
  *           type: number
  *           description: "Payment frequency for periodic payments"
+ *         country:
+ *           type: string
+ *           description: The country where the offer comes from
  *         rentInformation:
  *           type: object
  *           description: Required information in case of rent
@@ -126,6 +135,12 @@ const router = express.Router();
  *         assetType:
  *           type: string
  *           description: "The assetType of the offer being filtered"
+ *         transactionType:
+ *           type: string
+ *           enum:
+ *             - sale/purchase
+ *             - rent
+ *           description: "The type of transaction"
  *         latitude:
  *           type: string
  *           description: "Geographical point representing latitude of the search location"
@@ -173,7 +188,7 @@ const router = express.Router();
  * @swagger
  * /v1/offers:
  *   post: 
- *     summary: create a new offer (from ODEP)
+ *     summary: create a new offer
  *     tags: [Offer]
  *     requestBody:
  *       description: offer's data.
@@ -209,6 +224,10 @@ const router = express.Router();
  *                   - periodic
  *               paymentFrequency:
  *                 type: number
+ *               transactionType:
+ *                 type: string
+ *               country:
+ *                 type: string
  *               rentInformation:
  *                 type: object
  *                 properties:
@@ -321,6 +340,10 @@ router.post('/offers/', offerController.createOffer);
  *                       - periodic
  *                   paymentFrequency:
  *                     type: number
+ *                   transactionType:
+ *                     type: string
+ *                   country:
+ *                     type: string
  *                   phoneNumber:
  *                     type: string
  *                   rentInformation:
@@ -426,6 +449,10 @@ router.get('/offers/all/Mapped', offerController.getAllOfferResilinkCustom);
  *                       - periodic
  *                   paymentFrequency:
  *                     type: number
+ *                   transactionType:
+ *                     type: string
+ *                   country:
+ *                     type: string
  *                   phoneNumber:
  *                     type: string
  *                   rentInformation:
@@ -552,6 +579,10 @@ router.get('/offers/suggested/:id', offerController.getSuggestedOfferForResilink
  *                           - periodic
  *                       paymentFrequency:
  *                         type: number
+ *                       transactionType:
+ *                         type: string
+ *                       country:
+ *                         type: string
  *                       phoneNumber:
  *                         type: string
  *                         description: Offerer's phone number
@@ -728,6 +759,10 @@ router.get('/offers/LimitedOffer', offerController.getLimitedOfferForResilinkCus
  *                           - periodic
  *                       paymentFrequency:
  *                         type: number
+ *                       transactionType:
+ *                         type: string
+ *                       country:
+ *                         type: string
  *                       phoneNumber:
  *                         type: string
  *                         description: Offerer's phone number
@@ -850,6 +885,10 @@ router.get('/offers/owner/blockedOffer/:id/', offerController.getBlockedOfferFor
  *                 type: string
  *               assetType:
  *                 type: string
+ *               transactionType:
+ *                 type: string
+ *               country:
+ *                 type: string
  *               latitude:
  *                 type: string
  *               longitude:
@@ -922,6 +961,10 @@ router.get('/offers/owner/blockedOffer/:id/', offerController.getBlockedOfferFor
  *                       - periodic
  *                   paymentFrequency:
  *                     type: number
+ *                   transactionType:
+ *                     type: string
+ *                   country:
+ *                     type: string
  *                   rentInformation:
  *                     type: object
  *                     properties:
@@ -1019,6 +1062,10 @@ router.post('/offers/all/resilink/filtered/', offerController.getOfferFiltered);
  *                       - periodic
  *                   paymentFrequency:
  *                     type: number
+ *                   transactionType:
+ *                     type: string
+ *                   country:
+ *                     type: string
  *                   rentInformation:
  *                     type: object
  *                     properties:
@@ -1178,6 +1225,10 @@ router.get('/offers/owner/', offerController.getAllOwnerOffer);
  *                           - periodic
  *                       paymentFrequency:
  *                         type: number
+ *                       transactionType:
+ *                         type: string
+ *                       country:
+ *                         type: string
  *                       rentInformation:
  *                         type: object
  *                         properties:
@@ -1230,7 +1281,7 @@ router.get('/offers/owner/purchase/', offerController.getOwnerOfferPurchase);
  * @swagger
  * /v1/offers/all:
  *   get:
- *     summary: Get all offers (from ODEP)
+ *     summary: Get all offers
  *     tags: [Offer]
  *     responses:
  *       200:
@@ -1277,6 +1328,10 @@ router.get('/offers/owner/purchase/', offerController.getOwnerOfferPurchase);
  *                       - periodic
  *                   paymentFrequency:
  *                     type: number
+ *                   transactionType:
+ *                     type: string
+ *                   country:
+ *                     type: string
  *                   rentInformation:
  *                     type: object
  *                     properties:
@@ -1379,6 +1434,10 @@ router.get('/offers/all/', offerController.getAllOffer);
  *                     - periodic
  *                 paymentFrequency:
  *                   type: number
+ *                 transactionType:
+ *                   type: string
+ *                 country:
+ *                   type: string
  *                 phoneNumber:
  *                   type: string
  *                 rentInformation:
@@ -1476,6 +1535,10 @@ router.get('/offers/:id/', offerController.getOneOffer);
  *                   - periodic
  *               paymentFrequency:
  *                 type: number
+ *               transactionType:
+ *                 type: string
+ *               country:
+ *                 type: string
  *               rentInformation:
  *                 type: object
  *                 properties:
@@ -1613,6 +1676,10 @@ router.put('/offers/:id/', offerController.putOffer);
  *                       - periodic
  *                   paymentFrequency:
  *                     type: number
+ *                   transactionType:
+ *                     type: string
+ *                   country:
+ *                     type: string
  *                   rentInformation:
  *                     type: object
  *                     properties:
@@ -1740,6 +1807,10 @@ router.put('/offers/:id/updateOfferAsset/', offerController.putOfferAsset);
  *                       - periodic
  *                   paymentFrequency:
  *                     type: number
+ *                   transactionType:
+ *                     type: string
+ *                   country:
+ *                     type: string
  *                   rentInformation:
  *                     type: object
  *                     properties:
@@ -1782,7 +1853,7 @@ router.post('/offers/createOfferAsset/', offerController.createOfferAsset);
  * @swagger
  * /v1/offers/{id}/:
  *   delete: 
- *     summary: delete an offer (from ODEP)
+ *     summary: delete an offer
  *     tags: [Offer]
  *     parameters:
  *       - in: path

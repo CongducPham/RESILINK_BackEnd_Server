@@ -68,7 +68,7 @@ const getOneContract = async (url, id, token) => {
 }
 
 //Retrieves all contracts created by user with the user's id
-const getContractFromOwner = async (url, id, token) => {
+const getContractFromOwner = async (url, token) => {
     const response = await Utils.fetchJSONData(
         'GET',
         url + "owner", 
@@ -86,10 +86,10 @@ const getContractFromOwner = async (url, id, token) => {
 }
 
 //Recovers all a user's contracts and keeps only those that are not finished with adding theirs asset types
-const getOwnerContractOngoing = async (url, id, token) => {
+const getOwnerContractOngoing = async (url, token) => {
     const response = await Utils.fetchJSONData(
         'GET',
-        url + "owner/" + id, 
+        url + "owner", 
         headers = {'accept': 'application/json',
         'Authorization': token}
     );

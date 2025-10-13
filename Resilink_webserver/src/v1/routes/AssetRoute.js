@@ -74,7 +74,7 @@ const router = express.Router();
  * @swagger
  * /v1/ODEP/assets:
  *   post: 
- *     summary: Create a new asset (from ODEP)
+ *     summary: Create a new asset only in ODEP (from ODEP)
  *     tags: [Asset]
  *     requestBody:
  *       required: true
@@ -153,7 +153,7 @@ router.post('/ODEP/assets/', assetController.createAsset);
  * @swagger
  * /v1/assets:
  *   post: 
- *     summary: Create a new asset
+ *     summary: Create a new asset in ODEP and local/cluster DB
  *     tags: [Asset]
  *     requestBody:
  *       required: true
@@ -240,7 +240,7 @@ router.post('/assets/', assetController.createAssetCustom);
  * @swagger
  * /v1/ODEP/assets/owner:
  *   get:
- *     summary: Get assets by owner (from ODEP)
+ *     summary: Get assets by owner without RESILINK DB data(from ODEP)
  *     tags: [Asset]
  *     responses:
  *       200:
@@ -400,7 +400,7 @@ router.get('/assets/owner', assetController.getOwnerAssetCustom);
  * @swagger
  * /v1/ODEP/assets/all:
  *   get:
- *     summary: Get accessible assets in the exchange place (from ODEP)
+ *     summary: Get accessible assets in the exchange place without RESILINK DB data(from ODEP)
  *     tags: [Asset]
  *     responses:
  *       200:
@@ -562,7 +562,7 @@ router.get('/assets/all', assetController.getAllAssetCustom);
  * @swagger
  * /v1/ODEP/assets/{id}:
  *   get:
- *     summary: Get an asset by id (from ODEP)
+ *     summary: Get an asset by id without RESILINK DB data (from ODEP)
  *     tags: [Asset]
  *     parameters:
  *       - in: path
@@ -855,7 +855,7 @@ router.get('/assets/assetImg/:id/', assetController.getOneAssetIdimage);
  * @swagger
  * /v1/ODEP/assets/{id}:
  *   put: 
- *     summary: update an asset attributes (from ODEP)
+ *     summary: update an asset attributes only in ODEP (from ODEP)
  *     tags: [Asset]
  *     parameters:
  *       - in: path
@@ -940,7 +940,7 @@ router.put('/ODEP/assets/:id/', assetController.putAsset);
  * @swagger
  * /v1/assets/{id}:
  *   put: 
- *     summary: update an asset attributes
+ *     summary: update an asset attributes in ODEP and local/cluster DB
  *     tags: [Asset]
  *     parameters:
  *       - in: path
@@ -1029,7 +1029,7 @@ router.put('/assets/:id/', assetController.putAssetCustom);
  * @swagger
  * /v1/ODEP/assets/{id}/:
  *   delete: 
- *     summary: delete an asset (from ODEP)
+ *     summary: delete an asset only in ODEP (from ODEP)
  *     tags: [Asset]
  *     parameters:
  *       - in: path
@@ -1087,7 +1087,7 @@ router.delete('/ODEP/assets/:id/', assetController.deleteAsset);
  * @swagger
  * /v1/assets/{id}/:
  *   delete: 
- *     summary: delete an asset
+ *     summary: delete an asset in ODEP and local/cluster DB
  *     tags: [Asset]
  *     parameters:
  *       - in: path

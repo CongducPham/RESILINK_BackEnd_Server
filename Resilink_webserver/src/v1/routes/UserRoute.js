@@ -107,7 +107,7 @@ const router = express.Router();
  *   post: 
  *     security:
  *         - noAuth: []
- *     summary: Retrieve data and access token from a user (from ODEP)
+ *     summary: Retrieve data and access token from a user
  *     tags: [users]
  *     requestBody:
  *       description: Sign in to get access token.
@@ -177,7 +177,7 @@ router.post('/users/auth/sign_in/', userController.getTokenUser);
  * @swagger
  * /v1/ODEP/users/:
  *   post: 
- *     summary: Create a new User (from ODEP)
+ *     summary: Create a new User only in ODEP
  *     tags: [users]
  *     parameters:
  *       - in: query
@@ -341,7 +341,7 @@ router.post('/users/', userController.createUserCustom);
  * @swagger
  * /v1/ODEP/users/:
  *   get:
- *     summary: Return list of users (from ODEP)
+ *     summary: Return list of users without RESILINK DB data
  *     tags: [users]
  *     responses:
  *       200:
@@ -451,7 +451,7 @@ router.get('/users/', userController.getAllUserCustom);
  * @swagger
  * /v1/ODEP/users/{userId}/:
  *   get: 
- *     summary: Find user by ID (from ODEP)
+ *     summary: Find user by ID without RESILINK DB data
  *     tags: [users]
  *     parameters:
  *       - in: path
@@ -509,7 +509,7 @@ router.get('/ODEP/users/:userId', userController.getUserById);
  * @swagger
  * /v1/ODEP/users/getUserByEmail/{userEmail}/:
  *   get: 
- *     summary: get user by Email (from ODEP)
+ *     summary: get user by Email without RESILINK DB data
  *     tags: [users]
  *     parameters:
  *       - in: path
@@ -629,7 +629,7 @@ router.get('/users/getUserByEmail/:userEmail', userController.getUserByEmailCust
  * @swagger
  * /v1/ODEP/users/getUserByUserName/{userName}/:
  *   get: 
- *     summary: Username of user to return (from ODEP)
+ *     summary: Username of user to return without RESILINK DB data
  *     tags: [users]
  *     parameters:
  *       - in: path

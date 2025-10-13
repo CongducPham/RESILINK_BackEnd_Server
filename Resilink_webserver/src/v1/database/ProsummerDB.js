@@ -19,9 +19,16 @@ const getAllProsummer = async (prosumerList) => {
           var prosumers = await _collection.findOne({ _id : prosumerList[i].id });
           if (prosumers != null) {
             prosumerList[i].bookMarked = prosumers.bookMarked;
-            prosumerList[i].job = prosumers.job;
             prosumerList[i].location = prosumers.location;
-            prosumerList[i].blockedOffers = prosumers.blockedOffers ?? []
+            prosumerList[i].blockedOffers = prosumers.blockedOffers ?? [];
+            prosumerList[i].activityDomain = prosumers.activityDomain ?? "";
+            prosumerList[i].specificActivity = prosumers.specificActivity ?? ""
+          } else {
+            prosumerList[i].bookMarked = [];
+            prosumerList[i].location = "";
+            prosumerList[i].blockedOffers = [];
+            prosumerList[i].activityDomain = "";
+            prosumerList[i].specificActivity = ""
           }
         }
 
@@ -42,16 +49,17 @@ const getOneProsummer = async (prosumer) => {
         const prosumers = await _collection.findOne({ _id: prosumer.id });
 
         if (prosumers == null || prosumers.length === 0) {
-          /*
-           * not exception possible for the moment, since not all the users had been registered in RESISILINK DB
-          */
-          //throw new getDBError("prosummer not found in DB")
           prosumer.bookMarked = [];
+          prosumer.location = "";
+          prosumer.blockedOffers = [];
+          prosumer.activityDomain = "";
+          prosumer.specificActivity = ""
         } else {
           prosumer.bookMarked = prosumers.bookMarked;
-          prosumer.job = prosumers.job;
           prosumer.location = prosumers.location;
-          prosumer.blockedOffers = prosumers.blockedOffers ?? []
+          prosumer.blockedOffers = prosumers.blockedOffers ?? [];
+          prosumer.activityDomain = prosumers.activityDomain;
+          prosumer.specificActivity = prosumers.specificActivity
         }
         getDataLogger.info('succes retrieving one prosummer in Resilink DB', { from: 'getOneProsummer'});
         return prosumers;
@@ -65,74 +73,20 @@ const getOneProsummer = async (prosumer) => {
     }
 }
 
-//Retrieves one prosumer by its username (id)
-const getOneProsummerWithUsername = async (prosumerName) => {
-  try {
-      const _database = await connectToDatabase();
-      const _collection = _database.collection('prosumer');
-  
-      const prosumers = await _collection.findOne({ _id: prosumerName });
-
-      var bookMarkedList = [];
-      if (prosumers == null || prosumers.length === 0) {
-        /*
-         * not exception possible for the moment, since not all the users had been registered in RESISILINK DB
-        */
-        //throw new getDBError("prosummer not found in DB")
-      } else {
-        bookMarkedList = [...prosumers.bookMarked];      
-      }
-      getDataLogger.info('succes retrieving one prosummer in Resilink DB', { from: 'getBookmarkedProsumer'});
-      return prosumers;
-  } catch (e) {
-    if (e instanceof getDBError) {
-      getDataLogger.error('error retrieving one prosummer in Resilink DB', { from: 'getBookmarkedProsumer'});
-    } else {
-      connectDB.error('error connecting to DB', { from: 'getBookmarkedProsumer',  error: e});
-    }
-    throw(e);
-  }
-}
-
-// Retrieves a user by id in RESILINK DB
-const getJobProsummer = async (id) => {
-  try {
-    const _database = await connectToDatabase();
-    const _collection = _database.collection('prosumer');
-
-    var job;
-    var prosummer = await _collection.findOne({ _id: id });
-    if (prosummer != null) {
-      job = prosummer.job;
-    } else {
-      throw new getDBError();
-    }
-
-    getDataLogger.info('succes retrieving prosummer\'s job in Resilink DB', { from: 'getJobProsummer'});
-    return job;
-
-  } catch (e) {
-    if (e instanceof getDBError) {
-      updateData.error('error retrieving prosummer\'s job in Resilink DB', { from: 'getJobProsummer', error: e.message});
-    } else {
-      connectDB.error('error connecting to DB', { from: 'getJobProsummer', error: e.message});
-    }
-  }
-}
-
 // Creates a prosumer in RESILINK DB
-const newProsumer = async (id, job, location) => {
+const newProsumer = async (id, location, activityDomain, specificActivity) => {
   try {
     const _database = await connectToDatabase();
     const _collection = _database.collection('prosumer');
 
-    updateData.info('data to insert', { from: 'newProsumer', _id: id, job: job});
+    updateData.info('data to insert', { from: 'newProsumer', _id: id, location: location, activityDomain: activityDomain, specificActivity: specificActivity});
     const prosumer = await _collection.insertOne({
       "_id": id,
       "bookMarked": [],
       "blockedOffers": [],
-      "job": job,
-      "location": location
+      "location": location,
+      "activityDomain": activityDomain,
+      "specificActivity": specificActivity
     });
 
     if (prosumer == null) {
@@ -152,7 +106,7 @@ const newProsumer = async (id, job, location) => {
 };
 
 // Update the job from a prosumer
-const updateJob  = async (prosumerId, job) => {
+const updateActivityDomain  = async (prosumerId, activityDomain) => {
   try {
     const _database = await connectToDatabase();
     const _collection = _database.collection('prosumer');
@@ -160,22 +114,52 @@ const updateJob  = async (prosumerId, job) => {
     // Update the document to update the job
     const result = await _collection.updateOne(
       { "_id": prosumerId },
-      { $set: { "job": job } }
+      { $set: { "activityDomain": activityDomain } }
     );
 
     if (result.matchedCount === 0) {
       throw new UpdateDBError("Prosumer not found");
     } else if (result.modifiedCount === 0) {
-      updateData.info('The job value was the same, no update performed.', { from: 'updateJob' });
+      updateData.info('The activityDomain value was the same, no update performed.', { from: 'updateActivityDomain' });
     } else {
-      updateData.info('Success updating prosumer\'s job field', { from: 'updateJob' });
+      updateData.info('Success updating prosumer\'s activityDomain field', { from: 'updateActivityDomain' });
     }
 
   } catch (e){
     if (e instanceof UpdateDBError) {
-      updateData.error('error updating job field in Resilink DB', { from: 'updateJob'});
+      updateData.error('error updating activityDomain field in Resilink DB', { from: 'updateActivityDomain'});
     } else {
-      connectDB.error('error connecting to DB ', { from: 'updateJob',  error: e});
+      connectDB.error('error connecting to DB ', { from: 'updateActivityDomain',  error: e});
+    }
+    throw(e);
+  }
+};
+
+// Update the job from a prosumer
+const updateSpecificActivity  = async (prosumerId, specificActivity) => {
+  try {
+    const _database = await connectToDatabase.connectToDatabase();
+    const _collection = _database.collection('prosumer');
+
+    // Update the document to update the job
+    const result = await _collection.updateOne(
+      { "id": prosumerId },
+      { $set: { "specificActivity": specificActivity } }
+    );
+
+    if (result.matchedCount === 0) {
+      throw new UpdateDBError("Prosumer not found");
+    } else if (result.modifiedCount === 0) {
+      updateData.info('The specificActivity value was the same, no update performed.', { from: 'updateSpecificActivity' });
+    } else {
+      updateData.info('Success updating prosumer\'s specificActivity field', { from: 'updateSpecificActivity' });
+    }
+
+  } catch (e){
+    if (e instanceof UpdateDBError) {
+      updateData.error('error updating job field in Resilink DB', { from: 'updateSpecificActivity'});
+    } else {
+      connectDB.error('error connecting to DB ', { from: 'updateSpecificActivity',  error: e});
     }
     throw(e);
   }
@@ -344,6 +328,30 @@ const getProsumerBlockedOffers  = async (prosumerId,) => {
   }
 };
 
+//Retrieves one prosumer by its username (id)
+const getOneProsummerWithUsername = async (prosumerName) => {
+  try {
+      const _database = await connectToDatabase();
+      const _collection = _database.collection('prosumer');
+
+      const prosumer = await _collection.findOne({ _id: prosumerName });
+
+      if (prosumer == null || prosumer.length === 0) {
+          throw new getDBError("no prosummer found");
+      } 
+      getDataLogger.info('succes retrieving one prosummer in Resilink DB', { from: 'getBookmarkedProsumer'});
+      return prosumer;
+
+  } catch (e) {
+    if (e instanceof getDBError) {
+      getDataLogger.error('error retrieving one prosummer in Resilink DB', { from: 'getBookmarkedProsumer'});
+    } else {
+      connectDB.error('error connecting to DB', { from: 'getBookmarkedProsumer',  error: e});
+    }
+    throw(e);
+  }
+}
+
 // Update the blockedOffers list from a prosumer to delete an offer id
 const deleteBlockedOffersId  = async (id, owner) => {
   try {
@@ -436,9 +444,9 @@ module.exports = {
     newProsumer,
     getOneProsummer,
     getOneProsummerWithUsername,
-    updateJob,
+    updateActivityDomain,
+    updateSpecificActivity,
     updateLocation,
-    getJobProsummer,
     addbookmarked,
     deleteBookmarkedId,
     addIdToBlockedOffers,

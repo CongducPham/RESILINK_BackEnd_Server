@@ -36,9 +36,12 @@ const router = express.Router();
  *         location: 
  *           type: string
  *           description: "The localization of the user (e.g: 'France/Pau')"
- *         job:          
+ *         activityDomain:          
  *           type: string
- *           description: "The profession of the user"
+ *           description: "The user's field of activity"
+ *         specificActivity:          
+ *           type: string
+ *           description: "The user's specific activity"
  *         bookMarked: 
  *           type: array
  *           description: "A list of bookmarked News id"
@@ -48,7 +51,8 @@ const router = express.Router();
  *         id: mKGJSI2
  *         sharingAccount: 100
  *         balance: 254.8
- *         job: ""
+ *         activityDomain: ""
+ *         specificActivity: ""
  *         location: ""
  *         email: username@hotmail.com
  *         phoneNumber: 1023456789    
@@ -58,7 +62,7 @@ const router = express.Router();
  * @swagger
  * /v1/ODEP/prosumers/all:
  *   get:
- *     summary: Get all prosumers (from ODEP)
+ *     summary: Get all prosumers without RESILINK DB data
  *     tags: [Prosumer]
  *     requestBody:
  *       required: false
@@ -140,8 +144,10 @@ router.get('/ODEP/prosumers/all', prosumerController.getAllProsummer);
  *                          type: number
  *                      balance:
  *                          type: number
- *                      job:
- *                          type: string
+ *                      activityDomain:
+ *                        type: string
+ *                      specificActivity:
+ *                        type: string
  *                      location:
  *                          type: string
  *                      bookMarked:
@@ -192,7 +198,7 @@ router.get('/prosumers/all', prosumerController.getAllProsummerCustom);
  * @swagger
  * /v1/ODEP/prosumers/{id}:
  *   get:
- *     summary: Get a prosumer by id (from ODEP)
+ *     summary: Get a prosumer by id without RESILINK DB data
  *     tags: [Prosumer]
  *     parameters:
  *       - in: path
@@ -279,7 +285,9 @@ router.get('/ODEP/prosumers/:id/', prosumerController.getOneProsumer);
  *                   type: number
  *                 balance:
  *                   type: number
- *                 job:
+ *                 activityDomain:
+ *                   type: string
+ *                 specificActivity:
  *                   type: string
  *                 location:
  *                   type: string
@@ -345,7 +353,9 @@ router.get('/prosumers/:id/', prosumerController.getOneProsummerCustom);
  *                 type: number
  *               balance:
  *                 type: number
- *               job:
+ *               activityDomain:
+ *                 type: string
+ *               specificActivity:
  *                 type: string
  *               location:
  *                 type: string
@@ -413,7 +423,9 @@ router.post('/prosumers/new/', prosumerController.createProsumer);
  *                 type: string
  *               gps:
  *                 type: string
- *               job:
+ *               activityDomain:
+ *                 type: string
+ *               specificActivity:
  *                 type: string
  *               location:
  *                 type: string
@@ -479,7 +491,7 @@ router.post('/prosumers/newAccount/', prosumerController.createProsumerCustom);
  * @swagger
  * /v1/ODEP/prosumers/{id}/:
  *   delete: 
- *     summary: delete a prosumer (from ODEP)
+ *     summary: delete a prosumer only in ODEP
  *     tags: [Prosumer]
  *     parameters:
  *       - in: path
@@ -540,7 +552,7 @@ router.delete('/ODEP/prosumers/:id', prosumerController.deleteOneProsummer);
  * @swagger
  * /v1/ODEP/prosumers/{id}/balance:
  *   patch: 
- *     summary: credit a prosumer balance (from ODEP)
+ *     summary: credit a prosumer balance in ODEP
  *     tags: [Prosumer]
  *     parameters:
  *       - in: path
@@ -639,7 +651,9 @@ router.patch('/ODEP/prosumers/:id/balance', prosumerController.patchBalanceProsu
  *               prosumer:
  *                 type: object
  *                 properties:
- *                   job:
+ *                   activityDomain:
+ *                     type: string
+ *                   specificActivity:
  *                     type: string
  *                   location:
  *                     type: string
@@ -661,9 +675,9 @@ router.put('/prosumers/:prosumerId/', prosumerController.putUserProsumerPersonna
 
 /**
  * @swagger
- * /v1/prosumers/{id}/job:
+ * /v1/prosumers/{id}/activityDomain:
  *   patch: 
- *     summary: update a prosumer job
+ *     summary: update a prosumer activityDomain
  *     tags: [Prosumer]
  *     parameters:
  *       - in: path
@@ -678,7 +692,7 @@ router.put('/prosumers/:prosumerId/', prosumerController.putUserProsumerPersonna
  *           schema:
  *             type: object
  *             properties:
- *               job:
+ *               activityDomain:
  *                 type: string
  *     responses:
  *       200:
@@ -701,13 +715,13 @@ router.put('/prosumers/:prosumerId/', prosumerController.putUserProsumerPersonna
  *                   type: string
  */
 
-router.patch('/prosumers/:id/job', prosumerController.patchJobProsummer);
+router.patch('/prosumers/:id/activityDomain', prosumerController.patchActivityDomainProsummer);
 
 /**
  * @swagger
  * /v1/ODEP/prosumers/{id}/sharingAccount:
  *   patch: 
- *     summary: credit a prosumer sharing account (from ODEP)
+ *     summary: credit a prosumer sharing account in ODEP
  *     tags: [Prosumer]
  *     parameters:
  *       - in: path

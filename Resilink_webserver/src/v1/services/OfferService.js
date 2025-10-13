@@ -12,6 +12,7 @@ const Asset = require("./AssetService.js");
 const Contract = require("./ContractService.js");
 const UserDB = require("../database/UserDB.js");
 const PosumerDB = require("../database/ProsummerDB.js");
+const OfferDB = require("../database/OfferDB.js");
 
 const pathODEPAsset = config.PATH_ODEP_ASSET;
 const pathODEPContract = config.PATH_ODEP_CONTRACT;
@@ -38,6 +39,8 @@ const getAllOfferForResilinkCustom = async (url, token) => {
       getDataLogger.error("error trying to fetch Offer or Asset or AssetType from ODEP", { from: 'getAllOfferFilteredCustom', dataOffer: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
       return [allAssetType[1] != 200 ? allAssetType[0] : allAssetResilink[1] != 200 ? allAssetResilink[0] : data, allOffer.status];
     };
+
+    await OfferDB.getAllOffer(data);
 
     //For each offer, checks if its validity date has not passed and if there is a quantity above 0 if it is an immaterial offer.
     for (const key in data) {
@@ -84,6 +87,8 @@ const getSuggestedOfferForResilinkCustom = async (url, owner, token) => {
       getDataLogger.error("error trying to fetch Offer or Asset or AssetType from ODEP", { from: 'getSuggestedOfferForResilinkCustom', dataOffer: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
       return [allAssetType[1] != 200 ? allAssetType[0] : allAssetResilink[1] != 200 ? allAssetResilink[0] : data, allOffer.status];
     };
+
+    await OfferDB.getAllOffer(data);
 
     const validOffers = [];
     const validMapAssets = {};
@@ -142,6 +147,8 @@ const getLimitedOfferForResilinkCustom = async (url, offerNbr, iteration, token)
       getDataLogger.error("Error fetching Offer or Asset or AssetType from ODEP", {from: 'getLimitedOfferForResilinkCustom',dataOffer: data,username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
       return [allAssetType[1] != 200 ? allAssetType[0] : allAssetResilink[1] != 200 ? allAssetResilink[0] : data, allOffer.status];
   }
+
+  await OfferDB.getAllOffer(data);
 
   const validOffers = [];
   const validMapAssets = {};
@@ -360,6 +367,22 @@ const getAllOfferFilteredCustom = async (url, filter, token) => {
           }
         };
 
+        //Checks if the filter has a country property, if so checks if its value is equal to the offer's country
+        if(filter.hasOwnProperty("country") && filter["country"] != ""){
+          if (allOffer[key]["country"].toLowerCase() != filter["country"].toLowerCase()) {
+            isCompatible = false;
+            continue;
+          }
+        };
+
+        //Checks if the filter has a “transactionType” property, if so checks that its value is equal to the offer's transaction type
+        if(filter.hasOwnProperty("transactionType")){
+          if (allAsset[allOffer[key]["assetId"]]["transactionType"] != filter["transactionType"]) {
+            isCompatible = false;
+            continue;
+          }
+        };
+
         //Checks if the filter has a “minPrice” property, if so checks that its value is lower than the offer price
         if(filter.hasOwnProperty("minPrice")){
           if (allOffer[key]["price"] < filter["minPrice"]) {
@@ -495,12 +518,24 @@ const getAllOwnerOffer = async (url, token) => {
     getDataLogger.error('error retrieving all offers', { from: 'getAllOwnerOffer' , data: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
   } else {
     getDataLogger.info('success retrieving all offers', { from: 'getAllOwnerOffer', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    await OfferDB.getAllOffer(data);
   }
   return [data, response.status];
 };
 
 //Creates an offer in ODEP
 const createOffer = async (url, body, token) => {
+
+  if (body['transactionType'] == null || (body['transactionType'] != "sale/purchase" && body['transactionType'] != "rent")) {
+      updateDataODEP.error('error transactionType does not match the correct values', { from: 'createOffer', dataToSend: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{message: 'transactionType does not match the correct values'}, 400]
+  }
+
+  const transactionType = body['transactionType'];
+  const country = body['country'];
+  delete body['transactionType'];
+  delete body['country'];
+
   updateDataODEP.warn('data to send to ODEP', { from: 'createOffer', dataToSend: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
   const response = await Utils.fetchJSONData(
       'POST',
@@ -516,6 +551,7 @@ const createOffer = async (url, body, token) => {
     updateDataODEP.error('error creating an offer', { from: 'createOffer', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
   } else {
     updateDataODEP.info('success creating an offer', { from: 'createOffer', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    await OfferDB.newOffer(data['offerId'], transactionType, country);
   }
   return [data, response.status];
 };
@@ -562,6 +598,7 @@ const getAllOffer = async (url, token) => {
     getDataLogger.error('error retrieving all offers', { from: 'getAllOffer' , data: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
   } else {
     getDataLogger.info('success retrieving all offers', { from: 'getAllOffer', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    await OfferDB.getAllOffer(data);
   }
   return [data, response.status];
 };
@@ -586,10 +623,12 @@ const getAllOfferMapped = async (url, token) => {
   } else {
     getDataLogger.info('success retrieving all offers', { from: 'getAllOfferMapped', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
 
+    await OfferDB.getAllOffer(data);
     for (const key in data) {
       const offer = data[key];
       allOffer[offer["id"].toString()] = offer;
     }
+    
     return [allOffer, response.status];
   }
 
@@ -610,12 +649,24 @@ const getOneOffer = async (url, id, token) => {
     getDataLogger.error('error retrieving an offer', { from: 'getOneOffer' , data: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
   } else {
     getDataLogger.info('success retrieving an offer', { from: 'getOneOffer', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    await OfferDB.getOffer(id, data);
   }
   return [data, response.status];
 };
 
 //Updates the offer by id in ODEP
 const putOffer = async (url, body, id, token) => {
+  
+  if (body['transactionType'] == null || (body['transactionType'] != "sale/purchase" && body['transactionType'] != "rent")) {
+      updateDataODEP.error('error transactionType does not match the correct values', { from: 'createOffer', dataToSend: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{message: 'transactionType does not match the correct values'}, 400]
+  }
+
+  const transactionType = body['transactionType'];
+  const country = body['country'];
+  delete body['transactionType'];
+  delete body['country'];
+
   updateDataODEP.warn('data to send to ODEP', { from: 'putOffer', dataToSend: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
   const response = await Utils.fetchJSONData(
       'PUT',
@@ -632,12 +683,19 @@ const putOffer = async (url, body, id, token) => {
     updateDataODEP.error('error updating an offer', { from: 'putOffer', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
   } else {
     updateDataODEP.info('success updating an offer', { from: 'putOffer', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    await OfferDB.updateOffer(id, transactionType, country);
   }
   return [data, response.status];
 };
 
 //Updates the offer and its asset by id in ODEP
 const putOfferAsset = async (url, body, id, token) => {
+
+  if (body['offer']['transactionType'] == null || (body['offer']['transactionType'] != "sale/purchase" && body['offer']['transactionType'] != "rent")) {
+      updateDataODEP.error('error transactionType does not match the correct values', { from: 'putOfferAsset', dataToSend: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      return [{message: 'transactionType does not match the correct values'}, 400]
+  }
+
   const putAsset = await Asset.putAssetCustom(pathODEPAsset, body['asset'], body['offer']['assetId'], token);
   if (putAsset[1] == 401) {
     updateDataODEP.error('error: Unauthorize', { from: 'putOfferAsset', dataReceived: newsAsset[0], username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
@@ -647,13 +705,19 @@ const putOfferAsset = async (url, body, id, token) => {
     return [putAsset[0], putAsset[1]];
   } else {
     updateDataODEP.warn('data to send to ODEP', { from: 'putOfferAsset', dataToSend: body, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    
+    const transactionType = body['offer']['transactionType'];
+    const country = body['offer']['country'];
+    delete body['offer']['transactionType'];
+    delete body['offer']['country'];
+  
     const response = await Utils.fetchJSONData(
-        'PUT',
-        url + id, 
-        headers = {'accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': token},
-        body['offer']
+      'PUT',
+      url + id, 
+      headers = {'accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': token},
+      body['offer']
     );
     const data = await Utils.streamToJSON(response.body);
     if(response.status == 401) {
@@ -662,6 +726,7 @@ const putOfferAsset = async (url, body, id, token) => {
       updateDataODEP.error('error updating an offer', { from: 'putOfferAsset', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
     } else {
       updateDataODEP.info('success updating an offer', { from: 'putOfferAsset', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+      await OfferDB.updateOffer(id, transactionType, country);
     }
     return [data, response.status];
   }
@@ -683,6 +748,7 @@ const deleteOffer = async (url, id, token) => {
     deleteDataODEP.error('error deleting an offer', { from: 'deleteOffer', dataReceived: data, username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
   } else {
     deleteDataODEP.info('success deleting an offer', { from: 'deleteOffer', username: Utils.getUserIdFromToken(token.replace(/^Bearer\s+/i, '')) ?? "no user associated with the token"});
+    await OfferDB.deleteOffer(id);
   }
   return [data, response.status];
 };

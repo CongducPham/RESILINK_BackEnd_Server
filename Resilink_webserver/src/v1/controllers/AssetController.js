@@ -122,7 +122,7 @@ const putAsset = async (req, res) => {
 
 const putAssetCustom = async (req, res) => { 
   try {
-      const response = await assetService.putAsset(_pathAssetODEP, req.body, req.params.id, req.header('Authorization') ?? "");
+      const response = await assetService.putAssetCustom(_pathAssetODEP, req.body, req.params.id, req.header('Authorization') ?? "");
       res.status(response[1]).send(response[0]);
     } catch (error) {
       updateDataODEP.error('Catched error', { from: 'putAssetCustom', data: error.message, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});

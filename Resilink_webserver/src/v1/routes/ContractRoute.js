@@ -398,16 +398,10 @@ router.get('/contracts/all', contractController.getAllContract);
 
 /**
  * @swagger
- * /v1/contracts/owner/ongoing/{id}:
+ * /v1/contracts/owner/ongoing/:
  *   get: 
  *     summary: Get ongoing contracts by owner
  *     tags: [Contracts]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string 
- *         required: true
  *     responses:
  *       200:
  *         description: Ok
@@ -505,7 +499,7 @@ router.get('/contracts/all', contractController.getAllContract);
  *                       type: string
  */
 
-router.get('/contracts/owner/ongoing/:id/', contractController.getOwnerContractOngoing);
+router.get('/contracts/owner/ongoing/', contractController.getOwnerContractOngoing);
 
 /**
  * @swagger
@@ -513,12 +507,6 @@ router.get('/contracts/owner/ongoing/:id/', contractController.getOwnerContractO
  *   get: 
  *     summary: Get contracts by owner (from ODEP)
  *     tags: [Contracts]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string 
- *         required: true
  *     responses:
  *       200:
  *         description: Ok

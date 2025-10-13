@@ -101,9 +101,9 @@ const patchBalanceProsumer = async (req, res) => {
   }
 };
 
-const patchJobProsummer = async (req, res) => {
+const patchActivityDomainProsummer = async (req, res) => {
   try {
-    const response = await prosummerService.patchJobProsummer(req.body, req.params.id, req.header('Authorization') ?? "");
+    const response = await prosummerService.patchActivityDomainProsummer(req.body, req.params.id, req.header('Authorization') ?? "");
     res.status(response[1]).send(response[0]);
   } catch (error) {
     patchDataODEP.error('Catched error', { from: 'patchBalanceProsumer', data: error, tokenUsed: req.header('Authorization') != null ? req.header('Authorization').replace(/^Bearer\s+/i, '') : "token not found"});
@@ -180,7 +180,7 @@ module.exports = {
     putUserProsumerPersonnalData,
     patchBalanceProsumer,
     patchSharingProsumer,
-    patchJobProsummer,
+    patchActivityDomainProsummer,
     createProsumerCustom,
     getAllProsummerCustom,
     patchBookmarkProsumer,
