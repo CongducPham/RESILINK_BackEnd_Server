@@ -8,3 +8,8 @@ scripts/migrateEmailsToAES.js
 scripts/migrateOffersAcceptSharing.js
 scripts/migratePasswordsToBcrypt.js
 scripts/seedTestUsers.js
+
+Dockerfile
+docker-compose.yml
+.dockerignore
+docker/
