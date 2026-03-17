@@ -1,1 +1,10 @@
 *.env
+node_modules
+
+public/images
+public/imagesBackUp
+
+scripts/migrateEmailsToAES.js
+scripts/migrateOffersAcceptSharing.js
+scripts/migratePasswordsToBcrypt.js
+scripts/seedTestUsers.js

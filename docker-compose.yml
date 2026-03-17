@@ -1,0 +1,81 @@
+version: "3.8"
+
+services:
+
+  # ──────────────────────────────────────────────
+  # Instance 1 – Central Server (Atlas MongoDB)
+  # Uses the existing RESILINK_Server.env as-is.
+  # IP_ADDRESS is overridden to 0.0.0.0 so the
+  # container can accept connections from outside.
+  # ──────────────────────────────────────────────
+  resilink-central:
+    build: .
+    container_name: resilink-central
+    ports:
+      - "9990:9990"
+    volumes:
+      - ./RESILINK_Server.env:/app/RESILINK_Server.env:ro
+      - ./public/images:/app/public/images
+    environment:
+      - IP_ADDRESS=0.0.0.0
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────
+  # Instance 2 – Secondary Server (local MongoDB)
+  # ──────────────────────────────────────────────
+  resilink-server2:
+    build: .
+    container_name: resilink-server2
+    ports:
+      - "9991:9991"
+    volumes:
+      - ./docker/server2.env:/app/RESILINK_Server.env:ro
+      - ./public/images:/app/public/images
+    depends_on:
+      mongo-server2:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  mongo-server2:
+    image: mongo:7
+    container_name: mongo-server2
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-server2-data:/data/db
+    restart: unless-stopped
+
+  # ──────────────────────────────────────────────
+  # Instance 3 – Third Server (local MongoDB)
+  # ──────────────────────────────────────────────
+  resilink-server3:
+    build: .
+    container_name: resilink-server3
+    ports:
+      - "9992:9992"
+    volumes:
+      - ./docker/server3.env:/app/RESILINK_Server.env:ro
+      - ./public/images:/app/public/images
+    depends_on:
+      mongo-server3:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  mongo-server3:
+    image: mongo:7
+    container_name: mongo-server3
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo-server3-data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo-server2-data:
+  mongo-server3-data:
