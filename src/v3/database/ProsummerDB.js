@@ -11,10 +11,10 @@ const connectDB = winston.loggers.get('ConnectDBResilinkLogger');
 const deleteData = winston.loggers.get('DeleteDataResilinkLogger')
 
 const encodeServerNameKey = (serverName) =>
-  String(serverName).replaceAll('.', '%2E').replaceAll('$', '%24');
+  encodeURIComponent(String(serverName)).replaceAll('.', '%2E');
 
 const decodeServerNameKey = (serverKey) =>
-  String(serverKey).replaceAll('%2E', '.').replaceAll('%24', '$');
+  decodeURIComponent(String(serverKey));
 
 /**
  * Retrieves all prosumer documents.

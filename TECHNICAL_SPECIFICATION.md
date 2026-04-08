@@ -1,6 +1,6 @@
-# RESILINK v2 - Complete Technical Specification
+# RESILINK v3 - Complete Technical Specification
 
-**Version**: 2.0  
+**Version**: 3.0  
 **Date**: February 2026  
 **Author**: Axel Cazaux - UPPA  
 **License**: UPPA  
@@ -17,7 +17,7 @@
 6. [Security and Authentication](#6-security-and-authentication)
 7. [Multi-Server Federation](#7-multi-server-federation)
 8. [Technologies and Stack](#8-technologies-and-stack)
-9. [Configuration and Deployment](#9-configuration-and-deployment)
+9. [Configuration and Installation](#9-configuration-and-installation)
 10. [Logging and Monitoring](#10-logging-and-monitoring)
 11. [Flow Diagrams](#11-flow-diagrams)
 12. [Appendices](#12-appendices)
@@ -28,7 +28,7 @@
 
 ### 1.1 Project Description
 
-**RESILINK v2** (MainWithoutODEP branch) is a Node.js/Express middleware platform that facilitates **resource/asset discovery and contact exchange** between users (prosumers) in a **decentralized federated network**. It acts as a peer-to-peer marketplace enabling:
+**RESILINK v3** (MainWithoutODEP branch) is a Node.js/Express middleware platform that facilitates **resource/asset discovery and contact exchange** between users (prosumers) in a **decentralized federated network**. It acts as a peer-to-peer marketplace enabling:
 
 - **Offer publication** (resources, products, or services for sale/rental)
 - **Offer discovery** from local server and federated servers
@@ -87,7 +87,7 @@
                              │ HTTPS/REST
                              ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    RESILINK v2 SERVER (Node.js)                 │
+│                    RESILINK v3 SERVER (Node.js)                 │
 │                                                                 │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐           │
 │  │   Routes     │→ │ Controllers  │→ │  Services    │           │
@@ -120,11 +120,11 @@ src/
 ├── middlewares/
 │   ├── serverAuth.js          # Network key auth for other servers
 │   └── optionalAuth.js        # Optional auth for public routes
-└── v2/
+└── v3/
     ├── config.js              # Environment variables loader
     ├── errors.js              # Custom error classes
     ├── loggers.js             # Winston loggers configuration
-    ├── swaggerV2.js           # Swagger documentation setup
+    ├── swaggerV3.js           # Swagger documentation setup
     │
     ├── routes/                # HTTP Routes + Swagger annotations
     │   ├── UserRoute.js
@@ -196,9 +196,9 @@ Client → Routes → Middleware Auth → Controller → Service → Database �
                                           Federated Servers
 ```
 
-**Exemple concret: GET /v2/offers/federated/all**
+**Exemple concret: GET /v3/offers/federated/all**
 
-1. **Client** sends `GET /v2/offers/federated/all` with `Authorization: Bearer <JWT>`
+1. **Client** sends `GET /v3/offers/federated/all` with `Authorization: Bearer <JWT>`
 2. **Route** (`OfferRoute.js`) matches pattern and applies `auth({ required: false })`
 3. **Middleware** (`optionalAuth.js`) decodes JWT if present, attaches `req.user`
 4. **Controller** (`OfferController.js`) calls `OfferService.getFederatedOffersCustom(req.user)`
@@ -271,7 +271,7 @@ Client → Routes → Middleware Auth → Controller → Service → Database �
     "news_id_1",
     "news_id_2"
   ],
-  blockedOffers: {                   // Multi-server blocking map (NEW v2.1)
+  blockedOffers: {                   // Multi-server blocking map (NEW v3.1)
     "actualServer": [123, 456],      // Blocked offers from local server
     "https://server1.com": [789],    // Blocked offers from server1
     "https://server2.com": [101]     // Blocked offers from server2
@@ -572,7 +572,7 @@ Client → Routes → Middleware Auth → Controller → Service → Database �
 - `id` (unique)
 
 **Behavior**:
-- GET `/v2/offers/federated/all` aggregates offers from favorite servers
+- GET `/v3/offers/federated/all` aggregates offers from favorite servers
 - Users without favorites → local offers only
 
 ---
@@ -634,7 +634,7 @@ FavoriteServers.servers[] ──> RegisteredServers (external URLs)
 
 ### 4.1 URL Structure
 
-**Base URL**: `https://resilink-dp.org/v2`  
+**Base URL**: `https://resilink-dp.org/v3`  
 **Documentation**: `https://resilink-dp.org/api-docs` (Swagger UI)
 
 ### 4.2 Authentication
@@ -669,7 +669,7 @@ FavoriteServers.servers[] ──> RegisteredServers (external URLs)
 
 ```bash
 # Login
-POST /v2/users/auth/sign_in
+POST /v3/users/auth/sign_in
 {
   "userName": "john_doe",
   "password": "SecurePass123!"
@@ -707,15 +707,15 @@ POST /v2/users/auth/sign_in
 
 ```bash
 # Block offer from external server
-POST /v2/prosumers/john_doe/blocked-offers/server
+POST /v3/prosumers/john_doe/blocked-offers/server
 {
   "serverName": "https://resilink-toulouse.org",
   "offerId": "789"
 }
 
 # View all blocked offers
-GET /v2/prosumers/john_doe/blocked-offers/all
-→ Response: {
+GET /v3/prosumers/john_doe/blocked-offers/all
+→ Response: \{
   "blockedOffers": \{
     "actualServer": ["123", "456"\],
     "https://resilink-toulouse.org": ["789"]
@@ -757,7 +757,7 @@ GET /v2/prosumers/john_doe/blocked-offers/all
 
 ```bash
 # Create offer (Energy example)
-POST /v2/offers
+POST /v3/offers
 Authorization: Bearer <token>
 {
   "assetId": 789,
@@ -781,16 +781,16 @@ Authorization: Bearer <token>
 }
 
 # Local offers only
-GET /v2/offers/local/all
-→ Response: {
-  "actualServer": {
+GET /v3/offers/local/all
+→ Response: \{
+  "actualServer": \{
     "123": { id: 123, price: 150, ... },
     "456": { id: 456, price: 200, ... }
   }
 }
 
 # Federated offers (local + user favorites)
-GET /v2/offers/federated/all
+GET /v3/offers/federated/all
 Authorization: Bearer <token>
 → Response: \{
   "actualServer": { "123": {...}, "456": {...} },
@@ -870,7 +870,7 @@ Authorization: Bearer <token>
 | PUT | `/news/:id` | ✅ | Update news |
 | DELETE | `/news/:id` | ✅ | Delete news |
 
-**🔧 TOKEN_REQUIRED**: Authentification dépendante de la variable d'environnement `TOKEN_REQUIRED` dans `.env`
+**🔧 TOKEN_REQUIRED**: Authentication dependent on the environment variable `TOKEN_REQUIRED` in `.env`
 
 ---
 
@@ -885,12 +885,12 @@ Authorization: Bearer <token>
 | PUT | `/rating/:userId` | ✅ | Update/modify rating |
 | DELETE | `/rating/:userId` | ✅ | Delete rating |
 
-**🔧 TOKEN_REQUIRED**: Authentification dépendante de la variable d'environnement `TOKEN_REQUIRED` dans `.env`
+**🔧 TOKEN_REQUIRED**: Authentication dependent on the environment variable `TOKEN_REQUIRED` in `.env`
 
 **Example:**
 
 ```bash
-PUT /v2/rating/john_doe
+PUT /v3/rating/john_doe
 {
   "userId": "alice_smith",
   "rating": 4.5
@@ -927,9 +927,9 @@ PUT /v2/rating/john_doe
 | DELETE | `/registeredservers/:serverName` | ✅ | Delete server |
 
 **Auth**: 
-- 🔑 **Network Key**: Authentification via header `X-Resilink-Network-Key` (variable d'environnement `RESILINK_NETWORK_KEY`)
-- 🔧 **TOKEN_REQUIRED**: Authentification dépendante de la variable d'environnement `TOKEN_REQUIRED` dans `.env`
-- ✅ **JWT User**: Authentification JWT obligatoire
+- 🔑 **Network Key**: Authentication via header `X-Resilink-Network-Key` (environment variable `RESILINK_NETWORK_KEY`)
+- 🔧 **TOKEN_REQUIRED**: Authentication dependent on the environment variable `TOKEN_REQUIRED` in `.env`
+- ✅ **JWT User**: Mandatory JWT authentication
 
 ---
 
@@ -950,7 +950,7 @@ PUT /v2/rating/john_doe
 ```bash
 
 # View favorites
-GET /v2/favoriteServers/john_doe
+GET /v3/favoriteServers/john_doe
 → Response: \{
   "id": "john_doe",
   "servers": [
@@ -1068,7 +1068,7 @@ GET /v2/favoriteServers/john_doe
 
 #### 5.1.3 Offer Blocking (Multi-Server)
 
-**New system v2.1:**
+**New system v3.1:**
 
 ```javascript
 // blockedOffers structure
@@ -1126,7 +1126,7 @@ prosumer.blockedOffers = {
 
 **Local:**
 ```bash
-POST /v2/registeredservers
+POST /v3/registeredservers
 Headers:
   X-Resilink-Network-Key: <NETWORK_KEY>
 {
@@ -1137,7 +1137,7 @@ Headers:
 
 **Global (Central Server):**
 ```bash
-POST https://central.resilink.org/v2/registeredservers
+POST https://central.resilink.org/v3/registeredservers
 Headers:
   X-Resilink-Network-Key: <NETWORK_KEY>
 Body: { ... }
@@ -1159,7 +1159,7 @@ async function getFederatedOffersCustom(user) {
     // 3. For each favorite server
     for (serverUrl of favorites.servers) {
       // External fetch
-      const externalOffers = await fetch(`${serverUrl}/v2/offers/local/all`);
+      const externalOffers = await fetch(`${serverUrl}/v3/offers/local/all`);
       
       // 4. Filter blocked offers for this server
       const blockedOffers = user.blockedOffers[serverUrl] || [];
@@ -1269,7 +1269,7 @@ module.exports = function auth({ required = true } = {}) {
 
 1. **User browses offers** (local or federated)
    ```bash
-   GET /v2/offers/federated/all
+   GET /v3/offers/federated/all
    ```
 
 2. **User views offer details** including prosumer information:
@@ -1508,7 +1508,7 @@ When `CENTRAL_SERVER_URL` points to another server, this server will **join that
 
 **API Endpoint:**
 ```bash
-POST https://main-server.resilink.org/v2/registeredservers
+POST https://main-server.resilink.org/v3/registeredservers
 Headers:
   X-Resilink-Network-Key: <NETWORK_KEY>
   Content-Type: application/json
@@ -1529,7 +1529,7 @@ Response: 200 OK
 Any server (main or member) can query the network registry:
 
 ```bash
-GET https://any-server.resilink.org/v2/registeredservers
+GET https://any-server.resilink.org/v3/registeredservers
 
 Response: 200 OK
 [
@@ -1600,7 +1600,7 @@ Each user can **select favorite servers** from the network to aggregate their of
 
 **Add favorite server:**
 ```bash
-POST /v2/favoriteServers/john_doe/add/resilink-toulouse
+POST /v3/favoriteServers/john_doe/add/resilink-toulouse
 Authorization: Bearer <JWT>
 
 Response: 200 OK
@@ -1611,7 +1611,7 @@ Response: 200 OK
 
 **View user's favorites:**
 ```bash
-GET /v2/favoriteservers/john_doe
+GET /v3/favoriteservers/john_doe
 Authorization: Bearer <JWT>
 
 Response: 200 OK
@@ -1639,8 +1639,8 @@ Response: 200 OK
 Client → Server A (Toulouse)
          ├─ Fetch local offers (Server A database)
          ├─ Get user's favorite servers
-         ├─ Fetch https://resilink-pau.org/v2/offers/all/Mapped
-         ├─ Fetch https://resilink-bordeaux.org/v2/offers/all/Mapped
+         ├─ Fetch https://resilink-pau.org/v3/offers/all/Mapped
+         ├─ Fetch https://resilink-bordeaux.org/v3/offers/all/Mapped
          └─ Aggregate all results and return to client
 ```
 
@@ -1648,7 +1648,7 @@ Offer aggregation is **not centralized** — each server (including the main ser
 
 #### 7.4.2 Aggregation Algorithm
 
-**Endpoint**: `GET /v2/offers/federated/all`
+**Endpoint**: `GET /v3/offers/federated/all`
 
 **Implemented in**: `OfferService.js#getFederatedOffersCustom()`
 
@@ -1675,7 +1675,7 @@ async function getFederatedOffersCustom(user) {
     const results = await Promise.allSettled(
       favorites.servers.map(async (serverUrl) => {
         const externalOffers = await getOffersFromFavoriteServer(
-          serverUrl, "/v2/offers/local/all"
+          serverUrl, "/v3/offers/local/all"
         );
         return { serverUrl, externalOffers };
       })
@@ -1708,7 +1708,7 @@ async function getFederatedOffersCustom(user) {
 }
 ```
 
-**Note:** External server fetching uses **`Promise.allSettled`** for parallel execution. Each server is fetched simultaneously via `getOffersFromFavoriteServer()` which authenticates with a public account (`POST /v2/users/auth/sign_in`), then retrieves offers. `Promise.allSettled` guarantees that **one server's failure never blocks others** — rejected promises are simply skipped.
+**Note:** External server fetching uses **`Promise.allSettled`** for parallel execution. Each server is fetched simultaneously via `getOffersFromFavoriteServer()` which authenticates with a public account (`POST /v3/users/auth/sign_in`), then retrieves offers. `Promise.allSettled` guarantees that **one server's failure never blocks others** — rejected promises are simply skipped.
 
 #### 7.4.3 Response Format
 
@@ -1758,7 +1758,7 @@ async function getFederatedOffersCustom(user) {
 ```javascript
 const results = await Promise.allSettled(
   favorites.servers.map(async (serverUrl) => {
-    const externalOffers = await getOffersFromFavoriteServer(serverUrl, "/v2/offers/all/Mapped");
+    const externalOffers = await getOffersFromFavoriteServer(serverUrl, "/v3/offers/all/Mapped");
     return { serverUrl, externalOffers };
   })
 );
@@ -1839,16 +1839,16 @@ No network participation, only local offers
 ### 7.6 API Version Compatibility
 
 **Endpoint versioning:**
-- `/v2/offers/local/all` - Current version
+- `/v3/offers/local/all` - Current version
 
 **Cross-version compatibility:**
-- V2 servers can fetch from other V2 servers
+- V3 servers can fetch from other V3 servers
 - Response format standardized as JSON object with server URLs as keys
 
 **Required for federation:**
 - HTTPS in production (HTTP allowed in development)
 - JSON response format
-- `/v2/` prefix in URL
+- `/v3/` prefix in URL
 
 ---
 
@@ -1930,69 +1930,90 @@ No network participation, only local offers
 
 ### 8.3 Project Structure
 
+> **See [Section 2.2 – Architecture Interne (MVC+S)](#22-architecture-interne-mvcs)** for the complete annotated source tree with every file listed.
+
+**Root-level overview:**
+
 ```
 RESILINK_Render_Server/
 ├── package.json
 ├── README.md
 ├── TECHNICAL_SPECIFICATION.md (this document)
 ├── RESILINK_Server.env (configuration)
-│
-├── public/
-│   ├── Confidentiality.html
-│   ├── TECHNICAL_SPECIFICATION.html
-│   └── images/
-│       ├── 0/, 1/, ..., 75/ (AssetType images)
-│       └── NaN/
-│
-└── src/
-    ├── index.js (entry point)
-    ├── middlewares/
-    │   ├── serverAuth.js
-    │   └── optionalAuth.js
-    │
-    └── v2/
-        ├── config.js
-        ├── errors.js
-        ├── loggers.js
-        ├── swaggerV2.js
-        │
-        ├── routes/ (13 files)
-        ├── controllers/ (13 files)
-        ├── services/ (14 files)
-        └── database/ (14 files)
+├── public/               # Static files (HTML, images)
+└── src/                  # Application source (MVC+S architecture)
 ```
 
 ---
 
-## 9. Configuration and Deployment
+## 9. Configuration and Installation
 
 ### 9.1 Environment Variables
 
 **File**: `RESILINK_Server.env` (project root)
 
-```bash
-# Server
-IP_ADDRESS=resilink-dp.org
-PORT=9990
-SWAGGER_URL=https://resilink-dp.org
+#### Server
 
-# Security
-ENCRYPTION_KEY=your_encryption_key_here
-TOKEN_KEY=your_token_key_here
-TOKEN_REQUIRED=true
+**`IP_ADDRESS`**
+> IP address or hostname the server binds to.
+> Example: `192.168.1.10`, `0.0.0.0`
 
-# Federation
-CENTRAL_SERVER_URL=https://central.resilink.org
-RESILINK_NETWORK_KEY=your_network_key_here
+**`PORT`**
+> TCP port the HTTP server listens on.
+> Example: `9990`
 
-# Database
-DB_URL=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/ResilinkWithoutODEP
-DB_LOGS_URL=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/Logs
-```
+**`SWAGGER_URL`**
+> Public base URL used by Swagger UI to build "Try it out" requests.
+> Example: `https://my-resilink.example.com`
+
+**`SERVER_NAME`**
+> Display name shown in federated responses to identify this server.
+> Example: `RESILINK Pau`
+
+#### Security
+
+**`ENCRYPTION_KEY`**
+> 256-bit hex key (64 chars) for AES-256-CBC encryption of emails and phone numbers.
+> Generate with: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+> Example: `a1b2c3d4e5f6...` (64 hex characters)
+
+**`TOKEN_KEY`**
+> 256-bit hex key (64 chars) used as JWT signing secret. Generate the same way as `ENCRYPTION_KEY`.
+> Example: `f0e1d2c3b4a5...` (64 hex characters)
+
+**`TOKEN_REQUIRED`**
+> If `true`, all GET endpoints require a valid JWT token. If `false`, GET endpoints are publicly accessible without authentication.
+> Example: `true` or `false`
+
+#### Federation
+
+**`CENTRAL_SERVER_URL`**
+> URL of the main/central RESILINK server (network showcase). If set to this server's own URL, this server becomes the main server of the network.
+> Example: `https://main.resilink.org`
+
+**`RESILINK_NETWORK_KEY`**
+> Shared secret authenticating servers within the same federation network. Generate your own key to create a new network, or obtain one from an existing network administrator.
+> Example: `b626...851e` (64 hex characters)
+
+#### Database
+
+**`DB_MODE`**
+> Database mode selector. Determines how MongoDB connections are configured.
+> - `atlas` — uses `DB_URL` and `DB_LOGS_URL` connection strings (MongoDB Atlas or any remote cluster)
+> - `local` — uses `mongodb://127.0.0.1:27017` automatically (`DB_URL` and `DB_LOGS_URL` are ignored)
+> Example: `atlas` or `local`
+
+**`DB_URL`**
+> MongoDB connection string for the main business database (`ResilinkWithoutODEP`). Only used when `DB_MODE=atlas`.
+> Example: `mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/ResilinkWithoutODEP`
+
+**`DB_LOGS_URL`**
+> MongoDB connection string for the logging database (`Logs`). Only used when `DB_MODE=atlas`.
+> Example: `mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/Logs`
 
 **⚠️ Security:**
 - **NEVER** commit `.env` to Git
-- Generate `ENCRYPTION_KEY` and `TOKEN_KEY` with:
+- `ENCRYPTION_KEY` and `TOKEN_KEY` must be cryptographically random. Generate with:
   ```bash
   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
   ```
@@ -2002,174 +2023,43 @@ DB_LOGS_URL=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/Logs
 
 ### 9.2 Installation
 
+Three installation methods are available. See [README.md](README.md) for full instructions.
+
+#### Automated Local Installation
+
+Scripts in `scripts/` automate the entire setup (MongoDB, Node.js, keys, databases, collections, indexes, admin user):
+
 ```bash
-# 1. Clone repository
+# Linux/Ubuntu
+cd scripts && chmod +x install_resilink.sh && ./install_resilink.sh
+
+# Windows (PowerShell as Administrator)
+cd scripts; .\install_resilink.ps1
+```
+
+The scripts create:
+- **Database `ResilinkWithoutODEP`**: Asset, AssetType, Counters, FavoriteServers, GlobalRecommendationStats, News, Offer, Rating, RecommendationStats, RegisteredServers, prosumer, user
+- **Database `Logs`**: ConnectionLogs, DeleteLogs, GetLogs, PatchLogs, PutLogs, SecurityLogs
+- All required unique indexes (also ensured at startup by `InitDB.js`)
+- Default admin account (`admin` / `admin123`)
+
+#### Manual Installation (MongoDB Atlas)
+
+```bash
 git clone https://github.com/ZiQuwi/RESILINK_Render_Server
 cd RESILINK_Render_Server
-
-# 2. Install dependencies
 npm install
-
-# 3. Configure .env
-cp RESILINK_Server.env.example RESILINK_Server.env
-nano RESILINK_Server.env
-# → Fill all variables
-
-# 4. Verify MongoDB connection
-# → Test with MongoDB Compass: mongodb+srv://...
-
-# 5. Start server
+# Configure RESILINK_Server.env (see section 9.1)
 node src/index.js
-
-# Expected output:
-# Connected to MongoDB
-# API is listening on port 9990
-# Swagger docs available at http://localhost:9990/api-docs
 ```
 
----
+> You don't need to create collections manually. `InitDB.js` creates unique indexes at startup (which implicitly creates the indexed collections), and the remaining collections are created on first document insertion.
 
-### 9.3 Production Deployment
-
-#### 9.3.1 Linux Server (Systemd)
-
-**File**: `/etc/systemd/system/resilink.service`
-
-```ini
-[Unit]
-Description=RESILINK v2 API Server
-After=network.target
-
-[Service]
-Type=simple
-User=resilink
-WorkingDirectory=/opt/resilink
-ExecStart=/usr/bin/node src/index.js
-Restart=on-failure
-RestartSec=10
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=resilink
-
-Environment=NODE_ENV=production
-
-[Install]
-WantedBy=multi-user.target
-```
-
-**Commands:**
-```bash
-sudo systemctl enable resilink
-sudo systemctl start resilink
-sudo systemctl status resilink
-sudo journalctl -u resilink -f
-```
-
-#### 9.3.2 Reverse Proxy Nginx
-
-**File**: `/etc/nginx/sites-available/resilink`
-
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name resilink-dp.org;
-
-    ssl_certificate /etc/letsencrypt/live/resilink-dp.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/resilink-dp.org/privkey.pem;
-
-    location / {
-        proxy_pass http://localhost:9990;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-    }
-
-    location /api-docs {
-        proxy_pass http://localhost:9990/api-docs;
-    }
-}
-
-server {
-    listen 80;
-    server_name resilink-dp.org;
-    return 301 https://$host$request_uri;
-}
-```
-
-**Activation:**
-```bash
-sudo ln -s /etc/nginx/sites-available/resilink /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-#### 9.3.3 SSL/TLS (Let's Encrypt)
-
-```bash
-sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d resilink-dp.org
-sudo certbot renew --dry-run
-```
-
----
-
-### 9.4 Monitoring
-
-#### 9.4.1 Winston Logs
-
-**Log files**: MongoDB `Logs` database
-
-**Collections:**
-- `GetDataLogger` - DB reads
-- `UpdateDataResilinkLogger` - DB writes
-- `DeleteDataResilinkLogger` - DB deletions
-- `ConnectDBResilinkLogger` - DB connections
-- `SecurityLogger` - Security events
-
-**Query:**
-```bash
-mongo "mongodb+srv://..." --eval "db.getSiblingDB('Logs').GetDataLogger.find().limit(10).pretty()"
-```
-
-#### 9.4.2 Morgan
-
-**HTTP Logs**: Console stdout (dev mode)
-
-```
-GET /v2/offers/local/all 200 45.123 ms - 1245
-POST /v2/users/auth/sign_in 200 123.456 ms - 532
-```
-
----
-
-### 9.5 Database Backup
-
-**MongoDB Atlas:**
-- Automatic backups (Cloud Atlas Plan)
-- Point-in-time recovery
-
-**Manual:**
-```bash
-mongodump --uri="mongodb+srv://..." --out=/backup/resilink_$(date +%Y%m%d)
-```
-
-**Restore:**
-```bash
-mongorestore --uri="mongodb+srv://..." /backup/resilink_20260210
-```
-
----
-
-## 10. Logging et Monitoring
+## 10. Logging and Monitoring
 
 ### 10.1 Winston Loggers
 
-**Configuration**: `src/v2/loggers.js`
+**Configuration**: `src/v3/loggers.js`
 
 **Available loggers:**
 
@@ -2192,16 +2082,16 @@ mongorestore --uri="mongodb+srv://..." /backup/resilink_20260210
 }
 ```
 
-**Niveaux:**
-- `info` - Opérations normales
-- `warn` - Avertissements (ex: serveur externe timeout)
-- `error` - Erreurs nécessitant attention
+**Levels:**
+- `info` - Normal operations
+- `warn` - Warnings (e.g., external server timeout)
+- `error` - Errors requiring attention
 
 ---
 
 ### 10.2 CRON Jobs
 
-**File**: `src/v2/database/CronFunction.js`
+**File**: `src/v3/database/CronFunction.js`
 
 **Scheduled jobs:**
 
@@ -2214,41 +2104,6 @@ mongorestore --uri="mongodb+srv://..." /backup/resilink_20260210
 2026-02-10 00:00:00 - INFO - 🕛 CRON: Starting GlobalRecommendationStats update...
 2026-02-10 00:00:05 - INFO - ✅ GlobalRecommendationStats successfully updated
 ```
-
----
-
-### 10.3 Health Check
-
-**⚠️ Not currently implemented**
-
-**Recommendation:**
-
-```javascript
-// GET /health
-app.get('/health', async (req, res) => {
-  try {
-    const db = await connectToDatabase.connectToDatabase();
-    await db.admin().ping();
-    
-    res.json({
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      mongodb: 'connected',
-      version: '2.0'
-    });
-  } catch (e) {
-    res.status(503).json({
-      status: 'unhealthy',
-      error: e.message
-    });
-  }
-});
-```
-
-**External monitoring:**
-- UptimeRobot: ping `/health` every 5 minutes
-- Nagios/Zabbix: alert if 503 or timeout
 
 ---
 
@@ -2394,7 +2249,7 @@ app.get('/health', async (req, res) => {
 
 ### 12.1 Custom Error Codes
 
-**File**: `src/v2/errors.js`
+**File**: `src/v3/errors.js`
 
 ```javascript
 class getDBError extends Error {
@@ -2451,7 +2306,7 @@ if (!prosumer) {
 
 ### 12.2 HTTP Utilities
 
-**File**: `src/v2/services/Utils.js`
+**File**: `src/v3/services/Utils.js`
 
 **Function `fetchJSONData`:**
 ```javascript
@@ -2485,14 +2340,14 @@ async function streamToJSON(readableStream) {
 
 #### Authentication
 ```bash
-curl -X POST https://resilink-dp.org/v2/users/auth/sign_in \
+curl -X POST https://resilink-dp.org/v3/users/auth/sign_in \
   -H "Content-Type: application/json" \
   -d '{"userName":"john_doe","password":"SecurePass123!"}'
 ```
 
 #### Create Offer
 ```bash
-curl -X POST https://resilink-dp.org/v2/offers \
+curl -X POST https://resilink-dp.org/v3/offers \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer eyJhbGc..." \
   -d '{
@@ -2509,13 +2364,13 @@ curl -X POST https://resilink-dp.org/v2/offers \
 
 #### Federated Offers
 ```bash
-curl -X GET "https://resilink-dp.org/v2/offers/federated/all" \
+curl -X GET "https://resilink-dp.org/v3/offers/federated/all" \
   -H "Authorization: Bearer eyJhbGc..."
 ```
 
 #### Block Offer
 ```bash
-curl -X POST https://resilink-dp.org/v2/prosumers/john_doe/blocked-offers/server \
+curl -X POST https://resilink-dp.org/v3/prosumers/john_doe/blocked-offers/server \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer eyJhbGc..." \
   -d '{"serverName":"https://resilink-toulouse.org","offerId":"789"}'
@@ -2544,37 +2399,7 @@ curl -X POST https://resilink-dp.org/v2/prosumers/john_doe/blocked-offers/server
 
 ---
 
-### 12.5 Roadmap
-
-**v2.0 MainWithoutODEP** (Current - Production):
-- ✅ Complete REST API for offer discovery
-- ✅ Contact exchange model (transactions externalized)
-- ✅ Multi-server federation
-- ✅ Multi-server offer blocking
-- ✅ Recommendations system
-- ✅ JWT + AES-256
-- ❌ Contracts/Requests not implemented (by design)
-
-**v2.1** (Upcoming):
-- ⬜ Rate limiting
-- ⬜ Health check endpoint
-- ⬜ Prometheus metrics
-- ⬜ Unit tests (Jest)
-- ⬜ CI/CD pipeline
-- ⬜ Docker containerization
-
-**v3.0 - `main` branch** (ODEP integration):
-- ⬜ ODEP blockchain integration
-- ⬜ Smart contract execution
-- ⬜ Transaction management (on-chain)
-- ⬜ Request system implementation
-- ⬜ WebSocket real-time updates
-- ⬜ GraphQL API
-- ⬜ Machine Learning recommendations
-
----
-
-### 12.6 Contacts and Support
+### 12.5 Contacts and Support
 
 **Lead Developer:**
 - Axel Cazaux
@@ -2582,8 +2407,10 @@ curl -X POST https://resilink-dp.org/v2/prosumers/john_doe/blocked-offers/server
 
 **Repository:**
 - GitHub: https://github.com/ZiQuwi/RESILINK_Render_Server
-- Branch: `MainWithoutODEP` (production)
-- Branch: `main` (with ODEP)
+- Branch: `feature/without-odep` (production without ODEP)
+- Branch: `deploy/render` (deployment for a specific hosting provider)
+- Branch: `main` (production with ODEP)
+- Branch: `dev` (development)
 
 **Documentation:**
 - Swagger: https://resilink-dp.org/api-docs
@@ -2591,7 +2418,7 @@ curl -X POST https://resilink-dp.org/v2/prosumers/john_doe/blocked-offers/server
 
 ---
 
-### 12.7 License
+### 12.6 License
 
 **License**: UPPA  
 **Copyright**: © 2026 Axel Cazaux - UPPA
@@ -2602,7 +2429,7 @@ Usage authorized within the RESILINK project framework only.
 
 ## End of Document
 
-**Version**: 2.0  
+**Version**: 3.0  
 **Last Updated**: February 10, 2026  
 **Pages**: ~50  
 **Word Count**: ~12,000

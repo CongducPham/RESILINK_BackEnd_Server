@@ -53,7 +53,7 @@ async function updateGlobalRecommendationStats() {
       throw new UpdateDBError('Failed to update GlobalRecommendationStats');
     }
 
-    updateData.info('✅ GlobalRecommendationStats successfully updated', {
+    updateData.info('GlobalRecommendationStats successfully updated', {
       from: 'updateGlobalRecommendationStats',
       updatedCount: Object.keys(aggregated).length,
       sourceStatsCount: (allUserStats || []).length

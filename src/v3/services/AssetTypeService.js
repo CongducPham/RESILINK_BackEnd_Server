@@ -110,6 +110,7 @@ const getAllAssetTypes = async (user) => {
     throw e;
   }
 };
+
 /**
  * Retrieves a specific asset type by its unique identifier.
  * Returns detailed information including nature, unit, and measurability properties.
@@ -208,7 +209,6 @@ const deleteAssetTypes = async (id, user) => {
     throw e;
   }
 };
-
 
 module.exports = {
     createAssetTypes,

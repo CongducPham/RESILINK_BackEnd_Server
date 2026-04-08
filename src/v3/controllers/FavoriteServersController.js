@@ -122,7 +122,7 @@ const addFavoriteServer = async (req, res) => {
     const response =
       await FavoriteServersService.addFavoriteServer(
         req.params.username,
-        req.params.serverName,
+        req.query.serverName,
         req.user
       );
     return res.status(response[1]).json(response[0]);
@@ -151,7 +151,7 @@ const removeFavoriteServer = async (req, res) => {
     const response =
       await FavoriteServersService.removeFavoriteServer(
         req.params.username,
-        req.params.serverName,
+        req.query.serverName,
         req.user
       );
     return res.status(response[1]).json(response[0]);

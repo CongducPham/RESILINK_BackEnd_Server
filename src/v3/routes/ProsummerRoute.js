@@ -818,7 +818,7 @@ router.post('/prosumers/:id/blocked-offers/server', auth({ required: true }), pr
 
 /**
  * @swagger
- * /v3/prosumers/{id}/blocked-offers/server/{serverName}:
+ * /v3/prosumers/{id}/blocked-offers/server:
  *   get:
  *     summary: Get blocked offers for a specific server
  *     tags: [Prosumer]
@@ -829,7 +829,7 @@ router.post('/prosumers/:id/blocked-offers/server', auth({ required: true }), pr
  *           type: string
  *         required: true
  *         description: The prosumer id
- *       - in: path
+ *       - in: query
  *         name: serverName
  *         schema:
  *           type: string
@@ -854,7 +854,7 @@ router.post('/prosumers/:id/blocked-offers/server', auth({ required: true }), pr
  *       500:
  *         description: Server error
  */
-router.get('/prosumers/:id/blocked-offers/server/:serverName', auth({ required: true }), prosumerController.getBlockedOffersByServer);
+router.get('/prosumers/:id/blocked-offers/server', auth({ required: true }), prosumerController.getBlockedOffersByServer);
 
 /**
  * @swagger
@@ -892,7 +892,7 @@ router.get('/prosumers/:id/blocked-offers/all', auth({ required: true }), prosum
 
 /**
  * @swagger
- * /v3/prosumers/{id}/blocked-offers/server/{serverName}/{offerId}:
+ * /v3/prosumers/{id}/blocked-offers/server/{offerId}:
  *   delete:
  *     summary: Unblock an offer from a specific server
  *     tags: [Prosumer]
@@ -903,7 +903,7 @@ router.get('/prosumers/:id/blocked-offers/all', auth({ required: true }), prosum
  *           type: string
  *         required: true
  *         description: The prosumer id
- *       - in: path
+ *       - in: query
  *         name: serverName
  *         schema:
  *           type: string
@@ -930,7 +930,7 @@ router.get('/prosumers/:id/blocked-offers/all', auth({ required: true }), prosum
  *       500:
  *         description: Server error
  */
-router.delete('/prosumers/:id/blocked-offers/server/:serverName/:offerId', auth({ required: true }), prosumerController.unblockOfferByServer);
+router.delete('/prosumers/:id/blocked-offers/server/:offerId', auth({ required: true }), prosumerController.unblockOfferByServer);
 
 /**
  * @swagger

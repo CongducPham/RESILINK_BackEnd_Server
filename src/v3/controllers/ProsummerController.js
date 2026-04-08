@@ -259,7 +259,7 @@ const getBlockedOffersByServer = async (req, res) => {
   try {
     const response = await prosummerService.getBlockedOffersByServer(
       req.params.id, 
-      req.params.serverName, 
+      req.query.serverName, 
       req.user
     );
     res.status(response[1]).send(response[0]);
@@ -307,7 +307,7 @@ const unblockOfferByServer = async (req, res) => {
   try {
     const response = await prosummerService.unblockOfferByServer(
       req.params.id,
-      req.params.serverName,
+      req.query.serverName,
       req.params.offerId,
       req.user
     );

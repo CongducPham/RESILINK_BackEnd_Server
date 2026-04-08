@@ -8,6 +8,8 @@ scripts/migrateEmailsToAES.js
 scripts/migrateOffersAcceptSharing.js
 scripts/migratePasswordsToBcrypt.js
 scripts/seedTestUsers.js
+scripts/migration_resilinkv2_to_v3.js
+scripts/dechiffreUserMdpAES.js
 
 Dockerfile
 docker-compose.yml

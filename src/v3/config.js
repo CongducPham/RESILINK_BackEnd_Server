@@ -16,9 +16,19 @@ const RESILINK_NETWORK_KEY = process.env.RESILINK_NETWORK_KEY;
 
 const SERVER_NAME = process.env.SERVER_NAME || "RESILINK Server";
 
-const DB_URL = process.env.DB_URL;
+// ------------------ DB CONFIG ------------------ //
+const DB_MODE = process.env.DB_MODE;
 
-const DB_LOGS_URL = process.env.DB_LOGS_URL;
+let DB_URL;
+let DB_LOGS_URL;
+
+if (DB_MODE === "local") {
+    DB_URL = "mongodb://127.0.0.1:27017/ResilinkWithoutODEP";
+    DB_LOGS_URL = "mongodb://127.0.0.1:27017/Logs";
+} else {
+    DB_URL = process.env.DB_URL;
+    DB_LOGS_URL = process.env.DB_LOGS_URL;
+}
 
 module.exports = {
     IP_ADDRESS,
@@ -30,6 +40,7 @@ module.exports = {
     TOKEN_REQUIRED,
     CENTRAL_SERVER_URL,
     RESILINK_NETWORK_KEY,
+    DB_MODE,
     DB_URL,
     DB_LOGS_URL
 }

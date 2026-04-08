@@ -10,7 +10,7 @@ const config = require('./v3/config.js');
 const express = require("express");
 const rateLimit = require('express-rate-limit');
 
-const { swaggerDocs: V2SwaggerDocs } = require("./v3/swaggerV2.js");
+const { swaggerDocs: V3SwaggerDocs } = require("./v3/swaggerV3.js");
 const { initDB } = require('./v3/database/InitDB.js');
 const { updateGlobalRecommendationStats, startGlobalRecommendationStatsCron } = require('./v3/database/CronFunction.js');
 
@@ -105,7 +105,7 @@ app.use("/v3/", v3FavoriteServersRoute);
 
     app.listen(PORT, IP_ADDRESS, () => { 
       console.log(`API is listening on port ${PORT}`);
-      V2SwaggerDocs(app, PORT); 
+      V3SwaggerDocs(app, PORT); 
     });
 
   } catch (e) {

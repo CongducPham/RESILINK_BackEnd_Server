@@ -102,7 +102,7 @@ const swaggerDocs = (app, port) => {
         );
         console.log(swaggerSpec);
       
-    console.log(`Docs are available on https://${config.SWAGGER_URL}/v3/api-docs [Version 3]`);
+    console.log(`Docs are available on ${config.SWAGGER_URL}/v3/api-docs [Version 3]`);
 };  
 
 // ---------------------------------------------------

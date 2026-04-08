@@ -295,7 +295,7 @@ router.put("/favoriteServers/:username", auth({ required: true }), FavoriteServe
 
 /**
  * @swagger
- * /v3/favoriteServers/{username}/add/{serverName}:
+ * /v3/favoriteServers/{username}/add:
  *   post:
  *     summary: Add a server to a user's favorite list
  *     tags: [FavoriteServers]
@@ -309,7 +309,7 @@ router.put("/favoriteServers/:username", auth({ required: true }), FavoriteServe
  *           type: string
  *         description: Owner of the favorite list
  *       - name: serverName
- *         in: path
+ *         in: query
  *         required: true
  *         schema:
  *           type: string
@@ -361,11 +361,11 @@ router.put("/favoriteServers/:username", auth({ required: true }), FavoriteServe
  *                   message:
  *                       type: string 
  */
-router.post("/favoriteServers/:username/add/:serverName", auth({ required: true }), FavoriteServersController.addFavoriteServer);
+router.post("/favoriteServers/:username/add", auth({ required: true }), FavoriteServersController.addFavoriteServer);
 
 /**
  * @swagger
- * /v3/favoriteServers/{username}/remove/{serverName}:
+ * /v3/favoriteServers/{username}/remove:
  *   delete:
  *     summary: Remove a server from a user's favorite list
  *     tags: [FavoriteServers]
@@ -378,7 +378,7 @@ router.post("/favoriteServers/:username/add/:serverName", auth({ required: true 
  *         schema:
  *           type: string
  *       - name: serverName
- *         in: path
+ *         in: query
  *         required: true
  *         schema:
  *           type: string
@@ -429,7 +429,7 @@ router.post("/favoriteServers/:username/add/:serverName", auth({ required: true 
  *                   message:
  *                       type: string 
  */
-router.delete("/favoriteServers/:username/remove/:serverName", auth({ required: true }), FavoriteServersController.removeFavoriteServer);
+router.delete("/favoriteServers/:username/remove", auth({ required: true }), FavoriteServersController.removeFavoriteServer);
 
 /**
  * @swagger
