@@ -5,11 +5,12 @@ const bodyParser = require("body-parser");
 const cors = require('cors');
 require('dotenv').config({ path: './RESILINK_Server.env' });
 
-const config = require('./v1/config.js');
+const config = require('./v3/config.js');
 
 const express = require("express"); 
 
-const { swaggerDocs: V1SwaggerDocs } = require("./v1/swaggerV1.js");
+const { swaggerDocs: V3SwaggerDocs } = require("./v3/swaggerV3.js");
+const { initDB } = require('./v3/database/InitDB.js');
 
 // .env variable
 const PORT = config.PORT;
@@ -17,7 +18,7 @@ const IP_ADDRESS = config.IP_ADDRESS;
 
 // ---------------------------------------------------
 
-// Start Express.js && socket.io
+// Start Express.js
 const app = express(); 
 
 //change request size limit for taking images
@@ -38,38 +39,49 @@ app.use('/public', express.static(path.join(__dirname, '..', 'public')));
 // --------------------------------------------------
 
 // all Routes
-const v1ProsummerRouter = require("./v1/routes/ProsummerRoute.js");
-app.use("/v1/", v1ProsummerRouter);
+const v3ProsummerRouter = require("./v3/routes/ProsummerRoute.js");
+app.use("/v3/", v3ProsummerRouter);
 
-const v1UserRouter = require("./v1/routes/UserRoute.js");
-app.use("/v1/", v1UserRouter);
+const v3UserRouter = require("./v3/routes/UserRoute.js");
+app.use("/v3/", v3UserRouter);
 
-const v1OfferRouter = require("./v1/routes/OfferRoute.js");
-app.use("/v1/", v1OfferRouter);
+const v3OfferRouter = require("./v3/routes/OfferRoute.js");
+app.use("/v3/", v3OfferRouter);
 
-const v1AssetRouter = require("./v1/routes/AssetRoute.js");
-app.use("/v1/", v1AssetRouter);
+const v3AssetRouter = require("./v3/routes/AssetRoute.js");
+app.use("/v3/", v3AssetRouter);
 
-const v1AssetTypeRouter = require("./v1/routes/AssetTypeRoute.js");
-app.use("/v1/", v1AssetTypeRouter);
+const v3AssetTypeRouter = require("./v3/routes/AssetTypeRoute.js");
+app.use("/v3/", v3AssetTypeRouter);
 
-const v1RegulatorRouter = require("./v1/routes/RegulatorRoute.js");
-app.use("/v1/", v1RegulatorRouter);
+const v3RegulatorRouter = require("./v3/routes/RegulatorRoute.js");
+app.use("/v3/", v3RegulatorRouter);
 
-const v1RequestRouter = require("./v1/routes/RequestRoute.js");
-app.use("/v1/", v1RequestRouter);
+const v3RequestRouter = require("./v3/routes/RequestRoute.js");
+app.use("/v3/", v3RequestRouter);
 
-const v1ContractRoute = require("./v1/routes/ContractRoute.js");
-app.use("/v1/", v1ContractRoute);       
+const v3ContractRoute = require("./v3/routes/ContractRoute.js");
+app.use("/v3/", v3ContractRoute);       
 
-const v1NewsRoute = require("./v1/routes/NewsRoute.js");
-app.use("/v1/", v1NewsRoute);
+const v3NewsRoute = require("./v3/routes/NewsRoute.js");
+app.use("/v3/", v3NewsRoute);
 
-const v1RatingRoute = require("./v1/routes/RatingRoute.js");
-app.use("/v1/", v1RatingRoute);
+const v3RatingRoute = require("./v3/routes/RatingRoute.js");
+app.use("/v3/", v3RatingRoute);
 
 //start application Express.js
-app.listen(PORT, IP_ADDRESS, () => { 
-    console.log(`API is listening on port ${PORT} and using ip ${IP_ADDRESS}`);
-    V1SwaggerDocs(app, PORT); 
-});
+
+(async () => {
+  try {
+    await initDB();
+
+    app.listen(PORT, IP_ADDRESS, () => { 
+        console.log(`API is listening on port ${PORT} and using ip ${IP_ADDRESS}`);
+        V3SwaggerDocs(app, PORT);
+    });
+
+  } catch (e) {
+    console.error('Server startup aborted due to DB initialization failure');
+    process.exit(1);
+  }
+})();

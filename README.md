@@ -1,127 +1,228 @@
-# RESILINK - Node.js API for a User Exchange Platform
+# RESILINK v3 (ODEP) - Node.js Middleware API for Blockchain-Based Resource Exchange
 
-RESILINK is an API built with **Node.js** and **Express**, using **Swagger** for documentation. This API allows you to develop a platform for exchanges between users, with data stored in a **MongoDB** database. It integrates with **ODEP**, an API provided by **ORANGE** to structure interactions between users. The API is free, accessible to everyone, and can be deployed locally by developers.
+**RESILINK v3** (main/dev branch) is a Node.js/Express **middleware platform** that acts as an intermediary layer between a mobile application and the **ODEP (Orange Digital Energy Platform)** blockchain API. It facilitates **resource/asset exchange** between users (prosumers).
 
-**Note**: A variant of this platform is available in the `MainWithoutODEP` branch. It is a self-contained v2 version that does **not** rely on the **ODEP API**, making it fully **self-deployed** without external dependencies.
+It proxies CRUD operations to the ODEP blockchain for core business entities, enriches ODEP data with local metadata (images, GPS, phone numbers), and manages local-only features (news, ratings).
+feature/without-odep
+
+> A standalone variant is available in the `feature/without-odep` branch — it does **not rely on the ODEP API** and operates fully autonomously with local MongoDB storage, multi-server federation, and recommendations (more advanced version).
 
 ## Main Features
 
-- RESTful API built with **Express** and documented with **Swagger**.
-- Connection to a **MongoDB** database for managing users and exchanges.
-- Integration with the **ODEP API** by ORANGE to structure interactions.
-- Encryption of sensitive data using AES-256.
-- Easy local or server deployment with configuration via an `.env` file.
+- **RESTful API** built with **Express** and documented with **Swagger**
+- **ODEP blockchain integration**: proxies users, prosumers, assets, offers, contracts, requests, and regulators to ODEP
+- **Dual endpoint system**: ODEP-only (`/v3/ODEP/...`) and enriched (`/v3/...`) endpoints
+- **MongoDB enrichment**: images, GPS, phone numbers, transaction types, bookmarks, blocked offers
+- **Full transaction lifecycle**: offer → request → contract workflow via ODEP
+- **Local-only features**: news feed, user ratings (entirely managed in MongoDB)
+- **Security**: ODEP token-based authentication, AES-256-CBC encryption of sensitive local data
+- **Database initialization**: automatic index creation and deduplication at startup (`InitDB.js`)
 
 ## Prerequisites
 
 - **Node.js** (v18.20 or later)
-- **MongoDB** (Cloud MongoDB cluster(may be on a local MongoDB instance in the future if needed))
-- **ODEP API** (URLs to be requested from ORANGE)
+- **MongoDB** (Atlas cluster *or* local installation)
+- **ODEP API** (URLs are **confidential** — must be requested from ORANGE or from `Congduc.Pham@univ-pau.fr`)
 
 ## Installation
 
-At the root of the project folder:
+RESILINK v3 (ODEP) supports two database modes. Choose the one that fits your setup:
 
-1. **Clone the project**:
+### Option A: Automated Local Installation (recommended for first setup)
 
+Installation scripts are provided in `Resilink_webserver/script/` for **Linux** and **Windows**. They install MongoDB locally if not present and set up the database.
+
+**Linux/Ubuntu:**
 ```bash
 git clone https://github.com/ZiQuwi/RESILINK_Render_Server
+cd RESILINK_Render_Server/Resilink_webserver/script
+chmod +x install_resilink.sh
+./install_resilink.sh
 ```
 
-2. **Install dependencies**:
+**Windows (PowerShell as Administrator):**
+```powershell
+git clone https://github.com/ZiQuwi/RESILINK_Render_Server
+cd RESILINK_Render_Server\Resilink_webserver\script
+.\install_resilink.ps1
+```
 
+> **Note (Windows):** The script attempts to install MongoDB and mongosh automatically via `winget` (available on Windows 10 1709+). If `winget` is not available, you will be prompted to install them manually from https://www.mongodb.com/try/download/community before re-running the script.
+
+After the script completes:
+1. Configure `RESILINK_Server.env` (see [Environment Variables](#environment-variables) below)
+2. Start the server:
+   ```bash
+   cd Resilink_webserver
+   node src/index.js
+   ```
+
+### Option B: Manual Installation with MongoDB Atlas
+
+Use this if you already have a MongoDB Atlas cluster or prefer cloud hosting.
+
+**1. Clone and install:**
 ```bash
+git clone https://github.com/ZiQuwi/RESILINK_Render_Server
+cd RESILINK_Render_Server/Resilink_webserver
 npm install
 ```
 
-3. **Configure environment variables**:
+**2. Create MongoDB databases:**
 
-Create a file named **`RESILINK_Server.env`** at the root of the project with the following variables:
+On your Atlas cluster (via mongosh, Compass, or Atlas UI), create two databases:
 
+**Database `Logs`** (Winston logging):
 ```
-IP_ADDRESS= 0.0.0.0
-PORT=3000
-SWAGGER_URL=http://0.0.0.0:3000
-ENCRYPTION_KEY=b32c32aac9c6afd06ab3554415de5edbafc14ef97cc6d0e4ffa678220a57b39f
-TOKEN_KEY=f0d8cd085ada735ac45c30e3368b5b4c87a8e7fb9828a2289af5065bad05b015
-DB_URL= e.g. mongodb+srv://username:password@cluster.mongodb.net/db_name
-DB_LOGS_URL= e.g. mongodb+srv://username:password@cluster.mongodb.net/db_name
-# URLs to access the ODEP API (must be requested from ORANGE or the following address: axel.cazaux@univ-pau.fr)
-PATH_ODEP_USER=https://api.orange.com/odep/user
-PATH_ODEP_PROSUMER=https://api.orange.com/odep/prosumer
-PATH_ODEP_REGULATOR=https://api.orange.com/odep/regulator
-PATH_ODEP_ASSET=https://api.orange.com/odep/asset
-PATH_ODEP_ASSETTYPE=https://api.orange.com/odep/assettype
-PATH_ODEP_OFFER=https://api.orange.com/odep/offer
-PATH_ODEP_REQUEST=https://api.orange.com/odep/request
-PATH_ODEP_CONTRACT=https://api.orange.com/odep/contract
+use Logs
+
+db.createCollection("ConnectionLogs")
+db.createCollection("DeleteLogs")
+db.createCollection("GetLogs")
+db.createCollection("PatchLogs")
+db.createCollection("PutLogs")
 ```
 
-> **Note**: Replace the placeholder values with your actual keys and URLs.
+**Database `Resilink`** (main business data):
+```
+use Resilink
 
-The API automatically imports the `RESILINK_Server.env` file. Ensure that the file is named correctly to avoid manual updates in the code.
+db.createCollection("Asset")
+db.createCollection("Counters")
+db.createCollection("News")
+db.createCollection("Offer")
+db.createCollection("Rating")
+db.createCollection("prosumer")
+db.createCollection("user")
+```
 
-4. **Start the server**:
 
+
+**3. Configure environment variables:**
+
+Create `RESILINK_Server.env` in the `Resilink_webserver/` directory (see [Environment Variables](#environment-variables) below).
+
+**4. Start the server:**
 ```bash
 node src/index.js
 ```
 
-By default, the server will start on the port defined in the `.env` file (or port 3000 if not specified). You can access your Swagger documentation for the API at the following address after starting the server:
+### Expected Output
 
 ```
-http://localhost:3000/api-docs
+Connected to MongoDB
+API is listening on port 9990 and using ip 0.0.0.0
+Swagger docs available at http://0.0.0.0:9990/v3/api-docs
 ```
 
-## Usage
+## Environment Variables
 
-The **RESILINK** API allows interaction between users on the platform through various routes, following the structure of the **ODEP API** to organize exchanges.
+Create a file named **`RESILINK_Server.env`** in the `Resilink_webserver/` directory:
 
-The main routes manage:
-- **Users** (USER)
-- **Prosumers** (PROSUMER)
-- **Regulators** (REGULATOR)
-- **Assets** (ASSET)
-- **Asset Types** (ASSETTYPE)
-- **Offers** (OFFER)
-- **Requests** (REQUEST)
-- **Contracts** (CONTRACT)
-- **News** (NEWS)
-- **Rating** (RATING)
+```env
+# Server
+IP_ADDRESS=0.0.0.0
+PORT=9990
+SWAGGER_URL=http://0.0.0.0:9990
+
+# Security
+ENCRYPTION_KEY=<64 hex chars>
+TOKEN_KEY=<64 hex chars>
+
+# Database
+DB_MODE=atlas
+DB_URL=mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/
+DB_LOGS_URL=mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/Logs
+
+# ODEP API (confidential — request URLs from ORANGE)
+PATH_ODEP_USER=https://<ODEP_HOST>/oauth/api/v1.0.0/
+PATH_ODEP_PROSUMER=https://<ODEP_HOST>/restapi/api/v3/prosumers/
+PATH_ODEP_REGULATOR=https://<ODEP_HOST>/restapi/api/v3/regulators/
+PATH_ODEP_ASSET=https://<ODEP_HOST>/restapi/api/v3/assets/
+PATH_ODEP_ASSETTYPE=https://<ODEP_HOST>/restapi/api/v3/assetTypes/
+PATH_ODEP_OFFER=https://<ODEP_HOST>/restapi/api/v3/offers/
+PATH_ODEP_REQUEST=https://<ODEP_HOST>/restapi/api/v3/requests/
+PATH_ODEP_CONTRACT=https://<ODEP_HOST>/restapi/api/v3/contracts/
+```
+
+**`DB_MODE`**: Set to `atlas` to use a MongoDB Atlas cluster (requires `DB_URL` and `DB_LOGS_URL`), or `local` to use a local MongoDB instance at `mongodb://127.0.0.1:27017` (DB_URL and DB_LOGS_URL are then ignored).
+
+Generate cryptographic keys with:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+> **Never commit `RESILINK_Server.env` to Git.** Add it to `.gitignore`.
+
+## API Routes
+
+The API is available at `/v3` and documented via Swagger at `/v3/api-docs`.
+
+**Core Resources (ODEP-proxied + locally enriched):**
+- **`/users`** — Account management, authentication (ODEP tokens)
+- **`/prosumers`** — Prosumer profiles, bookmarks, blocked offers
+- **`/offers`** — Offer CRUD, filtering, pagination, suggestions
+- **`/assets`** — Asset management, image upload (Base64 → PNG)
+- **`/assetTypes`** — Asset categories (ODEP-managed)
+- **`/contracts`** — Transaction contracts (ODEP-managed)
+- **`/requests`** — Purchase/rental requests (ODEP-managed)
+- **`/regulators`** — Regulatory entities (ODEP-managed)
+
+**Local-Only Resources:**
+- **`/news`** — Platform news and publications
+- **`/rating`** — User ratings
+
+**Dual Endpoint Pattern:**
+- `GET /v3/ODEP/assets/all/` → Raw ODEP data only
+- `GET /v3/assets/all` → ODEP data enriched with local images and metadata
 
 ## Project Structure
 
 ```
-/src
-    /v1
-        /controllers      # Handles HTTP requests and responses, interacts with services
-        /services         # Business logic for the API
-        /database         # Manage data in MongoDB
-        /models           # Entity models
-        /routes           # API route definitions with swagger annotations
-        config.js         # Configuration variable
-        errors.js         # Definitions of the various errors
-        loggers.js        # Log management
-        swaggersV1.js     # Definition of the swagger page 
-    index.js            # Main entry point of the API
-RESILINK_Server.env   # Environment variables configuration file
-package.json	      # Packages files
+Resilink_webserver/
+├── package.json
+├── RESILINK_Server.env             # Environment variables (not committed)
+├── public/
+│   └── images/                     # Asset images (PNG, organized by asset ID)
+├── script/
+│   ├── install_resilink.sh         # Linux installation script
+│   ├── install_resilink.ps1        # Windows installation script
+└── src/
+    ├── index.js                    # Entry point, server initialization
+    └── v3/
+        ├── config.js               # Environment variables loader
+        ├── errors.js               # Custom error classes
+        ├── loggers.js              # Winston loggers configuration
+        ├── swaggerV3.js            # Swagger documentation setup
+        ├── routes/                 # HTTP Routes + Swagger annotations (10 files)
+        ├── controllers/            # HTTP handlers - req/res (10 files)
+        ├── services/               # Business logic (10 files + Utils.js)
+        └── database/               # Data access layer (8 files + InitDB.js)
 ```
 
-## API Documentation
-
-The complete documentation for the API is available through **Swagger**. You can view the RESILINK documentation at the following URL:
+**Architecture**: MVC+S (Model-View-Controller + Service Layer)
 
 ```
-https://resilink-api.onrender.com/v1/api-docs
+Client → Routes → Controller → Service ─┬─> ODEP API (fetch HTTP)
+                                        │
+                                        └─> Database Layer → MongoDB (local enrichment)
 ```
 
-This documentation provides details about the HTTP methods, expected parameters, and responses for each route.
+## Branches
 
-## Deployment
+- **`main`** — Production with ODEP blockchain integration
+- **`dev`** — **Current** — Development with ODEP
+- **`feature/without-odep`** — Standalone version without blockchain (federation, recommendations)
+- **`deploy/render`** — Deployment for a specific hosting provider
 
-To deploy this API in a production environment, ensure that all environment variables are correctly configured, including the MongoDB cluster URL and the ODEP API URLs.
+## Documentation
+
+- **Swagger UI**: `http://<IP_ADDRESS>:<PORT>/v3/api-docs`
+- **Technical Specification**: [TECHNICAL_SPECIFICATION.md](TECHNICAL_SPECIFICATION.md)
 
 ## License
 
-University of Pau and the Pays de l'Adour.
+**License**: UPPA
+**Copyright**: © 2026 Axel Cazaux - UPPA
+
+Usage authorized within the RESILINK project framework only.

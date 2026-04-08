@@ -1,6 +1,8 @@
 #!/bin/bash
 
-echo "=== MongoDB Installation and Database Setup (Linux) ==="
+echo "=== RESILINK Server Installation and Database Setup (Linux) ==="
+echo "=== Version: Main (ODEP)                                    ==="
+echo "========================================================="
 
 # 1) Update system
 sudo apt update -y
@@ -35,28 +37,33 @@ echo "========================================================="
 ENCRYPTION_KEY=$(openssl rand -hex 32)
 TOKEN_KEY=$(openssl rand -hex 32)
 
-echo "Generated encryption & token keys (save this safely):"
-echo "ENCRYPTION_KEY=$ENCRYPTION_KEY"
-echo "TOKEN_KEY=$TOKEN_KEY"
+echo "Generated keys (save these safely):"
+echo "  ENCRYPTION_KEY=$ENCRYPTION_KEY"
+echo "  TOKEN_KEY=$TOKEN_KEY"
 echo "Use them in your RESILINK_Server.env"
 echo "========================================================="
 
 # Save keys to home directory in readable format
-KEY_FILE="$HOME/resilink_key.txt"
+KEY_FILE="$HOME/resilink_keys.txt"
 {
+  echo "# RESILINK Server Keys (ODEP) - Generated on $(date)"
+  echo "# Keep this file safe and remove it after configuring your .env"
+  echo ""
   echo "ENCRYPTION_KEY=$ENCRYPTION_KEY"
   echo "TOKEN_KEY=$TOKEN_KEY"
 } > "$KEY_FILE"
 
 echo "Keys saved to: $KEY_FILE"
+echo "========================================================="
 
 # 4) Install Node.js if missing
 if ! command -v node &> /dev/null; then
     echo "Installing Node.js and npm..."
     sudo apt install -y nodejs npm
 else
-    echo "Node.js already installed."
+    echo "Node.js already installed: $(node -v)"
 fi
+echo "========================================================="
 
 # 5) Install project dependencies
 echo "Installing Node.js project dependencies..."
@@ -75,80 +82,57 @@ echo "MongoDB is up!"
 echo "========================================================="
 
 # 7) Create MongoDB databases and collections
+echo "Creating databases and collections..."
 mongosh <<EOF
+
+// === Logs Database ===
 use Logs
 db.createCollection("ConnectionLogs")
 db.createCollection("DeleteLogs")
 db.createCollection("GetLogs")
 db.createCollection("PatchLogs")
 db.createCollection("PutLogs")
+print("Logs database collections created.")
 
+// === Main Application Database ===
 use Resilink
 db.createCollection("Asset")
-db.createCollection("AssetType")
+db.createCollection("Counters")
 db.createCollection("News")
 db.createCollection("Offer")
 db.createCollection("Rating")
 db.createCollection("prosumer")
 db.createCollection("user")
+
+// === Create unique index ===
+db.Rating.createIndex({ userId: 1 }, { unique: true })
+print("Resilink database collections and indexes created.")
+
 EOF
-echo "Collections created."
+echo "Collections and indexes created."
 echo "========================================================="
 
-# 8) Create admin user with encrypted password
-CREATE_ADMIN_FILE="$PROJECT_DIR/createAdmin.js"
-echo $CREATE_ADMIN_FILE
-cat > "$CREATE_ADMIN_FILE" <<EOL
-const crypto = require("crypto");
-const { MongoClient } = require("mongodb");
+# 8) Configure the .env file with generated keys
+ENV_FILE="$PROJECT_DIR/RESILINK_Server.env"
+if [ -f "$ENV_FILE" ]; then
+    echo "Updating RESILINK_Server.env with generated keys..."
+    sed -i "s/^ENCRYPTION_KEY=.*/ENCRYPTION_KEY=$ENCRYPTION_KEY/" "$ENV_FILE"
+    sed -i "s/^TOKEN_KEY=.*/TOKEN_KEY=$TOKEN_KEY/" "$ENV_FILE"
+    echo "Keys updated in RESILINK_Server.env"
+else
+    echo "WARNING: RESILINK_Server.env not found at $ENV_FILE"
+    echo "You will need to manually configure your .env file with the generated keys."
+fi
+echo "========================================================="
 
-const uri = "mongodb://127.0.0.1:27017";
-const encryptionKey = Buffer.from("$ENCRYPTION_KEY", "hex");
-
-function encryptAES(password) {
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv("aes-256-cbc", encryptionKey, iv);
-  let encrypted = cipher.update(password, "utf8", "hex");
-  encrypted += cipher.final("hex");
-  return iv.toString("hex") + ":" + encrypted;
-}
-
-const adminUser = {
-  userName: "admin",
-  firstName: "admin",
-  lastName: "admin",
-  roleOfUser: "admin",
-  email: "admin@gmail.com",
-  password: encryptAES("admin123"),
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  accessToken: ""
-};
-
-(async () => {
-  const client = new MongoClient(uri);
-  try {
-    await client.connect();
-    const db = client.db("Resilink");
-    const userCol = db.collection("user");
-    const existing = await userCol.findOne({ userName: "admin" });
-    if (!existing) {
-      await userCol.insertOne(adminUser);
-      console.log("Admin user created successfully.");
-    } else {
-      console.log("Admin user already exists.");
-    }
-  } catch (err) {
-    console.error("Error creating admin user:", err);
-  } finally {
-    await client.close();
-  }
-})();
-EOL
-
-# Run the admin creation script within project context
-echo "Running admin creation script..."
-node "$CREATE_ADMIN_FILE"
-rm "$CREATE_ADMIN_FILE"
-
+echo ""
 echo "=== Setup completed successfully ==="
+echo ""
+echo "Next steps:"
+echo "  1. Review and configure RESILINK_Server.env:"
+echo "     - IP_ADDRESS, PORT, SWAGGER_URL"
+echo "     - DB_MODE (atlas or local)"
+echo "     - DB_URL, DB_LOGS_URL (if DB_MODE=atlas)"
+echo "     - PATH_ODEP_* (ODEP API URLs — confidential, request from ORANGE)"
+echo "  2. Start the server: node src/index.js"
+echo ""

@@ -1,0 +1,2998 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>RESILINK v3 (ODEP) - Technical Specification</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">RESILINK v3 (ODEP) - Technical Specification</h1>
+</header>
+<h1 id="resilink-v3-odep---complete-technical-specification">RESILINK v3 (ODEP) - Complete Technical Specification</h1>
+<p><strong>Version</strong>: 3.0<br />
+<strong>Date</strong>: April 2026<br />
+<strong>Author</strong>: Axel Cazaux - UPPA<br />
+<strong>License</strong>: UPPA</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol type="1">
+<li><a href="#1-overview">Overview</a></li>
+<li><a href="#2-system-architecture">System Architecture</a></li>
+<li><a href="#3-data-model">Data Model</a></li>
+<li><a href="#4-rest-api---endpoints">REST API - Endpoints</a></li>
+<li><a href="#5-business-features">Business Features</a></li>
+<li><a href="#6-security-and-authentication">Security and Authentication</a></li>
+<li><a href="#7-technologies-and-stack">Technologies and Stack</a></li>
+<li><a href="#8-configuration-and-installation">Configuration and Installation</a></li>
+<li><a href="#9-logging-and-monitoring">Logging and Monitoring</a></li>
+<li><a href="#10-flow-diagrams">Flow Diagrams</a></li>
+<li><a href="#11-appendices">Appendices</a></li>
+</ol>
+<hr />
+<h2 id="overview">1. Overview</h2>
+<h3 id="project-description">1.1 Project Description</h3>
+<p><strong>RESILINK v3</strong> (main/dev branch) is a Node.js/Express <strong>middleware platform</strong> that acts as an intermediary layer between a mobile application and the <strong>ODEP (Orange Digital Energy Platform)</strong> blockchain API. It facilitates <strong>resource/asset exchange</strong> between users (prosumers) by:</p>
+<ul>
+<li><strong>Proxying CRUD operations</strong> to the ODEP blockchain API for core business entities (users, prosumers, assets, offers, contracts, requests, regulators)</li>
+<li><strong>Enriching ODEP data</strong> with additional metadata stored locally in MongoDB (images, phone numbers, GPS coordinates, activity domains, bookmarks, blocked offers)</li>
+<li><strong>Managing local-only features</strong> (news, ratings) not supported by ODEP</li>
+<li><strong>Providing interactive Swagger documentation</strong> for the complete API surface</li>
+</ul>
+<p><strong>Important</strong>: In this version, the <strong>core business logic is handled by ODEP</strong>. The RESILINK server acts as a <strong>middleware/proxy</strong> that enriches ODEP data with local supplementary information. Unlike the <code>MainWithoutODEP</code> variant, this version <strong>does not operate standalone</strong> — it requires an active ODEP API connection to function. Contracts, Requests, and Regulators <strong>are functional</strong> as they are managed by ODEP.</p>
+<h3 id="business-objectives">1.2 Business Objectives</h3>
+<table>
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 54%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Objective</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Blockchain-Based Exchange</strong></td>
+<td>Leverage ODEP blockchain for secure, traceable transactions between prosumers</td>
+</tr>
+<tr class="even">
+<td><strong>Middleware Enrichment</strong></td>
+<td>Enhance ODEP data with images, GPS, phone numbers, and user preferences</td>
+</tr>
+<tr class="odd">
+<td><strong>Full Transaction Lifecycle</strong></td>
+<td>Support complete offer → request → contract workflow via ODEP</td>
+</tr>
+<tr class="even">
+<td><strong>Multi-Actor Management</strong></td>
+<td>Users, Prosumers, Regulators with distinct roles managed by ODEP</td>
+</tr>
+<tr class="odd">
+<td><strong>Data Sovereignty</strong></td>
+<td>Core data on ODEP blockchain; supplementary data on local MongoDB</td>
+</tr>
+<tr class="even">
+<td><strong>Mobile-First API</strong></td>
+<td>Designed as backend for the RESILINK mobile application</td>
+</tr>
+</tbody>
+</table>
+<h3 id="scope">1.3 Scope</h3>
+<p><strong>Included:</strong> - Complete REST API as middleware between mobile app and ODEP - Dual endpoint system (ODEP-only and RESILINK-enriched) - ODEP blockchain integration for Users, Prosumers, Assets, AssetTypes, Offers, Requests, Contracts, Regulators - MongoDB database for local supplementary data (images, metadata, news, ratings) - AES-256 encryption of sensitive local data - Interactive Swagger documentation - Asset image management (Base64 upload, PNG storage) - Offer filtering, pagination, and suggestions</p>
+<p><strong>Excluded (main/ODEP version):</strong> - <strong>Multi-server federation</strong> (no RegisteredServers, no FavoriteServers — not applicable with ODEP architecture) - <strong>Federated offer aggregation</strong> (single ODEP instance serves as centralized backend) - <strong>Recommendation statistics</strong> (no RecommendationStats, no GlobalRecommendationStats) - <strong>CRON scheduled tasks</strong> (no periodic aggregation needed) - <strong>Standalone operation</strong> (requires active ODEP API connection) - Frontend user interface (consumed by mobile application) - Payment processing (managed outside the platform)</p>
+<p><strong>Comparison with MainWithoutODEP:</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Feature</th>
+<th>Main (ODEP)</th>
+<th>MainWithoutODEP</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Core data storage</td>
+<td>ODEP blockchain</td>
+<td>Local MongoDB</td>
+</tr>
+<tr class="even">
+<td>Authentication</td>
+<td>ODEP token system</td>
+<td>Local JWT generation</td>
+</tr>
+<tr class="odd">
+<td>Contracts</td>
+<td>✅ Fully functional (ODEP)</td>
+<td>❌ Not implemented</td>
+</tr>
+<tr class="even">
+<td>Requests</td>
+<td>✅ Fully functional (ODEP)</td>
+<td>❌ Not implemented</td>
+</tr>
+<tr class="odd">
+<td>Regulators</td>
+<td>✅ Fully functional (ODEP)</td>
+<td>❌ Not implemented</td>
+</tr>
+<tr class="even">
+<td>Federation</td>
+<td>❌ Not applicable</td>
+<td>✅ Multi-server network</td>
+</tr>
+<tr class="odd">
+<td>Recommendations</td>
+<td>❌ Not included</td>
+<td>✅ User stats + CRON</td>
+</tr>
+<tr class="even">
+<td>Standalone mode</td>
+<td>❌ Requires ODEP</td>
+<td>✅ Fully autonomous</td>
+</tr>
+<tr class="odd">
+<td>Offer discovery</td>
+<td>Single ODEP instance</td>
+<td>Local + federated servers</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Philosophy</strong>: This version acts as a <strong>middleware enrichment layer</strong> on top of ODEP. ODEP handles the blockchain-based business logic (user management, asset ownership, contract enforcement), while RESILINK adds mobile-oriented features (images, GPS, phone numbers, news feed, ratings, blocked offers).</p>
+<hr />
+<h2 id="system-architecture">2. System Architecture</h2>
+<h3 id="global-architecture">2.1 Global Architecture</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                      MOBILE APPLICATION                         │
+│                    (External Client - out of scope)             │
+└────────────────────────────┬────────────────────────────────────┘
+                             │ HTTPS/REST
+                             ▼
+┌──────────────────────────────────────────────────────────────────┐
+│              RESILINK v3 MIDDLEWARE SERVER (Node.js)             │
+│                                                                  │
+│  ┌──────────────┐  ┌──────────────┐   ┌──────────────┐           │
+│  │   Routes     │→ │ Controllers  │→  │  Services    │           │
+│  │  (Swagger)   │  │   (HTTP)     │   │ (Business)   │           │
+│  └──────────────┘  └──────────────┘   └──────┬───────┘           │
+│                                              │                   │
+│                                     ┌────────┴────────┐          │
+│                                     │                 │          │
+│                                     ▼                 ▼          │
+│                              ┌──────────┐     ┌────────────┐     │
+│                              │ Database │     │  ODEP API  │     │
+│                              │  Layer   │     │  (fetch)   │     │
+│                              └────┬─────┘     └─────┬──────┘     │
+└───────────────────────────────────┼─────────────────┼────────────┘
+                                    │                 │
+                                    ▼                 ▼
+                            ┌───────────────┐ ┌───────────────────┐
+                            │   MongoDB     │ │    ODEP API       │
+                            │   Resilink    │ │  (Orange Cloud)   │
+                            │ (Supplement.) │ │  (Blockchain)     │
+                            └───────────────┘ └───────────────────┘
+                                    │
+                            ┌───────────────┐
+                            │   MongoDB     │
+                            │     Logs      │
+                            │  (Winston)    │
+                            └───────────────┘</code></pre>
+<h3 id="architecture-interne-mvcs">2.2 Architecture Interne (MVC+S)</h3>
+<p><strong>Pattern</strong>: Model-View-Controller + Service Layer</p>
+<pre><code>src/
+├── index.js                    # Entry point, server initialization
+└── v3/
+    ├── config.js              # Environment variables loader (ODEP paths included)
+    ├── errors.js              # Custom error classes
+    ├── loggers.js             # Winston loggers configuration
+    ├── swaggerV3.js           # Swagger documentation setup
+    │
+    ├── routes/                # HTTP Routes + Swagger annotations
+    │   ├── UserRoute.js
+    │   ├── ProsummerRoute.js
+    │   ├── OfferRoute.js
+    │   ├── AssetRoute.js
+    │   ├── AssetTypeRoute.js
+    │   ├── RegulatorRoute.js
+    │   ├── ContractRoute.js
+    │   ├── RequestRoute.js
+    │   ├── NewsRoute.js
+    │   └── RatingRoute.js
+    │
+    ├── controllers/           # HTTP handlers (req/res)
+    │   ├── UserController.js
+    │   ├── ProsummerController.js
+    │   ├── OfferController.js
+    │   ├── AssetController.js
+    │   ├── AssetTypeController.js
+    │   ├── RegulatorController.js
+    │   ├── ContractController.js
+    │   ├── RequestController.js
+    │   ├── NewsController.js
+    │   └── RatingController.js
+    │
+    ├── services/              # Business logic + ODEP HTTP calls
+    │   ├── UserService.js
+    │   ├── ProsummerService.js
+    │   ├── OfferService.js
+    │   ├── AssetService.js
+    │   ├── AssetTypeService.js
+    │   ├── RegulatorService.js
+    │   ├── ContractService.js
+    │   ├── RequestService.js
+    │   ├── NewsService.js
+    │   ├── RatingService.js
+    │   └── Utils.js           # HTTP fetch utilities, token mgmt, validation
+    │
+    └── database/              # Data access layer (local MongoDB)
+        ├── ConnectDB.js       # MongoDB connection manager (singleton)
+        ├── CryptoDB.js        # AES-256 encryption utilities
+        ├── UserDB.js          # Supplementary user data (phone, GPS)
+        ├── ProsummerDB.js     # Supplementary prosumer data (bookmarks, blocked offers)
+        ├── OfferDB.js         # Supplementary offer data (transactionType, country)
+        ├── AssetDB.js         # Asset images and unit metadata
+        ├── NewsDB.js          # News management (local-only)
+        └── RatingDB.js        # Rating management (local-only)</code></pre>
+<h3 id="dual-endpoint-pattern">2.3 Dual Endpoint Pattern</h3>
+<p>A key architectural feature is the <strong>dual endpoint system</strong>:</p>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 13%" />
+<col style="width: 35%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Pattern</th>
+<th>URL</th>
+<th>Data Source</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>ODEP-only</strong></td>
+<td><code>/v3/ODEP/...</code></td>
+<td>ODEP API only</td>
+<td>Direct ODEP access, admin/debug</td>
+</tr>
+<tr class="even">
+<td><strong>Custom/Enriched</strong></td>
+<td><code>/v3/...</code></td>
+<td>ODEP + local MongoDB</td>
+<td>Mobile app consumption (enriched data)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong> - <code>GET /v3/ODEP/assets/all/</code> → Returns raw ODEP asset data - <code>GET /v3/assets/all</code> → Returns ODEP data enriched with images and unit from local MongoDB</p>
+<h3 id="request-flow">2.4 Request Flow</h3>
+<pre><code>Client → Routes → Controller → Service ─┬─&gt; ODEP API (fetch HTTP)
+                                        │
+                                        └─&gt; Database Layer → MongoDB (local enrichment)</code></pre>
+<p><strong>Concrete example: GET /v3/assets/all (Custom/Enriched)</strong></p>
+<ol type="1">
+<li><strong>Client</strong> sends <code>GET /v3/assets/all</code> with <code>Authorization: Bearer &lt;ODEP_TOKEN&gt;</code></li>
+<li><strong>Route</strong> (<code>AssetRoute.js</code>) matches pattern</li>
+<li><strong>Controller</strong> (<code>AssetController.js</code>) calls <code>assetService.getAllAssetCustom()</code></li>
+<li><strong>Service</strong> (<code>AssetService.js</code>):
+<ul>
+<li>Sends <code>GET</code> to <code>{PATH_ODEP_ASSET}all</code> with token forwarded</li>
+<li>Receives ODEP response (all assets)</li>
+<li>Calls <code>AssetDB.getAndCompleteAssetByAssets(data)</code> to enrich with local images + unit</li>
+</ul></li>
+<li><strong>Response</strong> sent to client: enriched assets with images and metadata</li>
+</ol>
+<p><strong>Concrete example: POST /v3/offers (Create Offer)</strong></p>
+<ol type="1">
+<li><strong>Client</strong> sends <code>POST /v3/offers</code> with offer data</li>
+<li><strong>Service</strong> (<code>OfferService.js</code>):
+<ul>
+<li>Extracts RESILINK-specific fields (<code>transactionType</code>, <code>country</code>) from body</li>
+<li>Sends remaining fields to <code>{PATH_ODEP_OFFER}</code> via HTTP POST</li>
+<li>Stores <code>transactionType</code> and <code>country</code> in local MongoDB via <code>OfferDB.newOffer()</code></li>
+</ul></li>
+<li><strong>Response</strong> sent to client: ODEP response + local fields</li>
+</ol>
+<hr />
+<h2 id="data-model">3. Data Model</h2>
+<h3 id="dual-storage-architecture">3.1 Dual Storage Architecture</h3>
+<p>This version uses a <strong>dual storage</strong> approach:</p>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 29%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Storage</th>
+<th>Purpose</th>
+<th>Collections</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>ODEP (Blockchain)</strong></td>
+<td>Core business data</td>
+<td>Users, Prosumers, Assets, AssetTypes, Offers, Requests, Contracts, Regulators</td>
+</tr>
+<tr class="even">
+<td><strong>MongoDB <code>Resilink</code></strong></td>
+<td>Supplementary/enrichment data</td>
+<td>user, prosumer, Asset, Offer, News, Rating</td>
+</tr>
+<tr class="odd">
+<td><strong>MongoDB <code>Logs</code></strong></td>
+<td>Operation logging</td>
+<td>GetLogs, PutLogs, DeleteLogs, PatchLogs, ConnectionLogs</td>
+</tr>
+</tbody>
+</table>
+<h3 id="entities">3.2 Entities</h3>
+<p>Each entity below lists <strong>all its fields</strong> with their <strong>storage source</strong> (<code>ODEP</code> = blockchain API, <code>MongoDB</code> = local database). Entities with dual storage are enriched at runtime by merging data from both sources.</p>
+<blockquote>
+<p><strong>Legend</strong>: 🔷 ODEP (blockchain) · 🟠 MongoDB (local)</p>
+</blockquote>
+<hr />
+<h4 id="user">3.2.1 User</h4>
+<p><strong>Storage</strong>: ODEP + MongoDB<br />
+<strong>ODEP API</strong>: <code>PATH_ODEP_USER</code><br />
+<strong>MongoDB collection</strong>: <code>user</code></p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 28%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>userName</code></td>
+<td>🔷 ODEP</td>
+<td>Unique user identifier (primary key link between both systems)</td>
+</tr>
+<tr class="even">
+<td><code>firstName</code></td>
+<td>🔷 ODEP</td>
+<td>First name</td>
+</tr>
+<tr class="odd">
+<td><code>lastName</code></td>
+<td>🔷 ODEP</td>
+<td>Last name</td>
+</tr>
+<tr class="even">
+<td><code>email</code></td>
+<td>🔷 ODEP</td>
+<td>Email address</td>
+</tr>
+<tr class="odd">
+<td><code>password</code></td>
+<td>🔷 ODEP</td>
+<td>Authentication credentials</td>
+</tr>
+<tr class="even">
+<td><code>roleOfUser</code></td>
+<td>🔷 ODEP</td>
+<td>Role (<code>prosumer</code> | <code>regulator</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>accessToken</code></td>
+<td>🔷 ODEP</td>
+<td>ODEP JWT token (returned on login)</td>
+</tr>
+<tr class="even">
+<td><code>phoneNumber</code></td>
+<td>🟠 MongoDB</td>
+<td>Phone number — <strong>encrypted</strong> (AES-256-CBC, format <code>hexIV:hexCiphertext</code>)</td>
+</tr>
+<tr class="odd">
+<td><code>gps</code></td>
+<td>🟠 MongoDB</td>
+<td>GPS coordinates (format <code>&lt;lat,lon&gt;</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MongoDB document:</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>{</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>  <span class="dt">_id</span><span class="op">:</span> <span class="st">&quot;6602d2cf60c4c70987e7c96a&quot;</span><span class="op">,</span>    <span class="co">// ObjectId</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>  <span class="dt">phoneNumber</span><span class="op">:</span> <span class="st">&quot;a1b2c3...:d4e5f6...&quot;</span><span class="op">,</span> <span class="co">// Encrypted (AES-256-CBC)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>  <span class="dt">userName</span><span class="op">:</span> <span class="st">&quot;john_doe&quot;</span><span class="op">,</span>               <span class="co">// Links to ODEP user.userName</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a>  <span class="dt">gps</span><span class="op">:</span> <span class="st">&quot;&lt;48.855874,2.346568&gt;&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>}</span></code></pre></div>
+<p><strong>Note</strong>: <code>phoneNumber</code> decryption heuristic: decrypted only if <code>length &gt; 15</code>.</p>
+<hr />
+<h4 id="prosumer">3.2.2 Prosumer</h4>
+<p><strong>Storage</strong>: ODEP + MongoDB<br />
+<strong>ODEP API</strong>: <code>PATH_ODEP_PROSUMER</code><br />
+<strong>MongoDB collection</strong>: <code>prosumer</code></p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>🔷 ODEP</td>
+<td>Prosumer identifier (= <code>userName</code>)</td>
+</tr>
+<tr class="even">
+<td><code>sharingAccount</code></td>
+<td>🔷 ODEP</td>
+<td>Sharing account value</td>
+</tr>
+<tr class="odd">
+<td><code>balance</code></td>
+<td>🔷 ODEP</td>
+<td>Account balance</td>
+</tr>
+<tr class="even">
+<td><code>bookMarked</code></td>
+<td>🟠 MongoDB</td>
+<td>Favorite news IDs (array of strings)</td>
+</tr>
+<tr class="odd">
+<td><code>blockedOffers</code></td>
+<td>🟠 MongoDB</td>
+<td>Blocked offer IDs (simple array)</td>
+</tr>
+<tr class="even">
+<td><code>location</code></td>
+<td>🟠 MongoDB</td>
+<td>Geographic location (text)</td>
+</tr>
+<tr class="odd">
+<td><code>activityDomain</code></td>
+<td>🟠 MongoDB</td>
+<td>Activity sector</td>
+</tr>
+<tr class="even">
+<td><code>specificActivity</code></td>
+<td>🟠 MongoDB</td>
+<td>Specific activity within domain</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MongoDB document:</strong></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>{</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>  <span class="dt">_id</span><span class="op">:</span> <span class="st">&quot;john_doe&quot;</span><span class="op">,</span>                   <span class="co">// Links to ODEP prosumer.id</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>  <span class="dt">bookMarked</span><span class="op">:</span> [<span class="st">&quot;1&quot;</span><span class="op">,</span> <span class="st">&quot;2&quot;</span>]<span class="op">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>  <span class="dt">blockedOffers</span><span class="op">:</span> [<span class="st">&quot;123&quot;</span><span class="op">,</span> <span class="st">&quot;456&quot;</span>]<span class="op">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>  <span class="dt">location</span><span class="op">:</span> <span class="st">&quot;Paris&quot;</span><span class="op">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a>  <span class="dt">activityDomain</span><span class="op">:</span> <span class="st">&quot;Electronics&quot;</span><span class="op">,</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a>  <span class="dt">specificActivity</span><span class="op">:</span> <span class="st">&quot;Consumer Tech&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a>}</span></code></pre></div>
+<p><strong>Note</strong>: Unlike the MainWithoutODEP version, <code>blockedOffers</code> is a <strong>simple array</strong> (not a per-server map), since there is no multi-server federation in the ODEP version.</p>
+<hr />
+<h4 id="assettype">3.2.3 AssetType</h4>
+<p><strong>Storage</strong>: ODEP only<br />
+<strong>ODEP API</strong>: <code>PATH_ODEP_ASSETTYPE</code></p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>name</code></td>
+<td>🔷 ODEP</td>
+<td>Type name (unique)</td>
+</tr>
+<tr class="even">
+<td><code>description</code></td>
+<td>🔷 ODEP</td>
+<td>Type description</td>
+</tr>
+<tr class="odd">
+<td><code>nature</code></td>
+<td>🔷 ODEP</td>
+<td><code>measurableByQuantity</code> | <code>measurableByTime</code></td>
+</tr>
+<tr class="even">
+<td><code>unit</code></td>
+<td>🔷 ODEP</td>
+<td>Unit of measure</td>
+</tr>
+<tr class="odd">
+<td><code>subjectOfQuantity</code></td>
+<td>🔷 ODEP</td>
+<td>Quantity limit indicator</td>
+</tr>
+<tr class="even">
+<td><code>regulator</code></td>
+<td>🔷 ODEP</td>
+<td>Associated regulator</td>
+</tr>
+<tr class="odd">
+<td><code>sharingIncentive</code></td>
+<td>🔷 ODEP</td>
+<td>Sharing incentive flag</td>
+</tr>
+<tr class="even">
+<td><code>assetDataModel</code></td>
+<td>🔷 ODEP</td>
+<td>Specific attributes definition</td>
+</tr>
+</tbody>
+</table>
+<p><strong>RESILINK filter</strong>: <code>getAllAssetTypes()</code> returns only types with <code>description == "RESILINK"</code></p>
+<hr />
+<h4 id="asset">3.2.4 Asset</h4>
+<p><strong>Storage</strong>: ODEP + MongoDB<br />
+<strong>ODEP API</strong>: <code>PATH_ODEP_ASSET</code><br />
+<strong>MongoDB collection</strong>: <code>Asset</code></p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>🔷 ODEP</td>
+<td>Asset identifier (unique, numeric)</td>
+</tr>
+<tr class="even">
+<td><code>name</code></td>
+<td>🔷 ODEP</td>
+<td>Asset name</td>
+</tr>
+<tr class="odd">
+<td><code>description</code></td>
+<td>🔷 ODEP</td>
+<td>Asset description</td>
+</tr>
+<tr class="even">
+<td><code>assetType</code></td>
+<td>🔷 ODEP</td>
+<td>References AssetType.name</td>
+</tr>
+<tr class="odd">
+<td><code>owner</code></td>
+<td>🔷 ODEP</td>
+<td>Owner username</td>
+</tr>
+<tr class="even">
+<td><code>multiAccess</code></td>
+<td>🔷 ODEP</td>
+<td>Multi-request support</td>
+</tr>
+<tr class="odd">
+<td><code>totalQuantity</code></td>
+<td>🔷 ODEP</td>
+<td>Total quantity available</td>
+</tr>
+<tr class="even">
+<td><code>remainingQuantity</code></td>
+<td>🔷 ODEP</td>
+<td>Remaining quantity</td>
+</tr>
+<tr class="odd">
+<td><code>regulator</code></td>
+<td>🔷 ODEP</td>
+<td>Regulatory entity</td>
+</tr>
+<tr class="even">
+<td><code>regulatedId</code></td>
+<td>🔷 ODEP</td>
+<td>Regulated asset identifier</td>
+</tr>
+<tr class="odd">
+<td><code>specificAttributes</code></td>
+<td>🔷 ODEP</td>
+<td>AssetType-specific attributes</td>
+</tr>
+<tr class="even">
+<td><code>images</code></td>
+<td>🟠 MongoDB</td>
+<td>Image URL paths (max 2, stored as PNG on disk)</td>
+</tr>
+<tr class="odd">
+<td><code>unit</code></td>
+<td>🟠 MongoDB</td>
+<td>Unit of measure (RESILINK-specific display)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MongoDB document:</strong></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>{</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>  <span class="dt">id</span><span class="op">:</span> <span class="dv">789</span><span class="op">,</span>                           <span class="co">// Links to ODEP asset.id</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>  <span class="dt">owner</span><span class="op">:</span> <span class="st">&quot;john_doe&quot;</span><span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a>  <span class="dt">images</span><span class="op">:</span> [</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a>    <span class="st">&quot;https://domain/.../789/image0.png&quot;</span><span class="op">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a>    <span class="st">&quot;https://domain/.../789/image1.png&quot;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a>  ]<span class="op">,</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a>  <span class="dt">unit</span><span class="op">:</span> <span class="st">&quot;kWh&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a>}</span></code></pre></div>
+<p><strong>Image storage</strong>: Images submitted as Base64, converted to PNG files at <code>public/images/{assetId}/image{i}.png</code>.</p>
+<hr />
+<h4 id="offer">3.2.5 Offer</h4>
+<p><strong>Storage</strong>: ODEP + MongoDB<br />
+<strong>ODEP API</strong>: <code>PATH_ODEP_OFFER</code><br />
+<strong>MongoDB collection</strong>: <code>Offer</code></p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>id</code></td>
+<td>🔷 ODEP</td>
+<td>Offer identifier (auto-incremented)</td>
+</tr>
+<tr class="even">
+<td><code>offerer</code></td>
+<td>🔷 ODEP</td>
+<td>Creator username</td>
+</tr>
+<tr class="odd">
+<td><code>assetId</code></td>
+<td>🔷 ODEP</td>
+<td>References Asset.id</td>
+</tr>
+<tr class="even">
+<td><code>beginTimeSlot</code></td>
+<td>🔷 ODEP</td>
+<td>Start of time range</td>
+</tr>
+<tr class="odd">
+<td><code>endTimeSlot</code></td>
+<td>🔷 ODEP</td>
+<td>End of time range</td>
+</tr>
+<tr class="even">
+<td><code>validityLimit</code></td>
+<td>🔷 ODEP</td>
+<td>Expiration date</td>
+</tr>
+<tr class="odd">
+<td><code>publicationDate</code></td>
+<td>🔷 ODEP</td>
+<td>Creation date</td>
+</tr>
+<tr class="even">
+<td><code>offeredQuantity</code></td>
+<td>🔷 ODEP</td>
+<td>Offered quantity</td>
+</tr>
+<tr class="odd">
+<td><code>remainingQuantity</code></td>
+<td>🔷 ODEP</td>
+<td>Remaining quantity</td>
+</tr>
+<tr class="even">
+<td><code>price</code></td>
+<td>🔷 ODEP</td>
+<td>Price per unit</td>
+</tr>
+<tr class="odd">
+<td><code>deposit</code></td>
+<td>🔷 ODEP</td>
+<td>Deposit amount</td>
+</tr>
+<tr class="even">
+<td><code>cancellationFee</code></td>
+<td>🔷 ODEP</td>
+<td>Cancellation fee</td>
+</tr>
+<tr class="odd">
+<td><code>paymentMethod</code></td>
+<td>🔷 ODEP</td>
+<td><code>total</code> | <code>periodic</code></td>
+</tr>
+<tr class="even">
+<td><code>paymentFrequency</code></td>
+<td>🔷 ODEP</td>
+<td>Payment frequency</td>
+</tr>
+<tr class="odd">
+<td><code>rentInformation</code></td>
+<td>🔷 ODEP</td>
+<td>Rental terms (delayMargin, penalties)</td>
+</tr>
+<tr class="even">
+<td><code>transactionType</code></td>
+<td>🟠 MongoDB</td>
+<td><code>sale/purchase</code> | <code>rent</code> (RESILINK-specific)</td>
+</tr>
+<tr class="odd">
+<td><code>country</code></td>
+<td>🟠 MongoDB</td>
+<td>Country of origin (RESILINK-specific)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MongoDB document:</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>{</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>  <span class="dt">id</span><span class="op">:</span> <span class="dv">12345</span><span class="op">,</span>                         <span class="co">// Links to ODEP offer.id</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>  <span class="dt">transactionType</span><span class="op">:</span> <span class="st">&quot;sale/purchase&quot;</span><span class="op">,</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>  <span class="dt">country</span><span class="op">:</span> <span class="st">&quot;France&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>}</span></code></pre></div>
+<p><strong>Note</strong>: <code>transactionType</code> and <code>country</code> are extracted from the request body before forwarding to ODEP, then stored locally in MongoDB.</p>
+<hr />
+<h4 id="request">3.2.6 Request</h4>
+<p><strong>Storage</strong>: ODEP only<br />
+<strong>ODEP API</strong>: <code>PATH_ODEP_REQUEST</code></p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Request identifier</td>
+<td>🔷 ODEP</td>
+<td>Unique request ID</td>
+</tr>
+<tr class="even">
+<td>Associated offer</td>
+<td>🔷 ODEP</td>
+<td>References Offer.id</td>
+</tr>
+<tr class="odd">
+<td>Requester information</td>
+<td>🔷 ODEP</td>
+<td>Requesting prosumer</td>
+</tr>
+<tr class="even">
+<td>Quantity/terms</td>
+<td>🔷 ODEP</td>
+<td>Requested quantity and conditions</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>: Purchase/rental requests expressing prosumer interest in an offer. Fully functional in this version.</p>
+<hr />
+<h4 id="contract">3.2.7 Contract</h4>
+<p><strong>Storage</strong>: ODEP only<br />
+<strong>ODEP API</strong>: <code>PATH_ODEP_CONTRACT</code></p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Contract identifier</td>
+<td>🔷 ODEP</td>
+<td>Unique contract ID</td>
+</tr>
+<tr class="even">
+<td>Buyer/seller references</td>
+<td>🔷 ODEP</td>
+<td>Both parties</td>
+</tr>
+<tr class="odd">
+<td>Associated offer</td>
+<td>🔷 ODEP</td>
+<td>References Offer.id</td>
+</tr>
+<tr class="even">
+<td>Contract state</td>
+<td>🔷 ODEP</td>
+<td>Lifecycle management</td>
+</tr>
+<tr class="odd">
+<td>Quantity/time measurements</td>
+<td>🔷 ODEP</td>
+<td>Consumption tracking</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>: Formalized agreements between prosumers. Fully functional in this version.</p>
+<p><strong>Contract state machine</strong> (terminal states): - <code>cancelled</code> - <code>endOfConsumption</code> - <code>assetReceived</code> - <code>assetNotReceived</code> - <code>assetReturned</code></p>
+<p><strong>Contract types by asset nature:</strong> - <code>measurableByQuantity</code> → Update via <code>PATCH measurableByQuantityContract/{id}</code> - <code>measurableByTime</code> → Update via <code>PATCH measurableByTimeContract/{id}</code></p>
+<hr />
+<h4 id="regulator">3.2.8 Regulator</h4>
+<p><strong>Storage</strong>: ODEP only<br />
+<strong>ODEP API</strong>: <code>PATH_ODEP_REGULATOR</code></p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Regulator identifier</td>
+<td>🔷 ODEP</td>
+<td>Unique regulator ID</td>
+</tr>
+<tr class="even">
+<td>Name</td>
+<td>🔷 ODEP</td>
+<td>Regulator name</td>
+</tr>
+<tr class="odd">
+<td>Regulated asset types</td>
+<td>🔷 ODEP</td>
+<td>List of controlled AssetTypes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Description</strong>: Regulatory entities overseeing compliance for specific asset types. Fully functional in this version.</p>
+<hr />
+<h4 id="news">3.2.9 News</h4>
+<p><strong>Storage</strong>: MongoDB only<br />
+<strong>MongoDB collection</strong>: <code>News</code></p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>_id</code></td>
+<td>🟠 MongoDB</td>
+<td>Auto-incremented via Counters collection</td>
+</tr>
+<tr class="even">
+<td><code>url</code></td>
+<td>🟠 MongoDB</td>
+<td>News article URL</td>
+</tr>
+<tr class="odd">
+<td><code>country</code></td>
+<td>🟠 MongoDB</td>
+<td>Country (capitalized)</td>
+</tr>
+<tr class="even">
+<td><code>institute</code></td>
+<td>🟠 MongoDB</td>
+<td>Institution name</td>
+</tr>
+<tr class="odd">
+<td><code>img</code></td>
+<td>🟠 MongoDB</td>
+<td>Image (Base64 encoded)</td>
+</tr>
+<tr class="even">
+<td><code>platform</code></td>
+<td>🟠 MongoDB</td>
+<td>Source platform (e.g., “Instagram”)</td>
+</tr>
+<tr class="odd">
+<td><code>public</code></td>
+<td>🟠 MongoDB</td>
+<td>Confidentiality (<code>"true"</code> | <code>"false"</code> string)</td>
+</tr>
+<tr class="even">
+<td><code>createdAt</code></td>
+<td>🟠 MongoDB</td>
+<td>Creation timestamp</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MongoDB document:</strong></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>{</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>  <span class="dt">_id</span><span class="op">:</span> <span class="st">&quot;456&quot;</span><span class="op">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>  <span class="dt">url</span><span class="op">:</span> <span class="st">&quot;https://example.com/article&quot;</span><span class="op">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a>  <span class="dt">country</span><span class="op">:</span> <span class="st">&quot;France&quot;</span><span class="op">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a>  <span class="dt">institute</span><span class="op">:</span> <span class="st">&quot;admin&quot;</span><span class="op">,</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a>  <span class="dt">img</span><span class="op">:</span> <span class="st">&quot;base64...&quot;</span><span class="op">,</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a>  <span class="dt">platform</span><span class="op">:</span> <span class="st">&quot;Instagram&quot;</span><span class="op">,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true"></a>  <span class="dt">public</span><span class="op">:</span> <span class="st">&quot;false&quot;</span><span class="op">,</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true"></a>  <span class="dt">createdAt</span><span class="op">:</span> <span class="st">&quot;2026-02-10T12:00:00Z&quot;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true"></a>}</span></code></pre></div>
+<p><strong>Auto-increment</strong>: <code>_id</code> generated via <code>Counters</code> collection <code>{ _id: "newsId", seq: 456 }</code></p>
+<hr />
+<h4 id="rating">3.2.10 Rating</h4>
+<p><strong>Storage</strong>: MongoDB only<br />
+<strong>MongoDB collection</strong>: <code>Rating</code></p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>userId</code></td>
+<td>🟠 MongoDB</td>
+<td>User identifier (unique, one rating per user)</td>
+</tr>
+<tr class="even">
+<td><code>rating</code></td>
+<td>🟠 MongoDB</td>
+<td>Rating value (numeric)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MongoDB document:</strong></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>{</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a>  <span class="dt">userId</span><span class="op">:</span> <span class="st">&quot;john_doe&quot;</span><span class="op">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a>  <span class="dt">rating</span><span class="op">:</span> <span class="dv">4</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a>}</span></code></pre></div>
+<p><strong>Constraint</strong>: One rating per user (checked at insert time).</p>
+<hr />
+<h4 id="counters-internal">3.2.11 Counters (internal)</h4>
+<p><strong>Storage</strong>: MongoDB only<br />
+<strong>MongoDB collection</strong>: <code>Counters</code></p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>_id</code></td>
+<td>🟠 MongoDB</td>
+<td>Counter type (e.g., <code>"newsId"</code>)</td>
+</tr>
+<tr class="even">
+<td><code>seq</code></td>
+<td>🟠 MongoDB</td>
+<td>Current auto-increment value</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Used for</strong>: <code>newsId</code> (News._id)</p>
+<p><strong>Note</strong>: Unlike MainWithoutODEP, offer and asset IDs are managed by ODEP, not by local counters.</p>
+<hr />
+<h3 id="relationship-diagram">3.3 Relationship Diagram</h3>
+<pre><code>┌──────────────────────────────────────────────────────────────────────┐
+│                         ODEP (Blockchain)                            │
+│                                                                      │
+│  User (userName) ──┬──&gt; Prosumer (id)                                │
+│                    ├──&gt; Asset (owner)                                │
+│                    └──&gt; Offer (offerer)                              │
+│                                                                      │
+│  AssetType (name) ──&gt; Asset (assetType)                              │
+│  Asset (id) ──&gt; Offer (assetId)                                      │
+│  Offer (id) ──&gt; Request (offerId)                                    │
+│  Request ──&gt; Contract                                                │
+│  Regulator ──&gt; AssetType (regulatedAssetTypes)                       │
+└──────────────────────────────────────────────────────────────────────┘
+         │ Linked by userName/ID
+         ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                     MongoDB Resilink (Local)                        │
+│                                                                     │
+│  user (userName = userName) ──&gt; phoneNumber (encrypted), gps        │
+│  prosumer (_id = userName) ──&gt; bookMarked[], blockedOffers[],       │
+│                                location, activityDomain             │
+│  Asset (id) ──&gt; images[], unit                                      │
+│  Offer (id) ──&gt; transactionType, country                            │
+│                                                                     │
+│  News (_id) &lt;── prosumer.bookMarked[]                               │
+│  Rating (userId) &lt;── user.userName                                  │
+└─────────────────────────────────────────────────────────────────────┘</code></pre>
+<p><strong>Key relationships:</strong> 1. <code>ODEP user.userName</code> → <code>MongoDB user.userName</code> (1:1) — Supplementary phone/GPS data 2. <code>ODEP prosumer.id</code> → <code>MongoDB prosumer._id</code> (1:1) — Bookmarks, blocked offers, location 3. <code>ODEP asset.id</code> → <code>MongoDB Asset.id</code> (1:1) — Images and unit metadata 4. <code>ODEP offer.id</code> → <code>MongoDB Offer.id</code> (1:1) — Transaction type and country 5. <code>MongoDB prosumer.bookMarked[]</code> → <code>MongoDB News._id</code> (N:N) — News bookmarking 6. <code>MongoDB prosumer.blockedOffers[]</code> → <code>ODEP Offer.id</code> (N:N) — Offer filtering</p>
+<hr />
+<h2 id="rest-api---endpoints">4. REST API - Endpoints</h2>
+<h3 id="url-structure">4.1 URL Structure</h3>
+<p><strong>Base URL</strong>: <code>{SWAGGER_URL}/v3</code><br />
+<strong>Documentation</strong>: <code>{SWAGGER_URL}/v3/api-docs</code> (Swagger UI)</p>
+<blockquote>
+<p><code>SWAGGER_URL</code> is defined in the environment configuration file (see <a href="#81-environment-variables">section 8.1</a>). No fixed public URL exists — it depends on the deployment environment.</p>
+</blockquote>
+<h3 id="authentication">4.2 Authentication</h3>
+<p><strong>Header</strong>: <code>Authorization: Bearer &lt;ODEP_TOKEN&gt;</code></p>
+<p>Authentication is handled by ODEP. The RESILINK server forwards the token to ODEP for validation on each proxied request.</p>
+<ul>
+<li>Login endpoint (<code>/users/auth/sign_in</code>) authenticates against ODEP and returns an ODEP access token</li>
+<li>All subsequent requests forward this token to ODEP via HTTP headers</li>
+</ul>
+<h3 id="endpoints-by-resource">4.3 Endpoints by Resource</h3>
+<h4 id="users-users">4.3.1 Users (<code>/users</code>)</h4>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 25%" />
+<col style="width: 22%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Storage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td><code>/users/auth/sign_in</code></td>
+<td>ODEP</td>
+<td>Authentication (returns ODEP token)</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td><code>/ODEP/users</code></td>
+<td>ODEP only</td>
+<td>Create user (ODEP only)</td>
+</tr>
+<tr class="odd">
+<td>POST</td>
+<td><code>/users</code></td>
+<td>ODEP + MongoDB</td>
+<td>Create user (ODEP + local phone/GPS)</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/ODEP/users</code></td>
+<td>ODEP only</td>
+<td>List all users</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/users</code></td>
+<td>ODEP + MongoDB</td>
+<td>List all users (enriched with phone/GPS)</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/ODEP/users/:userId</code></td>
+<td>ODEP only</td>
+<td>User details by ID</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/ODEP/users/getUserByEmail/:userEmail</code></td>
+<td>ODEP only</td>
+<td>User by email</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/users/getUserByEmail/:userEmail</code></td>
+<td>ODEP + MongoDB</td>
+<td>User by email (enriched)</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/ODEP/users/getUserByUserName/:userName</code></td>
+<td>ODEP only</td>
+<td>User by username</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/users/getUserByUserName/:userName</code></td>
+<td>ODEP + MongoDB</td>
+<td>User by username (enriched)</td>
+</tr>
+<tr class="odd">
+<td>DELETE</td>
+<td><code>/ODEP/users/:userId</code></td>
+<td>ODEP only</td>
+<td>Delete user (ODEP only)</td>
+</tr>
+<tr class="even">
+<td>DELETE</td>
+<td><code>/users/:userId</code></td>
+<td>ODEP + MongoDB</td>
+<td>Delete user (both systems)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Authentication flow:</strong></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="co"># Login via ODEP</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a><span class="ex">POST</span> /v3/users/auth/sign_in</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a><span class="kw">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a>  <span class="st">&quot;userName&quot;</span>: <span class="st">&quot;john_doe&quot;</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>  <span class="st">&quot;password&quot;</span>: <span class="st">&quot;SecurePass123!&quot;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a><span class="kw">}</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a>→ <span class="ex">Response</span>: { <span class="st">&quot;accessToken&quot;</span>: <span class="st">&quot;odep_token...&quot;</span>, <span class="st">&quot;userName&quot;</span>: <span class="st">&quot;john_doe&quot;</span>, ... }</span></code></pre></div>
+<p><strong>User creation with ODEP provider retry:</strong> The user creation endpoint uses a <strong>load-balanced provider pattern</strong>. ODEP exposes multiple provider ports (22000-22006). If one provider returns <code>401 "No available accounts"</code>, the system retries with the next provider.</p>
+<pre><code>Attempt: POST {PATH_ODEP_USER}users?provider=http://127.0.0.1:22000
+  → 401 → Retry with port 22001
+  → 401 → Retry with port 22002
+  → 200 OK (success)</code></pre>
+<hr />
+<h4 id="prosumers-prosumers">4.3.2 Prosumers (<code>/prosumers</code>)</h4>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 25%" />
+<col style="width: 22%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Storage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td><code>/prosumers/new</code></td>
+<td>ODEP only</td>
+<td>Create prosumer in ODEP</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td><code>/prosumers/newAccount</code></td>
+<td>ODEP + MongoDB</td>
+<td>Create user + prosumer (full onboarding)</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/ODEP/prosumers/all</code></td>
+<td>ODEP only</td>
+<td>List all prosumers</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/prosumers/all</code></td>
+<td>ODEP + MongoDB</td>
+<td>List all prosumers (enriched)</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/ODEP/prosumers/:id</code></td>
+<td>ODEP only</td>
+<td>Prosumer details</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/prosumers/:id</code></td>
+<td>ODEP + MongoDB</td>
+<td>Prosumer details (enriched)</td>
+</tr>
+<tr class="odd">
+<td>PUT</td>
+<td><code>/prosumers/:id</code></td>
+<td>ODEP + MongoDB</td>
+<td>Update personal data</td>
+</tr>
+<tr class="even">
+<td>PATCH</td>
+<td><code>/ODEP/prosumers/:id/balance</code></td>
+<td>ODEP only</td>
+<td>Adjust balance</td>
+</tr>
+<tr class="odd">
+<td>PATCH</td>
+<td><code>/prosumers/:id/activityDomain</code></td>
+<td>MongoDB only</td>
+<td>Update activity domain</td>
+</tr>
+<tr class="even">
+<td>PATCH</td>
+<td><code>/prosumers/:id/sharingAccount</code></td>
+<td>ODEP only</td>
+<td>Adjust sharing account</td>
+</tr>
+<tr class="odd">
+<td>PUT</td>
+<td><code>/prosumers/:id/addBookmark</code></td>
+<td>MongoDB only</td>
+<td>Add news to favorites</td>
+</tr>
+<tr class="even">
+<td>PUT</td>
+<td><code>/prosumers/:id/addBlockedOffer</code></td>
+<td>MongoDB only</td>
+<td>Block an offer</td>
+</tr>
+<tr class="odd">
+<td>DELETE</td>
+<td><code>/prosumers/delBookmark/:id</code></td>
+<td>MongoDB only</td>
+<td>Remove news from favorites</td>
+</tr>
+<tr class="even">
+<td>DELETE</td>
+<td><code>/prosumers/delBlockedOffer/:id</code></td>
+<td>MongoDB only</td>
+<td>Unblock an offer</td>
+</tr>
+<tr class="odd">
+<td>DELETE</td>
+<td><code>/ODEP/prosumers/:id</code></td>
+<td>ODEP only</td>
+<td>Delete prosumer (ODEP only)</td>
+</tr>
+<tr class="even">
+<td>DELETE</td>
+<td><code>/prosumers/:id</code></td>
+<td>ODEP + MongoDB</td>
+<td>Delete prosumer (both systems)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Full onboarding flow (<code>POST /prosumers/newAccount</code>):</strong> 1. Authenticates as admin to obtain ODEP token 2. Creates user in ODEP via <code>UserService.createUserResilink()</code> (with provider retry) 3. Creates prosumer in ODEP with <code>{ id: userName, sharingAccount: 100, balance: 0 }</code> 4. Stores supplementary data in local MongoDB (location, activityDomain, specificActivity)</p>
+<hr />
+<h4 id="offers-offers">4.3.3 Offers (<code>/offers</code>)</h4>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 25%" />
+<col style="width: 22%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Storage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td><code>/offers</code></td>
+<td>ODEP + MongoDB</td>
+<td>Create new offer</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td><code>/offers/all/resilink/filtered</code></td>
+<td>ODEP + MongoDB</td>
+<td>Get filtered offers</td>
+</tr>
+<tr class="odd">
+<td>POST</td>
+<td><code>/offers/createOfferAsset</code></td>
+<td>ODEP + MongoDB</td>
+<td>Create offer with new asset</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/offers/all/Mapped</code></td>
+<td>ODEP + MongoDB</td>
+<td>All offers (enriched, map format)</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/offers/suggested/:id</code></td>
+<td>ODEP + MongoDB</td>
+<td>Suggested offers for user</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/offers/LimitedOffer</code></td>
+<td>ODEP + MongoDB</td>
+<td>Paginated offers</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/offers/owner/blockedOffer/:id</code></td>
+<td>ODEP + MongoDB</td>
+<td>Blocked offers for user</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/offers/owner</code></td>
+<td>ODEP + MongoDB</td>
+<td>Owner’s offers</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/offers/owner/purchase</code></td>
+<td>ODEP + MongoDB</td>
+<td>Owner’s purchase contracts + offers</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/offers/all</code></td>
+<td>ODEP + MongoDB</td>
+<td>All offers (list format)</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/offers/:id</code></td>
+<td>ODEP + MongoDB</td>
+<td>Offer details</td>
+</tr>
+<tr class="even">
+<td>PUT</td>
+<td><code>/offers/:id</code></td>
+<td>ODEP + MongoDB</td>
+<td>Update offer</td>
+</tr>
+<tr class="odd">
+<td>PUT</td>
+<td><code>/offers/:id/updateOfferAsset</code></td>
+<td>ODEP + MongoDB</td>
+<td>Update offer and linked asset</td>
+</tr>
+<tr class="even">
+<td>DELETE</td>
+<td><code>/offers/:id</code></td>
+<td>ODEP + MongoDB</td>
+<td>Delete offer</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Automatic filtering (on enriched endpoints):</strong></p>
+<p>See <a href="#512-offer-discovery">section 5.1.2</a> for the full filtering logic.</p>
+<p><strong>Offer creation data flow:</strong></p>
+<pre><code>Client body: { assetId, price, transactionType, country, ... }
+                    │
+        ┌───────────┴───────────┐
+        ▼                       ▼
+  ODEP receives:          MongoDB receives:
+  { assetId, price, ... } { id, transactionType, country }</code></pre>
+<p><strong>Examples:</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="co"># Create offer</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a><span class="ex">POST</span> /v3/offers</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a><span class="ex">Authorization</span>: Bearer <span class="op">&lt;</span>odep_token<span class="op">&gt;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a><span class="kw">{</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a>  <span class="st">&quot;assetId&quot;</span>: <span class="ex">789</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a>  <span class="st">&quot;transactionType&quot;</span>: <span class="st">&quot;sale/purchase&quot;</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a>  <span class="st">&quot;beginTimeSlot&quot;</span>: <span class="st">&quot;2026-01-01T00:00:00.417Z&quot;</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a>  <span class="st">&quot;endTimeSlot&quot;</span>: <span class="st">&quot;2026-12-01T00:00:00.417Z&quot;</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true"></a>  <span class="st">&quot;validityLimit&quot;</span>: <span class="st">&quot;2026-12-01T00:00:00.417Z&quot;</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true"></a>  <span class="st">&quot;price&quot;</span>: <span class="ex">150.00</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true"></a>  <span class="st">&quot;deposit&quot;</span>: <span class="ex">0</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true"></a>  <span class="st">&quot;cancellationFee&quot;</span>: <span class="ex">0</span>,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true"></a>  <span class="st">&quot;paymentMethod&quot;</span>: <span class="st">&quot;total&quot;</span>,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true"></a>  <span class="st">&quot;paymentFrequency&quot;</span>: <span class="ex">0</span>,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true"></a>  <span class="st">&quot;country&quot;</span>: <span class="st">&quot;France&quot;</span>,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true"></a>  <span class="st">&quot;offeredQuantity&quot;</span>: <span class="ex">1000</span>,</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true"></a>  <span class="st">&quot;rentInformation&quot;</span>: <span class="kw">{</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true"></a>    <span class="st">&quot;delayMargin&quot;</span>: <span class="ex">0</span>,</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true"></a>    <span class="st">&quot;lateRestitutionPenalty&quot;</span>: <span class="ex">0</span>,</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true"></a>    <span class="st">&quot;deteriorationPenalty&quot;</span>: <span class="ex">0</span>,</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true"></a>    <span class="st">&quot;nonRestitutionPenalty&quot;</span>: <span class="ex">0</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true"></a>  <span class="kw">}</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true"></a><span class="kw">}</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true"></a></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true"></a><span class="co"># Get all enriched offers (map format)</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true"></a><span class="ex">GET</span> /v3/offers/all/Mapped</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true"></a><span class="ex">Authorization</span>: Bearer <span class="op">&lt;</span>odep_token<span class="op">&gt;</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true"></a>→ <span class="ex">Response</span>: {</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true"></a>  <span class="st">&quot;123&quot;</span>: <span class="kw">{</span> <span class="ex">id</span>: 123, price: 150, transactionType: <span class="st">&quot;sale/purchase&quot;</span>, phoneNumber: <span class="st">&quot;+33...&quot;</span>, ... <span class="kw">}</span>,</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true"></a>  <span class="st">&quot;456&quot;</span>: <span class="kw">{</span> <span class="ex">id</span>: 456, price: 200, transactionType: <span class="st">&quot;rent&quot;</span>, phoneNumber: <span class="st">&quot;+33...&quot;</span>, ... <span class="kw">}</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true"></a>}</span></code></pre></div>
+<hr />
+<h4 id="assets-assets">4.3.4 Assets (<code>/assets</code>)</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Storage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td><code>/ODEP/assets</code></td>
+<td>ODEP only</td>
+<td>Create asset</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td><code>/assets</code></td>
+<td>ODEP + MongoDB</td>
+<td>Create asset (with images/unit)</td>
+</tr>
+<tr class="odd">
+<td>POST</td>
+<td><code>/assets/img</code></td>
+<td>MongoDB only</td>
+<td>Add images to existing asset</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/ODEP/assets/owner</code></td>
+<td>ODEP only</td>
+<td>Owner’s assets</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/assets/owner</code></td>
+<td>ODEP + MongoDB</td>
+<td>Owner’s assets (enriched)</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/ODEP/assets/all</code></td>
+<td>ODEP only</td>
+<td>List all assets</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/assets/all</code></td>
+<td>ODEP + MongoDB</td>
+<td>List all assets (enriched)</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/ODEP/assets/:id</code></td>
+<td>ODEP only</td>
+<td>Asset details</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/assets/:id</code></td>
+<td>ODEP + MongoDB</td>
+<td>Asset details (enriched)</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/asset/allAssetMapped</code></td>
+<td>ODEP + MongoDB</td>
+<td>All assets (map format, enriched)</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/assets/assetImg/:id</code></td>
+<td>MongoDB only</td>
+<td>Get asset images</td>
+</tr>
+<tr class="even">
+<td>PUT</td>
+<td><code>/ODEP/assets/:id</code></td>
+<td>ODEP only</td>
+<td>Update asset</td>
+</tr>
+<tr class="odd">
+<td>PUT</td>
+<td><code>/assets/:id</code></td>
+<td>ODEP + MongoDB</td>
+<td>Update asset (with images/unit)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Image handling:</strong> - Images submitted as Base64 strings (max 2 per asset) - Validated: <code>Utils.isBase64()</code> and <code>Utils.areAllBase64()</code> - Converted to PNG and stored at: <code>public/images/{assetId}/image{i}.png</code> - Accessible via: <code>{SWAGGER_URL}/public/images/{assetId}/image{i}.png</code></p>
+<hr />
+<h4 id="assettypes-assettypes">4.3.5 AssetTypes (<code>/assetTypes</code>)</h4>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 25%" />
+<col style="width: 22%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Storage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td><code>/ODEP/assetTypes</code></td>
+<td>ODEP only</td>
+<td>Create asset type</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/assetTypes/all</code></td>
+<td>ODEP only</td>
+<td>List all RESILINK asset types (filtered by description)</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/ODEP/assetTypes/all</code></td>
+<td>ODEP only</td>
+<td>List all asset types (unfiltered, dev)</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/assetTypes/:id</code></td>
+<td>ODEP only</td>
+<td>Type details</td>
+</tr>
+<tr class="odd">
+<td>PUT</td>
+<td><code>/assetTypes/:id</code></td>
+<td>ODEP only</td>
+<td>Update type</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note</strong>: All AssetType operations are ODEP-only. No local MongoDB enrichment is needed for asset types. The <code>getAllAssetTypes()</code> endpoint filters to return only types with <code>description == "RESILINK"</code>, while the ODEP-prefixed endpoint returns all types unfiltered.</p>
+<hr />
+<h4 id="contracts-contracts">4.3.6 Contracts (<code>/contracts</code>)</h4>
+<p>Contract management is handled entirely by ODEP. The RESILINK server proxies all contract operations to the ODEP API.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 25%" />
+<col style="width: 22%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Storage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td><code>/contracts</code></td>
+<td>ODEP only</td>
+<td>Create contract (formalize transaction)</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/contracts/all</code></td>
+<td>ODEP only</td>
+<td>List all contracts</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/contracts/owner/ongoing</code></td>
+<td>ODEP + enrichment</td>
+<td>Active contracts for user (enriched with asset nature)</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/contracts/owner</code></td>
+<td>ODEP only</td>
+<td>User’s contracts</td>
+</tr>
+<tr class="odd">
+<td>PATCH</td>
+<td><code>/contracts/measurableByQuantityContract/:id</code></td>
+<td>ODEP only</td>
+<td>Update quantity-based contract</td>
+</tr>
+<tr class="even">
+<td>PATCH</td>
+<td><code>/contracts/measurableByTimeContract/:id</code></td>
+<td>ODEP only</td>
+<td>Update time-based contract</td>
+</tr>
+<tr class="odd">
+<td>PATCH</td>
+<td><code>/contracts/cancelContract/:id</code></td>
+<td>ODEP only</td>
+<td>Cancel contract</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Contract lifecycle:</strong></p>
+<p>See <a href="#52-transaction-lifecycle-odep-managed">section 5.2</a> for the full transaction lifecycle.</p>
+<p><strong>Enrichment for ongoing contracts:</strong> <code>GET /contracts/owner/ongoing</code> enriches each contract with the <code>nature</code> field from the associated AssetType (via cross-reference: contract → offer → asset → assetType). This allows the mobile UI to display the correct input interface: - <code>measurableByQuantity</code> → quantity input - <code>measurableByTime</code> → date/time input</p>
+<hr />
+<h4 id="requests-odeprequests">4.3.7 Requests (<code>/ODEP/requests</code>)</h4>
+<p>Request management is handled entirely by ODEP.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Storage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td><code>/ODEP/requests</code></td>
+<td>ODEP only</td>
+<td>Create purchase/rental request</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/ODEP/requests/all</code></td>
+<td>ODEP only</td>
+<td>List all requests</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/ODEP/requests/:id</code></td>
+<td>ODEP only</td>
+<td>Request details</td>
+</tr>
+<tr class="even">
+<td>PUT</td>
+<td><code>/ODEP/requests/:id</code></td>
+<td>ODEP only</td>
+<td>Update request</td>
+</tr>
+<tr class="odd">
+<td>DELETE</td>
+<td><code>/ODEP/requests/:id</code></td>
+<td>ODEP only</td>
+<td>Delete/withdraw request</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Workflow</strong>: A prosumer expresses interest in an offer by creating a Request. The Request can then be formalized into a Contract.</p>
+<hr />
+<h4 id="regulators-odepregulators">4.3.8 Regulators (<code>/ODEP/regulators</code>)</h4>
+<p>Regulator management is handled entirely by ODEP.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Storage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td><code>/ODEP/regulators</code></td>
+<td>ODEP only</td>
+<td>Create regulator</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/ODEP/regulators/all</code></td>
+<td>ODEP only</td>
+<td>List all regulators</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/ODEP/regulators/:id</code></td>
+<td>ODEP only</td>
+<td>Regulator details</td>
+</tr>
+<tr class="even">
+<td>PATCH</td>
+<td><code>/ODEP/regulators/:id</code></td>
+<td>ODEP only</td>
+<td>Update regulator</td>
+</tr>
+<tr class="odd">
+<td>DELETE</td>
+<td><code>/ODEP/regulators/:id</code></td>
+<td>ODEP only</td>
+<td>Delete regulator</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="news-news">4.3.9 News (<code>/news</code>)</h4>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 25%" />
+<col style="width: 22%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Storage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td><code>/news</code></td>
+<td>MongoDB only</td>
+<td>Publish news</td>
+</tr>
+<tr class="even">
+<td>POST</td>
+<td><code>/news/:id</code></td>
+<td>MongoDB only</td>
+<td>Create personal news (with auto-bookmark)</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/news/all</code></td>
+<td>MongoDB only</td>
+<td>List all news</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/news/country</code></td>
+<td>MongoDB only</td>
+<td>News from country</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/news/ids</code></td>
+<td>MongoDB only</td>
+<td>News from ID list</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/news/owner/:id</code></td>
+<td>MongoDB only</td>
+<td>News from owner (bookmarked)</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/news/countryOwner</code></td>
+<td>MongoDB only</td>
+<td>News from country excluding user’s bookmarks</td>
+</tr>
+<tr class="even">
+<td>PUT</td>
+<td><code>/news/:id</code></td>
+<td>MongoDB only</td>
+<td>Update news</td>
+</tr>
+<tr class="odd">
+<td>DELETE</td>
+<td><code>/news/:id</code></td>
+<td>MongoDB only</td>
+<td>Delete news</td>
+</tr>
+</tbody>
+</table>
+<p><strong>News management is entirely local</strong> — ODEP has no news functionality. Bookmarking links news to prosumer profiles via <code>prosumer.bookMarked[]</code>.</p>
+<hr />
+<h4 id="ratings-rating">4.3.10 Ratings (<code>/rating</code>)</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Endpoint</th>
+<th>Storage</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POST</td>
+<td><code>/rating</code></td>
+<td>MongoDB only</td>
+<td>Create user rating</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/rating/all</code></td>
+<td>MongoDB only</td>
+<td>List all ratings</td>
+</tr>
+<tr class="odd">
+<td>GET</td>
+<td><code>/rating/average</code></td>
+<td>MongoDB only</td>
+<td>Average rating</td>
+</tr>
+<tr class="even">
+<td>GET</td>
+<td><code>/rating/:userId</code></td>
+<td>MongoDB only</td>
+<td>User’s rating</td>
+</tr>
+<tr class="odd">
+<td>PUT</td>
+<td><code>/rating/:userId</code></td>
+<td>MongoDB only</td>
+<td>Update rating</td>
+</tr>
+<tr class="even">
+<td>DELETE</td>
+<td><code>/rating/:userId</code></td>
+<td>MongoDB only</td>
+<td>Delete rating</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rating management is entirely local</strong> — ODEP has no rating functionality.</p>
+<hr />
+<h3 id="http-response-codes">4.4 HTTP Response Codes</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Code</th>
+<th>Meaning</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>200</td>
+<td>OK</td>
+<td>Operation success</td>
+</tr>
+<tr class="even">
+<td>201</td>
+<td>Created</td>
+<td>Resource created (user creation via ODEP)</td>
+</tr>
+<tr class="odd">
+<td>202</td>
+<td>Accepted</td>
+<td>Deletion acknowledged (ODEP user deletion)</td>
+</tr>
+<tr class="even">
+<td>400</td>
+<td>Bad Request</td>
+<td>Invalid data</td>
+</tr>
+<tr class="odd">
+<td>401</td>
+<td>Unauthorized</td>
+<td>Invalid/expired ODEP token</td>
+</tr>
+<tr class="even">
+<td>404</td>
+<td>Not Found</td>
+<td>Resource does not exist</td>
+</tr>
+<tr class="odd">
+<td>500</td>
+<td>Internal Server Error</td>
+<td>Server error / ODEP unreachable</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="business-features">5. Business Features</h2>
+<h3 id="offer-management">5.1 Offer Management</h3>
+<h4 id="offer-publication">5.1.1 Offer Publication</h4>
+<p><strong>Flow:</strong> 1. Prosumer creates Asset via ODEP (with optional images stored locally) 2. Prosumer publishes Offer: - Core data sent to ODEP API - <code>transactionType</code> and <code>country</code> extracted and stored in local MongoDB 3. ODEP generates offer ID 4. Offer immediately queryable via ODEP API</p>
+<p><strong>Business Rules (enforced by ODEP):</strong> - <code>assetId</code> must exist in ODEP - Valid time slots and validity limits - <code>price &gt; 0</code></p>
+<p><strong>RESILINK-specific:</strong> - <code>transactionType</code> must be <code>"sale/purchase"</code> or <code>"rent"</code> - Phone number of offerer enriched on retrieval</p>
+<h4 id="offer-discovery">5.1.2 Offer Discovery</h4>
+<p><strong>Modes:</strong></p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 34%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Mode</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>All offers</strong></td>
+<td><code>/offers/all/Mapped</code></td>
+<td>All valid offers enriched with RESILINK data</td>
+</tr>
+<tr class="even">
+<td><strong>Suggested</strong></td>
+<td><code>/offers/suggested/:id</code></td>
+<td>3 random valid offers excluding user’s own + blocked</td>
+</tr>
+<tr class="odd">
+<td><strong>Paginated</strong></td>
+<td><code>/offers/LimitedOffer</code></td>
+<td>Paginated offers with <code>offerNbr</code> and <code>iteration</code></td>
+</tr>
+<tr class="even">
+<td><strong>Filtered</strong></td>
+<td><code>/offers/all/resilink/filtered</code></td>
+<td>Advanced multi-criteria filtering</td>
+</tr>
+<tr class="odd">
+<td><strong>Owner</strong></td>
+<td><code>/offers/owner</code></td>
+<td>Authenticated user’s offers</td>
+</tr>
+<tr class="even">
+<td><strong>Blocked</strong></td>
+<td><code>/offers/owner/blockedOffer/:id</code></td>
+<td>User’s blocked offer list</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Smart Filtering (enriched endpoints):</strong> - ❌ Expired offers (<code>validityLimit &lt; now</code>) - ❌ Depleted offers (<code>remainingQuantity &lt;= 0</code> for measurableByQuantity) - ❌ Non-RESILINK asset types (filtered by <code>description == "RESILINK"</code>) - ❌ Blocked offers by user (via local <code>prosumer.blockedOffers</code>)</p>
+<p><strong>Enrichment data added to offers:</strong> - <code>phoneNumber</code> — Offerer’s phone number (decrypted from local MongoDB) - <code>transactionType</code> — <code>sale/purchase</code> or <code>rent</code> (from local MongoDB) - <code>country</code> — Country of origin (from local MongoDB)</p>
+<h4 id="advanced-offer-filtering">5.1.3 Advanced Offer Filtering</h4>
+<p><strong>Endpoint</strong>: <code>POST /offers/all/resilink/filtered</code></p>
+<p><strong>Supported filter criteria (all optional):</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Filter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>assetType</code></td>
+<td>string</td>
+<td>Filter by asset type name</td>
+</tr>
+<tr class="even">
+<td><code>properties</code></td>
+<td>object</td>
+<td>Specific attribute matching</td>
+</tr>
+<tr class="odd">
+<td><code>latitude</code>, <code>longitude</code>, <code>distance</code></td>
+<td>number</td>
+<td>GPS perimeter filter (Haversine)</td>
+</tr>
+<tr class="even">
+<td><code>cityVillage</code></td>
+<td>string</td>
+<td>Text-based location filter</td>
+</tr>
+<tr class="odd">
+<td><code>name</code></td>
+<td>string</td>
+<td>Asset name/description search</td>
+</tr>
+<tr class="even">
+<td><code>country</code></td>
+<td>string</td>
+<td>Country filter</td>
+</tr>
+<tr class="odd">
+<td><code>transactionType</code></td>
+<td>string</td>
+<td><code>sale/purchase</code> or <code>rent</code></td>
+</tr>
+<tr class="even">
+<td><code>minPrice</code>, <code>maxPrice</code></td>
+<td>number</td>
+<td>Price range</td>
+</tr>
+<tr class="odd">
+<td><code>minQuantity</code>, <code>maxQuantity</code></td>
+<td>number</td>
+<td>Quantity range</td>
+</tr>
+<tr class="even">
+<td><code>minDate</code>, <code>maxDate</code></td>
+<td>string</td>
+<td>Date range</td>
+</tr>
+</tbody>
+</table>
+<h4 id="offer-blocking">5.1.4 Offer Blocking</h4>
+<p><strong>Simple array structure (no multi-server):</strong></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a>prosumer<span class="op">.</span><span class="at">blockedOffers</span> <span class="op">=</span> [<span class="st">&quot;123&quot;</span><span class="op">,</span> <span class="st">&quot;456&quot;</span><span class="op">,</span> <span class="st">&quot;789&quot;</span>]</span></code></pre></div>
+<p><strong>API:</strong> - <code>PUT /prosumers/:id/addBlockedOffer</code> — Block offer - <code>DELETE /prosumers/delBlockedOffer/:id</code> — Unblock offer</p>
+<p><strong>Note</strong>: Unlike MainWithoutODEP which uses a per-server blocking map, the ODEP version uses a simple array since all offers come from a single ODEP instance.</p>
+<h4 id="offer-asset-atomic-creation">5.1.5 Offer + Asset Atomic Creation</h4>
+<p><strong>Endpoint</strong>: <code>POST /offers/createOfferAsset</code></p>
+<p>Creates both an asset and an offer in a single request: 1. Creates asset in ODEP (with optional images stored locally) 2. Retrieves generated <code>assetId</code> from ODEP response 3. Injects <code>assetId</code> into offer payload 4. Creates offer in ODEP + stores <code>transactionType</code>/<code>country</code> locally</p>
+<hr />
+<h3 id="transaction-lifecycle-odep-managed">5.2 Transaction Lifecycle (ODEP-Managed)</h3>
+<p><strong>✅ FULLY FUNCTIONAL</strong> in this version (unlike MainWithoutODEP).</p>
+<pre><code>┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────────┐
+│  Offer   │ ──&gt;│ Request  │ ──&gt;│ Contract │ ──&gt;│  Execution   │
+│ (Publish)│    │ (Express │    │(Formalize│    │  (Updates)   │
+│          │    │ interest)│    │agreement)│    │              │
+└──────────┘    └──────────┘    └──────────┘    └──────┬───────┘
+                                                       │
+                                          ┌────────────┼────────────┐
+                                          ▼            ▼            ▼
+                                    ┌──────────┐ ┌──────────┐ ┌──────────┐
+                                    │ Quantity │ │   Time   │ │  Cancel  │
+                                    │  Update  │ │  Update  │ │          │
+                                    └──────────┘ └──────────┘ └──────────┘</code></pre>
+<p><strong>Step 1: Offer Publication</strong> - Prosumer publishes offer linked to their asset - Offer visible to all platform users</p>
+<p><strong>Step 2: Request Creation</strong> - Interested prosumer creates a Request for the offer - Request expresses intent to purchase/rent</p>
+<p><strong>Step 3: Contract Formalization</strong> - Request is formalized into a Contract - Both parties agree to terms</p>
+<p><strong>Step 4: Contract Execution</strong> - <strong>measurableByQuantity</strong>: Buyer confirms consumption quantity - <code>PATCH /contracts/measurableByQuantityContract/:id</code> - <strong>measurableByTime</strong>: Parties report asset receipt/return - <code>PATCH /contracts/measurableByTimeContract/:id</code> - <strong>Cancellation</strong>: Either party can cancel - <code>PATCH /contracts/cancelContract/:id</code></p>
+<p><strong>Terminal states</strong>: See <a href="#327-contract">section 3.2.7</a>.</p>
+<hr />
+<h3 id="user-management">5.3 User Management</h3>
+<h4 id="registration">5.3.1 Registration</h4>
+<p><strong>Flow (Custom endpoint <code>POST /users</code>):</strong> 1. <strong>Validation:</strong> userName, password, phoneNumber, gps (see <a href="#63-input-validation">section 6.3</a> for regex details) - Check for duplicate <code>userName</code> and <code>email</code> via ODEP queries 2. <strong>ODEP User Creation:</strong> - Sends user data (without <code>phoneNumber</code> and <code>gps</code>) to ODEP - Uses load-balanced provider retry pattern (ports 22000-22006) 3. <strong>Local Storage:</strong> - <code>phoneNumber</code> encrypted with AES-256-CBC → stored in MongoDB <code>user</code> collection - <code>gps</code> stored in MongoDB <code>user</code> collection</p>
+<h4 id="authentication-1">5.3.2 Authentication</h4>
+<p><strong>Flow:</strong> 1. <code>POST /users/auth/sign_in</code> with <code>{ userName, password }</code> 2. <strong>Service</strong> sends credentials to ODEP authentication endpoint: <code>POST {PATH_ODEP_USER}auth/sign_in</code> 3. ODEP validates credentials and returns access token 4. Token stored in local memory via <code>Utils.saveUserToken(userName, token)</code> (in-memory Map) 5. User data synced to local MongoDB if not admin 6. Token returned to client</p>
+<p><strong>Note</strong>: Unlike MainWithoutODEP, the RESILINK server does <strong>not generate JWT tokens locally</strong>. Token generation and validation is handled entirely by ODEP. The local <code>userTokenStore</code> Map is used only for logging/tracking purposes (mapping tokens to usernames).</p>
+<h4 id="token-management">5.3.3 Token Management</h4>
+<p><strong>In-memory <code>userTokenStore</code> (Map):</strong> - <code>Utils.saveUserToken(userId, token)</code> — Stores userId→token mapping - <code>Utils.getUserIdFromToken(token)</code> — Reverse lookup: token→userId (for logging)</p>
+<p><strong>Token forwarding pattern:</strong> - Client sends: <code>Authorization: Bearer &lt;odep_token&gt;</code> - Service extracts token and forwards to ODEP: <code>Authorization: token</code> or <code>Authorization: Bearer token</code></p>
+<hr />
+<h3 id="data-enrichment-pattern">5.4 Data Enrichment Pattern</h3>
+<p>The core architectural pattern of this server is <strong>ODEP Data Enrichment</strong>:</p>
+<pre><code>1. Fetch data from ODEP API
+2. For each record, query local MongoDB for supplementary fields
+3. Merge ODEP data + local data
+4. Return enriched response to client</code></pre>
+<p>The enrichment fields for each entity are documented in <a href="#32-entities">section 3.2</a>.</p>
+<p><strong>In-place mutation pattern:</strong> The database layer functions (e.g., <code>AssetDB.getAndCompleteAssetByAssets()</code>, <code>UserDB.getUser()</code>, <code>OfferDB.getAllOffer()</code>) mutate the input ODEP data objects <strong>in-place</strong> by adding local MongoDB fields directly to the existing objects.</p>
+<hr />
+<h2 id="security-and-authentication">6. Security and Authentication</h2>
+<h3 id="data-encryption">6.1 Data Encryption</h3>
+<p><strong>Algorithm</strong>: AES-256-CBC</p>
+<p><strong>File</strong>: <code>database/CryptoDB.js</code></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="co">// Encryption</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a><span class="kw">const</span> iv <span class="op">=</span> crypto<span class="op">.</span><span class="fu">randomBytes</span>(<span class="dv">16</span>)<span class="op">;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true"></a><span class="kw">const</span> cipher <span class="op">=</span> crypto<span class="op">.</span><span class="fu">createCipheriv</span>(<span class="st">&#39;aes-256-cbc&#39;</span><span class="op">,</span> <span class="bu">Buffer</span><span class="op">.</span><span class="fu">from</span>(KEY<span class="op">,</span> <span class="st">&#39;hex&#39;</span>)<span class="op">,</span> iv)<span class="op">;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true"></a>encrypted <span class="op">=</span> cipher<span class="op">.</span><span class="fu">update</span>(plaintext<span class="op">,</span> <span class="st">&#39;utf8&#39;</span><span class="op">,</span> <span class="st">&#39;hex&#39;</span>) <span class="op">+</span> cipher<span class="op">.</span><span class="fu">final</span>(<span class="st">&#39;hex&#39;</span>)<span class="op">;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true"></a><span class="cf">return</span> iv<span class="op">.</span><span class="fu">toString</span>(<span class="st">&#39;hex&#39;</span>) <span class="op">+</span> <span class="st">&#39;:&#39;</span> <span class="op">+</span> encrypted<span class="op">;</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true"></a><span class="co">// Decryption</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true"></a><span class="kw">const</span> [ivHex<span class="op">,</span> encryptedText] <span class="op">=</span> ciphertext<span class="op">.</span><span class="fu">split</span>(<span class="st">&#39;:&#39;</span>)<span class="op">;</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true"></a><span class="kw">const</span> decipher <span class="op">=</span> crypto<span class="op">.</span><span class="fu">createDecipheriv</span>(<span class="st">&#39;aes-256-cbc&#39;</span><span class="op">,</span> KEY<span class="op">,</span> <span class="bu">Buffer</span><span class="op">.</span><span class="fu">from</span>(ivHex<span class="op">,</span> <span class="st">&#39;hex&#39;</span>))<span class="op">;</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true"></a>decrypted <span class="op">=</span> decipher<span class="op">.</span><span class="fu">update</span>(encryptedText<span class="op">,</span> <span class="st">&#39;hex&#39;</span><span class="op">,</span> <span class="st">&#39;utf8&#39;</span>) <span class="op">+</span> decipher<span class="op">.</span><span class="fu">final</span>(<span class="st">&#39;utf8&#39;</span>)<span class="op">;</span></span></code></pre></div>
+<p><strong>Encrypted data (AES-256-CBC):</strong> - <code>user.phoneNumber</code> (local MongoDB)</p>
+<p><strong>Key</strong>: <code>ENCRYPTION_KEY</code> (64 hex chars) in <code>.env</code></p>
+<p><strong>Decryption heuristic</strong>: Phone number is decrypted only if <code>length &gt; 15</code> (indicating encrypted format <code>iv:ciphertext</code>).</p>
+<h3 id="odep-token-authentication">6.2 ODEP Token Authentication</h3>
+<p><strong>Token provider</strong>: ODEP (Orange Digital Energy Platform)</p>
+<p>The full authentication flow is described in <a href="#532-authentication">section 5.3.2</a>.</p>
+<p><strong>Key points:</strong> - The RESILINK server does <strong>not verify tokens locally</strong>. Token validation is performed by ODEP when requests are proxied. - Local in-memory <code>userTokenStore</code> (Map) used only for logging/tracking (mapping tokens to usernames) — not for validation. - If ODEP rejects the token, the error is forwarded to the client.</p>
+<h3 id="input-validation">6.3 Input Validation</h3>
+<p><strong>Validation functions</strong> in <code>Utils.js</code>:</p>
+<table>
+<colgroup>
+<col style="width: 41%" />
+<col style="width: 29%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Regex</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>containsNonRomanCharacters(str)</code></td>
+<td><code>/^[a-zA-Z0-9?!%-_]+$/</code></td>
+<td>userName, password validation</td>
+</tr>
+<tr class="even">
+<td><code>isNumeric(str)</code></td>
+<td><code>/^\d+$/</code></td>
+<td>phoneNumber validation</td>
+</tr>
+<tr class="odd">
+<td><code>isValidGeographicalPoint(str)</code></td>
+<td><code>&lt;lat,lon&gt;</code> format, lat∈[-90,90], lon∈[-180,180]</td>
+<td>GPS validation</td>
+</tr>
+<tr class="even">
+<td><code>isBase64(str)</code></td>
+<td>Base64 regex pattern</td>
+<td>Image validation</td>
+</tr>
+<tr class="odd">
+<td><code>areAllBase64(list)</code></td>
+<td>Maps <code>isBase64()</code> over array</td>
+<td>Multiple image validation</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="technologies-and-stack">7. Technologies and Stack</h2>
+<h3 id="backend">7.1 Backend</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Technology</th>
+<th>Version</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Node.js</strong></td>
+<td>≥18.x</td>
+<td>Server JavaScript runtime</td>
+</tr>
+<tr class="even">
+<td><strong>Express.js</strong></td>
+<td>4.18.2</td>
+<td>Web framework REST API</td>
+</tr>
+<tr class="odd">
+<td><strong>body-parser</strong></td>
+<td>(bundled)</td>
+<td>Request body parsing</td>
+</tr>
+<tr class="even">
+<td><strong>dotenv</strong></td>
+<td>16.4.5</td>
+<td>Environment variables loading</td>
+</tr>
+<tr class="odd">
+<td><strong>MongoDB</strong></td>
+<td>6.1.0 (driver)</td>
+<td>NoSQL database (supplementary data)</td>
+</tr>
+<tr class="even">
+<td><strong>JWT</strong></td>
+<td>jsonwebtoken 9.0.2</td>
+<td>Token parsing/utilities (ODEP provides tokens)</td>
+</tr>
+<tr class="odd">
+<td><strong>Winston</strong></td>
+<td>3.11.0</td>
+<td>System logging</td>
+</tr>
+<tr class="even">
+<td><strong>winston-mongodb</strong></td>
+<td>5.1.1</td>
+<td>Log persistence in MongoDB</td>
+</tr>
+<tr class="odd">
+<td><strong>Morgan</strong></td>
+<td>1.10.0</td>
+<td>HTTP access logs (dev)</td>
+</tr>
+<tr class="even">
+<td><strong>Swagger</strong></td>
+<td>swagger-ui-express 5.0.0</td>
+<td>API documentation</td>
+</tr>
+<tr class="odd">
+<td><strong>swagger-jsdoc</strong></td>
+<td>6.2.8</td>
+<td>OpenAPI generation from JSDoc</td>
+</tr>
+<tr class="even">
+<td><strong>Crypto</strong></td>
+<td>Native Node.js</td>
+<td>AES-256 encryption</td>
+</tr>
+<tr class="odd">
+<td><strong>child_process</strong></td>
+<td>1.0.2</td>
+<td>System command execution helpers</td>
+</tr>
+<tr class="even">
+<td><strong>CORS</strong></td>
+<td>cors 2.8.5</td>
+<td>Cross-Origin Resource Sharing</td>
+</tr>
+</tbody>
+</table>
+<h3 id="external-dependencies">7.2 External Dependencies</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Dependency</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>ODEP API (Orange)</strong></td>
+<td>Core business logic — blockchain-based data management</td>
+</tr>
+<tr class="even">
+<td><strong>MongoDB Atlas</strong></td>
+<td>Supplementary data storage (or local MongoDB)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="npm-dependencies">7.3 NPM Dependencies</h3>
+<div class="sourceCode" id="cb19"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="fu">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a>  <span class="dt">&quot;dependencies&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true"></a>    <span class="dt">&quot;child_process&quot;</span><span class="fu">:</span> <span class="st">&quot;^1.0.2&quot;</span><span class="fu">,</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true"></a>    <span class="dt">&quot;cors&quot;</span><span class="fu">:</span> <span class="st">&quot;^2.8.5&quot;</span><span class="fu">,</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true"></a>    <span class="dt">&quot;crypto&quot;</span><span class="fu">:</span> <span class="st">&quot;^1.0.1&quot;</span><span class="fu">,</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true"></a>    <span class="dt">&quot;dotenv&quot;</span><span class="fu">:</span> <span class="st">&quot;^16.4.5&quot;</span><span class="fu">,</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true"></a>    <span class="dt">&quot;express&quot;</span><span class="fu">:</span> <span class="st">&quot;^4.18.2&quot;</span><span class="fu">,</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true"></a>    <span class="dt">&quot;jsonwebtoken&quot;</span><span class="fu">:</span> <span class="st">&quot;^9.0.2&quot;</span><span class="fu">,</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true"></a>    <span class="dt">&quot;mongodb&quot;</span><span class="fu">:</span> <span class="st">&quot;^6.1.0&quot;</span><span class="fu">,</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true"></a>    <span class="dt">&quot;morgan&quot;</span><span class="fu">:</span> <span class="st">&quot;^1.10.0&quot;</span><span class="fu">,</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true"></a>    <span class="dt">&quot;swagger-jsdoc&quot;</span><span class="fu">:</span> <span class="st">&quot;^6.2.8&quot;</span><span class="fu">,</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true"></a>    <span class="dt">&quot;swagger-ui-express&quot;</span><span class="fu">:</span> <span class="st">&quot;^5.0.0&quot;</span><span class="fu">,</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true"></a>    <span class="dt">&quot;winston&quot;</span><span class="fu">:</span> <span class="st">&quot;^3.11.0&quot;</span><span class="fu">,</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true"></a>    <span class="dt">&quot;winston-mongodb&quot;</span><span class="fu">:</span> <span class="st">&quot;^5.1.1&quot;</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true"></a>  <span class="fu">},</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true"></a>  <span class="dt">&quot;devDependencies&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true"></a>    <span class="dt">&quot;nodemon&quot;</span><span class="fu">:</span> <span class="st">&quot;^3.0.1&quot;</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true"></a>  <span class="fu">}</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="project-structure">7.4 Project Structure</h3>
+<pre><code>RESILINK_Render_Server/
+├── package.json
+├── README.md
+├── TECHNICAL_SPECIFICATION.md     (this document)
+├── Resilink_webserver/
+│   ├── RESILINK_Server.env        (configuration)
+│   ├── public/                    (static files, asset images)
+│   │   └── images/                (uploaded asset images)
+│   ├── script/                    (installation scripts)
+│   │   ├── install_resilink.ps1
+│   │   ├── install_resilink.sh
+│   └── src/                       (application source)
+│       ├── index.js               (entry point)
+│       └── v3/                    (MVC+S architecture)</code></pre>
+<hr />
+<h2 id="configuration-and-installation">8. Configuration and Installation</h2>
+<h3 id="environment-variables">8.1 Environment Variables</h3>
+<p><strong>File</strong>: <code>RESILINK_Server.env</code> (in <code>Resilink_webserver/</code> directory)</p>
+<h4 id="server">Server</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>IP_ADDRESS</code></td>
+<td>IP address the server binds to</td>
+<td><code>0.0.0.0</code></td>
+</tr>
+<tr class="even">
+<td><code>PORT</code></td>
+<td>TCP port</td>
+<td><code>3000</code></td>
+</tr>
+<tr class="odd">
+<td><code>SWAGGER_URL</code></td>
+<td>Public base URL for Swagger UI</td>
+<td><code>http://0.0.0.0:3000</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="security">Security</h4>
+<table>
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 40%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ENCRYPTION_KEY</code></td>
+<td>256-bit hex key (64 chars) for AES-256-CBC encryption of phone numbers</td>
+<td><code>b32c32aac9c6afd...</code></td>
+</tr>
+<tr class="even">
+<td><code>TOKEN_KEY</code></td>
+<td>256-bit hex key (64 chars) for JWT utilities</td>
+<td><code>f0d8cd085ada735...</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key generation:</strong></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="ex">node</span> -e <span class="st">&quot;console.log(require(&#39;crypto&#39;).randomBytes(32).toString(&#39;hex&#39;))&quot;</span></span></code></pre></div>
+<h4 id="database">Database</h4>
+<table>
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 40%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>DB_URL</code></td>
+<td>MongoDB connection string (main DB)</td>
+<td><code>mongodb+srv://user:pass@cluster.mongodb.net/</code></td>
+</tr>
+<tr class="even">
+<td><code>DB_LOGS_URL</code></td>
+<td>MongoDB connection string (logs DB)</td>
+<td><code>mongodb+srv://user:pass@cluster.mongodb.net/Logs</code></td>
+</tr>
+<tr class="odd">
+<td><code>DB_MODE</code></td>
+<td>Database mode: <code>atlas</code> or <code>local</code></td>
+<td><code>atlas</code></td>
+</tr>
+</tbody>
+</table>
+<p>When <code>DB_MODE=local</code>, connection strings are overridden to <code>mongodb://127.0.0.1:27017/Resilink</code> and <code>mongodb://127.0.0.1:27017/Logs</code>.</p>
+<h4 id="odep-api-paths">ODEP API Paths</h4>
+<table>
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 41%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+<th>Format</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>PATH_ODEP_USER</code></td>
+<td>ODEP Authentication/User API URL</td>
+<td><code>https://&lt;ODEP_HOST&gt;/oauth/api/v1.0.0/</code></td>
+</tr>
+<tr class="even">
+<td><code>PATH_ODEP_PROSUMER</code></td>
+<td>ODEP Prosumer API URL</td>
+<td><code>https://&lt;ODEP_HOST&gt;/restapi/api/v3/prosumers/</code></td>
+</tr>
+<tr class="odd">
+<td><code>PATH_ODEP_REGULATOR</code></td>
+<td>ODEP Regulator API URL</td>
+<td><code>https://&lt;ODEP_HOST&gt;/restapi/api/v3/regulators/</code></td>
+</tr>
+<tr class="even">
+<td><code>PATH_ODEP_ASSET</code></td>
+<td>ODEP Asset API URL</td>
+<td><code>https://&lt;ODEP_HOST&gt;/restapi/api/v3/assets/</code></td>
+</tr>
+<tr class="odd">
+<td><code>PATH_ODEP_ASSETTYPE</code></td>
+<td>ODEP AssetType API URL</td>
+<td><code>https://&lt;ODEP_HOST&gt;/restapi/api/v3/assetTypes/</code></td>
+</tr>
+<tr class="even">
+<td><code>PATH_ODEP_OFFER</code></td>
+<td>ODEP Offer API URL</td>
+<td><code>https://&lt;ODEP_HOST&gt;/restapi/api/v3/offers/</code></td>
+</tr>
+<tr class="odd">
+<td><code>PATH_ODEP_REQUEST</code></td>
+<td>ODEP Request API URL</td>
+<td><code>https://&lt;ODEP_HOST&gt;/restapi/api/v3/requests/</code></td>
+</tr>
+<tr class="even">
+<td><code>PATH_ODEP_CONTRACT</code></td>
+<td>ODEP Contract API URL</td>
+<td><code>https://&lt;ODEP_HOST&gt;/restapi/api/v3/contracts/</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note</strong>: The actual <code>&lt;ODEP_HOST&gt;</code> value is <strong>confidential</strong>. ODEP API URLs must be requested from ORANGE or from <code>Congduc.Pham@univ-pau.fr</code>.</p>
+</blockquote>
+<p><strong>⚠️ Security:</strong> - <strong>NEVER</strong> commit <code>.env</code> to Git - <code>ENCRYPTION_KEY</code> and <code>TOKEN_KEY</code> must be cryptographically random - ODEP API URLs are confidential - Restrict MongoDB access via IP Whitelist</p>
+<hr />
+<h3 id="installation">8.2 Installation</h3>
+<h4 id="prerequisites">Prerequisites</h4>
+<ul>
+<li><strong>Node.js</strong> (v18.20 or later)</li>
+<li><strong>MongoDB</strong> (Atlas cluster <em>or</em> local installation)</li>
+<li><strong>ODEP API</strong> (URLs to be requested from ORANGE)</li>
+</ul>
+<h4 id="database-setup">Database Setup</h4>
+<p><strong>Database 1: <code>Logs</code></strong></p>
+<pre><code>use Logs
+
+db.createCollection(&quot;ConnectionLogs&quot;)
+db.createCollection(&quot;DeleteLogs&quot;)
+db.createCollection(&quot;GetLogs&quot;)
+db.createCollection(&quot;PatchLogs&quot;)
+db.createCollection(&quot;PutLogs&quot;)</code></pre>
+<p><strong>Database 2: <code>Resilink</code></strong></p>
+<pre><code>use Resilink
+
+db.createCollection(&quot;Asset&quot;)
+db.createCollection(&quot;Counters&quot;)
+db.createCollection(&quot;News&quot;)
+db.createCollection(&quot;Offer&quot;)
+db.createCollection(&quot;Rating&quot;)
+db.createCollection(&quot;prosumer&quot;)
+db.createCollection(&quot;user&quot;)</code></pre>
+<blockquote>
+<p><strong>Note</strong>: The <code>Counters</code> collection is used for News auto-increment IDs (see <a href="#3211-counters-internal">section 3.2.11</a>). It is automatically initialized on first News insertion via <code>upsert</code>. The <code>AssetType</code> collection listed in the MainWithoutODEP version is <strong>not needed</strong> here — asset types are managed entirely by ODEP.</p>
+</blockquote>
+<p><strong>Database Initialization (InitDB)</strong></p>
+<p>On server startup, <code>InitDB.js</code> ensures <strong>unique indexes</strong> and <strong>deduplication</strong> for local MongoDB collections:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 29%" />
+<col style="width: 12%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Collection</th>
+<th>Indexed Field</th>
+<th>Type</th>
+<th>Justification</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Rating</code></td>
+<td><code>userId</code></td>
+<td>Unique</td>
+<td>Only entity fully managed locally (one rating per user)</td>
+</tr>
+</tbody>
+</table>
+<p>This runs automatically at launch (see <code>src/v3/database/InitDB.js</code>). Pre-existing duplicates are cleaned before indexes are created.</p>
+<h4 id="installation-steps">Installation Steps</h4>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true"></a><span class="co"># 1. Clone the project</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true"></a><span class="fu">git</span> clone https://github.com/ZiQuwi/RESILINK_Render_Server</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true"></a><span class="bu">cd</span> Resilink_webserver</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true"></a><span class="co"># 2. Install dependencies</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true"></a><span class="ex">npm</span> install</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true"></a><span class="co"># 3. Create and configure the environment file</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true"></a><span class="fu">cp</span> RESILINK_Server.env.example RESILINK_Server.env</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true"></a><span class="co"># Then edit RESILINK_Server.env and fill in the required values:</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true"></a><span class="co">#   - IP_ADDRESS, PORT, SWAGGER_URL</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true"></a><span class="co">#   - ENCRYPTION_KEY, TOKEN_KEY (generate with: node -e &quot;console.log(require(&#39;crypto&#39;).randomBytes(32).toString(&#39;hex&#39;))&quot;)</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true"></a><span class="co">#   - DB_URL, DB_LOGS_URL, DB_MODE (atlas or local)</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true"></a><span class="co">#   - PATH_ODEP_* (ODEP API URLs — confidential, request from ORANGE)</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true"></a><span class="co"># See section 8.1 for full variable reference.</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true"></a></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true"></a><span class="co"># 4. Start the server</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true"></a><span class="ex">node</span> src/index.js</span></code></pre></div>
+<blockquote>
+<p><strong>⚠️ Important</strong>: The <code>.env</code> file contains <strong>credentials and confidential URLs</strong>. It must <strong>never</strong> be committed to Git. Ensure <code>RESILINK_Server.env</code> is listed in <code>.gitignore</code>.</p>
+</blockquote>
+<h4 id="local-mongodb-installation-optional">Local MongoDB Installation (Optional)</h4>
+<p>For local MongoDB setup, use the included scripts:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true"></a><span class="co"># Linux/Ubuntu</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true"></a><span class="bu">cd</span> Resilink_webserver/script</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true"></a><span class="ex">./install_resilink.sh</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true"></a><span class="co"># Windows (PowerShell as Administrator)</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true"></a><span class="bu">cd</span> Resilink_webserver/script</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true"></a><span class="ex">./install_resilink.ps1</span></span></code></pre></div>
+<h4 id="verification">Verification</h4>
+<p>After startup, access Swagger documentation:</p>
+<pre><code>http://&lt;IP_ADDRESS&gt;:&lt;PORT&gt;/v3/api-docs</code></pre>
+<hr />
+<h2 id="logging-and-monitoring">9. Logging and Monitoring</h2>
+<h3 id="winston-loggers">9.1 Winston Loggers</h3>
+<p><strong>Configuration</strong>: <code>src/v3/loggers.js</code></p>
+<p><strong>Available loggers:</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th>Logger</th>
+<th>Usage</th>
+<th>MongoDB Collection</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>GetDataLogger</code></td>
+<td>Read operations (GET)</td>
+<td><code>GetLogs</code></td>
+</tr>
+<tr class="even">
+<td><code>UpdateDataODEPLogger</code></td>
+<td>ODEP write operations (POST/PUT)</td>
+<td><code>PutLogs</code></td>
+</tr>
+<tr class="odd">
+<td><code>UpdateDataResilinkLogger</code></td>
+<td>Local MongoDB write operations</td>
+<td><code>PutLogs</code></td>
+</tr>
+<tr class="even">
+<td><code>DeleteDataODEPLogger</code></td>
+<td>ODEP delete operations</td>
+<td><code>DeleteLogs</code></td>
+</tr>
+<tr class="odd">
+<td><code>DeleteDataResilinkLogger</code></td>
+<td>Local MongoDB delete operations</td>
+<td><code>DeleteLogs</code></td>
+</tr>
+<tr class="even">
+<td><code>ConnectDBResilinkLogger</code></td>
+<td>MongoDB connections</td>
+<td><code>ConnectionLogs</code></td>
+</tr>
+<tr class="odd">
+<td><code>PatchDataODEPLogger</code></td>
+<td>ODEP patch operations</td>
+<td><code>PatchLogs</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Log format:</strong></p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true"></a><span class="fu">{</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true"></a>  <span class="dt">&quot;level&quot;</span><span class="fu">:</span> <span class="st">&quot;info&quot;</span><span class="fu">,</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Success retrieving all offers&quot;</span><span class="fu">,</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true"></a>  <span class="dt">&quot;metadata&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true"></a>    <span class="dt">&quot;from&quot;</span><span class="fu">:</span> <span class="st">&quot;getAllOfferForResilinkCustom&quot;</span><span class="fu">,</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true"></a>    <span class="dt">&quot;username&quot;</span><span class="fu">:</span> <span class="st">&quot;john_doe&quot;</span><span class="fu">,</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true"></a>    <span class="dt">&quot;tokenUsed&quot;</span><span class="fu">:</span> <span class="st">&quot;eyJhbGc...&quot;</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true"></a>  <span class="fu">},</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true"></a>  <span class="dt">&quot;timestamp&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-04-02T15:30:45.123Z&quot;</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true"></a><span class="fu">}</span></span></code></pre></div>
+<p><strong>Levels:</strong> - <code>info</code> — Normal operations - <code>warn</code> — Warnings (e.g., ODEP error response) - <code>error</code> — Errors requiring attention</p>
+<h3 id="morgan-development">9.2 Morgan (Development)</h3>
+<p>HTTP access logging via Morgan in <code>dev</code> format:</p>
+<pre><code>GET /v3/offers/all/Mapped 200 45.123 ms
+POST /v3/users/auth/sign_in 200 120.456 ms</code></pre>
+<h3 id="log-separation-odep-vs-resilink">9.3 Log Separation (ODEP vs RESILINK)</h3>
+<p>Loggers distinguish between <strong>ODEP operations</strong> and <strong>local RESILINK operations</strong>: - <code>UpdateDataODEPLogger</code> / <code>DeleteDataODEPLogger</code> — Track HTTP calls to ODEP - <code>UpdateDataResilinkLogger</code> / <code>DeleteDataResilinkLogger</code> — Track local MongoDB operations</p>
+<p>This separation allows monitoring ODEP availability and performance independently from local database operations.</p>
+<hr />
+<h2 id="flow-diagrams">10. Flow Diagrams</h2>
+<h3 id="authentication-flow-via-odep">10.1 Authentication Flow (via ODEP)</h3>
+<pre><code>┌────────┐                 ┌──────────────┐                ┌──────────┐
+│ Client │                 │  RESILINK    │                │   ODEP   │
+│ (App)  │                 │  Server      │                │   API    │
+└───┬────┘                 └──────┬───────┘                └────┬─────┘
+    │                             │                             │
+    │ POST /users/auth/sign_in    │                             │
+    │ {userName, password}        │                             │
+    ├────────────────────────────&gt;│                             │
+    │                             │                             │
+    │                             │ POST {PATH_ODEP_USER}       │
+    │                             │ auth/sign_in                │
+    │                             │ {userName, password}        │
+    │                             ├────────────────────────────&gt;│
+    │                             │                             │
+    │                             │ {accessToken, userName,...} │
+    │                             │&lt;────────────────────────────┤
+    │                             │                             │
+    │                             │ saveUserToken(userName,     │
+    │                             │   token) → in-memory Map    │
+    │                             │                             │
+    │                             │ sync user to local MongoDB  │
+    │                             │                             │
+    │  200 OK                     │                             │
+    │  {accessToken, userName,..} │                             │
+    │&lt;────────────────────────────┤                             │
+    │                             │                             │</code></pre>
+<h3 id="enriched-data-retrieval-flow">10.2 Enriched Data Retrieval Flow</h3>
+<pre><code>┌────────┐     ┌──────────────┐     ┌──────────┐     ┌──────────┐
+│ Client │     │   RESILINK   │     │   ODEP   │     │ MongoDB  │
+│ (App)  │     │   Server     │     │   API    │     │ (Local)  │
+└───┬────┘     └──────┬───────┘     └────┬─────┘     └────┬─────┘
+    │                 │                   │                 │
+    │ GET /assets/all │                   │                 │
+    │ Auth: Bearer .. │                   │                 │
+    ├────────────────&gt;│                   │                 │
+    │                 │                   │                 │
+    │                 │ GET {ODEP}/all    │                 │
+    │                 │ Auth: token       │                 │
+    │                 ├──────────────────&gt;│                 │
+    │                 │                   │                 │
+    │                 │ [asset1, asset2]  │                 │
+    │                 │&lt;──────────────────┤                 │
+    │                 │                   │                 │
+    │                 │ For each asset:   │                 │
+    │                 │ findOne({id})     │                 │
+    │                 ├────────────────────────────────────&gt;│
+    │                 │                   │                 │
+    │                 │ {images, unit}    │                 │
+    │                 │&lt;────────────────────────────────────┤
+    │                 │                   │                 │
+    │                 │ Merge: asset +    │                 │
+    │                 │   images + unit   │                 │
+    │                 │                   │                 │
+    │ 200 OK          │                   │                 │
+    │ [enriched data] │                   │                 │
+    │&lt;────────────────┤                   │                 │
+    │                 │                   │                 │</code></pre>
+<h3 id="offer-creation-flow-dual-storage">10.3 Offer Creation Flow (Dual Storage)</h3>
+<pre><code>┌────────┐     ┌──────────────┐     ┌──────────┐     ┌──────────┐
+│ Client │     │   RESILINK   │     │   ODEP   │     │ MongoDB  │
+│ (App)  │     │   Server     │     │   API    │     │ (Local)  │
+└───┬────┘     └──────┬───────┘     └────┬─────┘     └────┬─────┘
+    │                 │                   │                 │
+    │ POST /offers    │                   │                 │
+    │ {assetId,       │                   │                 │
+    │  transactionType│                   │                 │
+    │  country, ...}  │                   │                 │
+    ├────────────────&gt;│                   │                 │
+    │                 │                   │                 │
+    │                 │ Extract:          │                 │
+    │                 │  transactionType  │                 │
+    │                 │  country          │                 │
+    │                 │                   │                 │
+    │                 │ POST {ODEP_OFFER} │                 │
+    │                 │ {assetId, price,  │                 │
+    │                 │  validity, ...}   │                 │
+    │                 ├──────────────────&gt;│                 │
+    │                 │                   │                 │
+    │                 │ {offerId: 12345}  │                 │
+    │                 │&lt;──────────────────┤                 │
+    │                 │                   │                 │
+    │                 │ insertOne({id:    │                 │
+    │                 │  12345,           │                 │
+    │                 │  transactionType, │                 │
+    │                 │  country})        │                 │
+    │                 ├──────────────────────────────────── &gt;│
+    │                 │                   │                 │
+    │                 │ acknowledged      │                 │
+    │                 │&lt;────────────────────────────────────┤
+    │                 │                   │                 │
+    │ 200 OK          │                   │                 │
+    │ {offer}         │                   │                 │
+    │&lt;────────────────┤                   │                 │
+    │                 │                   │                 │</code></pre>
+<h3 id="contract-lifecycle-flow-odep">10.4 Contract Lifecycle Flow (ODEP)</h3>
+<pre><code>┌──────────┐        ┌──────────────┐        ┌──────────┐
+│  Buyer   │        │   RESILINK   │        │   ODEP   │
+│  (App)   │        │   Server     │        │   API    │
+└────┬─────┘        └──────┬───────┘        └────┬─────┘
+     │                     │                     │
+     │ 1. POST /requests   │                     │
+     │ {offerId, qty, ...} │                     │
+     ├────────────────────&gt;│                     │
+     │                     │ POST {ODEP_REQUEST} │
+     │                     ├────────────────────&gt;│
+     │                     │ {requestId}         │
+     │                     │&lt;────────────────────┤
+     │ {requestId}         │                     │
+     │&lt;────────────────────┤                     │
+     │                     │                     │
+     │ 2. POST /contracts  │                     │
+     │ {requestId, ...}    │                     │
+     ├────────────────────&gt;│                     │
+     │                     │ POST {ODEP_CONTRACT}│
+     │                     ├────────────────────&gt;│
+     │                     │ {contractId}        │
+     │                     │&lt;────────────────────┤
+     │ {contractId}        │                     │
+     │&lt;────────────────────┤                     │
+     │                     │                     │
+     │ 3. PATCH /contracts │                     │
+     │ /measurableBy...    │                     │
+     │ /:contractId        │                     │
+     ├────────────────────&gt;│                     │
+     │                     │ PATCH {ODEP}        │
+     │                     ├────────────────────&gt;│
+     │                     │ {updated contract}  │
+     │                     │&lt;────────────────────┤
+     │ {contract}          │                     │
+     │&lt;────────────────────┤                     │
+     │                     │                     │</code></pre>
+<hr />
+<h2 id="appendices">11. Appendices</h2>
+<h3 id="custom-error-codes">11.1 Custom Error Codes</h3>
+<p><strong>File</strong>: <code>src/v3/errors.js</code></p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true"></a><span class="kw">class</span> getDBError <span class="kw">extends</span> <span class="bu">Error</span> { <span class="op">...</span> }      <span class="co">// Database read failure</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true"></a><span class="kw">class</span> InsertDBError <span class="kw">extends</span> <span class="bu">Error</span> { <span class="op">...</span> }   <span class="co">// Database insert failure</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true"></a><span class="kw">class</span> UpdateDBError <span class="kw">extends</span> <span class="bu">Error</span> { <span class="op">...</span> }   <span class="co">// Database update failure</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true"></a><span class="kw">class</span> DeleteDBError <span class="kw">extends</span> <span class="bu">Error</span> { <span class="op">...</span> }   <span class="co">// Database delete failure</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true"></a><span class="kw">class</span> IDNotFoundError <span class="kw">extends</span> <span class="bu">Error</span> { <span class="op">...</span> } <span class="co">// ID not found in collection</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true"></a><span class="kw">class</span> notValidBody <span class="kw">extends</span> <span class="bu">Error</span> { <span class="op">...</span> }    <span class="co">// Request body validation failure</span></span></code></pre></div>
+<p><strong>Usage:</strong></p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true"></a><span class="cf">if</span> (<span class="op">!</span>prosumer) {</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true"></a>  <span class="cf">throw</span> <span class="kw">new</span> <span class="fu">IDNotFoundError</span>(<span class="vs">`Prosumer </span><span class="sc">${</span>id<span class="sc">}</span><span class="vs"> not found`</span>)<span class="op">;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true"></a>}</span></code></pre></div>
+<h3 id="http-utilities">11.2 HTTP Utilities</h3>
+<p><strong>File</strong>: <code>src/v3/services/Utils.js</code></p>
+<p><strong>Core functions:</strong></p>
+<table>
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>fetchJSONData(method, url, headers, body)</code></td>
+<td>Native <code>fetch</code> wrapper for all ODEP HTTP calls</td>
+</tr>
+<tr class="even">
+<td><code>streamToJSON(stream)</code></td>
+<td>Convert ODEP response stream to parsed JSON</td>
+</tr>
+<tr class="odd">
+<td><code>streamToString(stream)</code></td>
+<td>Convert Readable stream to UTF-8 string</td>
+</tr>
+<tr class="even">
+<td><code>haversine(lat1, lon1, lat2, lon2)</code></td>
+<td>Great-circle distance (km) between two GPS points</td>
+</tr>
+<tr class="odd">
+<td><code>isInPerimeter(lat1, lon1, lat2, lon2, radius)</code></td>
+<td>Check if two points are within radius (km)</td>
+</tr>
+<tr class="even">
+<td><code>saveUserToken(userId, token)</code></td>
+<td>Store token in memory Map</td>
+</tr>
+<tr class="odd">
+<td><code>getUserIdFromToken(token)</code></td>
+<td>Reverse lookup token→userId</td>
+</tr>
+<tr class="even">
+<td><code>customSorter(a, b)</code></td>
+<td>Swagger route sorting (GET→POST→PUT→PATCH→DELETE)</td>
+</tr>
+</tbody>
+</table>
+<p>Validation functions (<code>containsNonRomanCharacters</code>, <code>isNumeric</code>, <code>isBase64</code>, <code>areAllBase64</code>, <code>isValidGeographicalPoint</code>) are documented in <a href="#63-input-validation">section 6.3</a>.</p>
+<p><strong>ODEP HTTP call pattern:</strong></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true"></a><span class="kw">const</span> headers <span class="op">=</span> {</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true"></a>  <span class="st">&#39;accept&#39;</span><span class="op">:</span> <span class="st">&#39;application/json&#39;</span><span class="op">,</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true"></a>  <span class="st">&#39;Authorization&#39;</span><span class="op">:</span> <span class="st">&#39;Bearer &#39;</span> <span class="op">+</span> token<span class="op">,</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true"></a>  <span class="st">&#39;Content-Type&#39;</span><span class="op">:</span> <span class="st">&#39;application/json&#39;</span>  <span class="co">// for POST/PUT/PATCH</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true"></a>}<span class="op">;</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true"></a><span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> Utils<span class="op">.</span><span class="fu">fetchJSONData</span>(<span class="st">&#39;GET&#39;</span><span class="op">,</span> url<span class="op">,</span> headers)<span class="op">;</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true"></a><span class="kw">const</span> data <span class="op">=</span> <span class="cf">await</span> Utils<span class="op">.</span><span class="fu">streamToJSON</span>(response<span class="op">.</span><span class="at">body</span>)<span class="op">;</span></span></code></pre></div>
+<h3 id="odep-api-call-patterns">11.3 ODEP API Call Patterns</h3>
+<p><strong>Standard ODEP HTTP patterns:</strong></p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 19%" />
+<col style="width: 31%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Operation</th>
+<th>Method</th>
+<th>URL Pattern</th>
+<th>Headers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>List all</td>
+<td>GET</td>
+<td><code>{PATH}/all</code></td>
+<td>accept, Authorization</td>
+</tr>
+<tr class="even">
+<td>Get one</td>
+<td>GET</td>
+<td><code>{PATH}/{id}</code></td>
+<td>accept, Authorization</td>
+</tr>
+<tr class="odd">
+<td>Get owner’s</td>
+<td>GET</td>
+<td><code>{PATH}/owner</code></td>
+<td>accept, Authorization</td>
+</tr>
+<tr class="even">
+<td>Create</td>
+<td>POST</td>
+<td><code>{PATH}</code></td>
+<td>accept, Authorization, Content-Type</td>
+</tr>
+<tr class="odd">
+<td>Update</td>
+<td>PUT</td>
+<td><code>{PATH}/{id}</code></td>
+<td>accept, Authorization, Content-Type</td>
+</tr>
+<tr class="even">
+<td>Partial update</td>
+<td>PATCH</td>
+<td><code>{PATH}/{action}/{id}</code></td>
+<td>accept, Authorization, Content-Type</td>
+</tr>
+<tr class="odd">
+<td>Delete</td>
+<td>DELETE</td>
+<td><code>{PATH}/{id}</code></td>
+<td>accept, Authorization</td>
+</tr>
+</tbody>
+</table>
+<p><strong>User creation with provider retry:</strong></p>
+<pre><code>POST {PATH_ODEP_USER}users?provider=http%3A%2F%2F127.0.0.1%3A{port}
+
+Ports tried in sequence: 22000, 22001, 22002, 22003, 22004, 22005, 22006
+Retry condition: HTTP 401 with &quot;No available accounts&quot;</code></pre>
+<h3 id="curl-request-examples">11.4 cURL Request Examples</h3>
+<h4 id="authentication-2">Authentication</h4>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true"></a><span class="ex">curl</span> -X POST <span class="dt">{SWAGGER_URL}</span>/v3/users/auth/sign_in <span class="kw">\</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true"></a>  <span class="ex">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="kw">\</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true"></a>  <span class="ex">-d</span> <span class="st">&#39;{&quot;userName&quot;:&quot;john_doe&quot;,&quot;password&quot;:&quot;SecurePass123!&quot;}&#39;</span></span></code></pre></div>
+<h4 id="create-offer">Create Offer</h4>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true"></a><span class="ex">curl</span> -X POST <span class="dt">{SWAGGER_URL}</span>/v3/offers <span class="kw">\</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true"></a>  <span class="ex">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="kw">\</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true"></a>  <span class="ex">-H</span> <span class="st">&quot;Authorization: Bearer &lt;odep_token&gt;&quot;</span> <span class="kw">\</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true"></a>  <span class="ex">-d</span> <span class="st">&#39;{</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true"></a><span class="st">    &quot;assetId&quot;: 789,</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true"></a><span class="st">    &quot;transactionType&quot;: &quot;sale/purchase&quot;,</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true"></a><span class="st">    &quot;price&quot;: 150.00,</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true"></a><span class="st">    &quot;offeredQuantity&quot;: 1000,</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true"></a><span class="st">    &quot;validityLimit&quot;: &quot;2026-12-31T23:59:59Z&quot;,</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true"></a><span class="st">    &quot;country&quot;: &quot;France&quot;</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true"></a><span class="st">  }&#39;</span></span></code></pre></div>
+<h4 id="get-enriched-offers">Get enriched offers</h4>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true"></a><span class="ex">curl</span> -X GET <span class="st">&quot;{SWAGGER_URL}/v3/offers/all/Mapped&quot;</span> <span class="kw">\</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true"></a>  <span class="ex">-H</span> <span class="st">&quot;Authorization: Bearer &lt;odep_token&gt;&quot;</span></span></code></pre></div>
+<h4 id="create-contract">Create contract</h4>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true"></a><span class="ex">curl</span> -X POST <span class="dt">{SWAGGER_URL}</span>/v3/contracts <span class="kw">\</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true"></a>  <span class="ex">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="kw">\</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true"></a>  <span class="ex">-H</span> <span class="st">&quot;Authorization: Bearer &lt;odep_token&gt;&quot;</span> <span class="kw">\</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true"></a>  <span class="ex">-d</span> <span class="st">&#39;{&quot;offerId&quot;: 12345, &quot;quantity&quot;: 500}&#39;</span></span></code></pre></div>
+<h3 id="glossary">11.5 Glossary</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 66%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Term</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>ODEP</strong></td>
+<td>Orange Digital Energy Platform — blockchain API managing core business data</td>
+</tr>
+<tr class="even">
+<td><strong>Prosumer</strong></td>
+<td>Producer-Consumer: user who can produce and consume resources</td>
+</tr>
+<tr class="odd">
+<td><strong>Asset</strong></td>
+<td>Resource/product owned by a prosumer</td>
+</tr>
+<tr class="even">
+<td><strong>AssetType</strong></td>
+<td>Standardized asset category (nature: measurableByQuantity or measurableByTime)</td>
+</tr>
+<tr class="odd">
+<td><strong>Offer</strong></td>
+<td>Sale/rental offer for an asset</td>
+</tr>
+<tr class="even">
+<td><strong>Request</strong></td>
+<td>Expression of interest in an offer (precedes contract)</td>
+</tr>
+<tr class="odd">
+<td><strong>Contract</strong></td>
+<td>Formalized agreement between buyer and seller</td>
+</tr>
+<tr class="even">
+<td><strong>Regulator</strong></td>
+<td>Regulatory entity overseeing compliance for asset types</td>
+</tr>
+<tr class="odd">
+<td><strong>Enrichment</strong></td>
+<td>Pattern of merging ODEP data with local MongoDB supplementary data</td>
+</tr>
+<tr class="even">
+<td><strong>Custom Endpoint</strong></td>
+<td>RESILINK endpoint that combines ODEP + local data (vs ODEP-only endpoint)</td>
+</tr>
+<tr class="odd">
+<td><strong>JWT</strong></td>
+<td>JSON Web Token — authentication token (provided by ODEP)</td>
+</tr>
+<tr class="even">
+<td><strong>AES-256</strong></td>
+<td>Advanced Encryption Standard 256 bits (phone number encryption)</td>
+</tr>
+<tr class="odd">
+<td><strong>Swagger</strong></td>
+<td>Interactive API documentation</td>
+</tr>
+<tr class="even">
+<td><strong>Provider Retry</strong></td>
+<td>Load-balancing pattern for ODEP user creation (ports 22000-22006)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="contacts-and-support">11.6 Contacts and Support</h3>
+<p><strong>Lead Developer:</strong> - Axel Cazaux - UPPA (University of Pau and Pays de l’Adour)</p>
+<p><strong>Repository:</strong> - GitHub: https://github.com/ZiQuwi/RESILINK_Render_Server - Branch: <code>main</code> (production with ODEP) - Branch: <code>dev</code> (development with ODEP) - Branch: <code>MainWithoutODEP</code> (autonomous version without ODEP)</p>
+<p><strong>Documentation:</strong> - Swagger: <code>{SWAGGER_URL}/v3/api-docs</code> - README: https://github.com/ZiQuwi/RESILINK_Render_Server/blob/main/README.md</p>
+<h3 id="license">11.7 License</h3>
+<p><strong>License</strong>: UPPA<br />
+<strong>Copyright</strong>: © 2026 Axel Cazaux - UPPA</p>
+<p>Usage authorized within the RESILINK project framework only.</p>
+<hr />
+<h2 id="end-of-document">End of Document</h2>
+<p><strong>Version</strong>: 3.0<br />
+<strong>Last Updated</strong>: April 2, 2026<br />
+<strong>Pages</strong>: ~40<br />
+<strong>Word Count</strong>: ~10,000</p>
+</body>
+</html>

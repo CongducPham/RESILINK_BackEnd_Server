@@ -1,2 +1,4 @@
 *.env
 Resilink_webserver/node_modules
+
+Resilink_webserver/script/migration_resilinkv2_to_v3.js
