@@ -270,8 +270,22 @@ if (Test-Path $envFile) {
     $content | Set-Content $envFile -Encoding UTF8
     Write-Host "Keys updated in RESILINK_Server.env" -ForegroundColor Green
 } else {
-    Write-Host "WARNING: RESILINK_Server.env not found at $envFile" -ForegroundColor Yellow
-    Write-Host "You will need to manually configure your .env file with the generated keys."
+    Write-Host "RESILINK_Server.env not found. Creating it with generated keys..." -ForegroundColor Yellow
+    @"
+ENCRYPTION_KEY=$ENCRYPTION_KEY
+TOKEN_KEY=$TOKEN_KEY
+RESILINK_NETWORK_KEY=$RESILINK_NETWORK_KEY
+IP_ADDRESS=
+PORT=
+SWAGGER_URL=
+SERVER_NAME=
+TOKEN_REQUIRED=
+CENTRAL_SERVER_URL=
+DB_MODE=local
+DB_URL=mongodb://127.0.0.1:27017/ResilinkWithoutODEP
+DB_LOGS_URL=mongodb://127.0.0.1:27017/Logs
+"@ | Out-File -FilePath $envFile -Encoding UTF8
+    Write-Host "RESILINK_Server.env created. Don't forget to fill in the remaining fields." -ForegroundColor Green
 }
 Write-Host "========================================================="
 

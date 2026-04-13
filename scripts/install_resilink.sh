@@ -209,8 +209,22 @@ if [ -f "$ENV_FILE" ]; then
     sed -i "s/^RESILINK_NETWORK_KEY=.*/RESILINK_NETWORK_KEY=$RESILINK_NETWORK_KEY/" "$ENV_FILE"
     echo "Keys updated in RESILINK_Server.env"
 else
-    echo "WARNING: RESILINK_Server.env not found at $ENV_FILE"
-    echo "You will need to manually configure your .env file with the generated keys."
+    echo "RESILINK_Server.env not found. Creating it with generated keys..."
+    cat > "$ENV_FILE" <<ENVFILE
+ENCRYPTION_KEY=$ENCRYPTION_KEY
+TOKEN_KEY=$TOKEN_KEY
+RESILINK_NETWORK_KEY=$RESILINK_NETWORK_KEY
+IP_ADDRESS=
+PORT=
+SWAGGER_URL=
+SERVER_NAME=
+TOKEN_REQUIRED=
+CENTRAL_SERVER_URL=
+DB_MODE=local
+DB_URL=mongodb://127.0.0.1:27017/ResilinkWithoutODEP
+DB_LOGS_URL=mongodb://127.0.0.1:27017/Logs
+ENVFILE
+    echo "RESILINK_Server.env created. Don't forget to fill in the remaining fields."
 fi
 echo "========================================================="
 
