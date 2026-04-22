@@ -1044,19 +1044,6 @@ const getLocalOffersFilteredCustom = async (filter, user, federated = false, fro
 };
 
 /**
- * Placeholder function for contract compatibility.
- * In this RESILINK version, contract entities don't exist locally (only in ODEP).
- * Returns empty array to maintain API consistency with ODEP-enabled versions.
- * 
- * @param {string} Username - Username parameter (unused)
- * @param {string} token - Authentication token (unused)
- * @returns {Promise<Array>} - [[], 200] empty result
- */
-const getOwnerOfferPurchase = async (Username, token) => {
-  return [[], 200]
-}
-
-/**
  * Retrieves all active offers created by the authenticated user.
  * Enables prosumers to manage their published offers and monitor availability.
  * Filters out fully consumed offers for measurable assets (remainingQuantity = 0).
@@ -1704,7 +1691,6 @@ module.exports = {
     getLocalBlockedOffersCustom,
     getLocalOffersFilteredCustom,
     getAllOfferOwnerCustom,
-    getOwnerOfferPurchase,
     createOffer,
     createOfferAsset,
     getAllOffer,

@@ -325,29 +325,6 @@ const getAllOffer = async (req, res) => {
 }
 
 /**
- * HTTP GET - Retrieves purchase-type offers from a specific owner.
- * Used for viewing a seller's purchased (under contract) items .
- * 
- * @route GET /offers/owner/:id/purchase
- * @param {Request} req - Express request with owner ID in params
- * @param {Response} res - Express response object
- * @returns {Array} Purchase offers from the specified owner
- */
-const getOwnerOfferPurchase = async (req, res) => {
-  try {
-    const response = await OfferService.getOwnerOfferPurchase(req.params.id, req.user);
-    res.status(response[1]).send(response[0]);
-  } catch (error) {
-    getDataLogger.error("Catched error", {
-      from: "getOwnerOfferPurchase",
-      data: error,
-      username: req.user?.username ?? "no user context"
-    });
-    res.status(500).send({ message: error.message });
-  }
-}
-
-/**
  * HTTP GET - Retrieves detailed information for a specific offer.
  * Returns complete offer data including asset details, owner info, and availability.
  * Used for offer detail pages and transaction initiation.
@@ -458,7 +435,6 @@ module.exports = {
     getLocalOffersFiltered,
     getFederatedOffersFiltered,
     getOfferOwner,
-    getOwnerOfferPurchase,
     createOfferAsset,
     createOffer,
     getAllOffer,
