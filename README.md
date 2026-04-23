@@ -1,5 +1,7 @@
 # RESILINK v3 - Node.js API for Resource Discovery and Contact Exchange
 
+RESILINK (2022-2026) is a project funded by the PRIMA Programme supported by the European Union. The project web site is https://resilink.eu/.
+
 **RESILINK v3** (feature/without-odep branch) is a Node.js/Express middleware platform that facilitates **resource/asset discovery and contact exchange** between users (prosumers) in a **decentralized federated network**.
 
 It acts as a generic peer-to-peer marketplace enabling offer publication, multi-server offer discovery, and prosumer contact information access. Transactions are handled externally — users contact each other directly.
