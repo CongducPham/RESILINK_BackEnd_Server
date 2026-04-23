@@ -1,5 +1,7 @@
 # RESILINK v3 (ODEP) - Node.js Middleware API for Blockchain-Based Resource Exchange
 
+RESILINK (2022-2026) is a project funded by the PRIMA Programme supported by the European Union. The project web site is https://resilink.eu/.
+
 **RESILINK v3** (main/dev branch) is a Node.js/Express **middleware platform** that acts as an intermediary layer between a mobile application and the **ODEP (Orange Digital Energy Platform)** blockchain API. It facilitates **resource/asset exchange** between users (prosumers).
 
 It proxies CRUD operations to the ODEP blockchain for core business entities, enriches ODEP data with local metadata (images, GPS, phone numbers), and manages local-only features (news, ratings).
