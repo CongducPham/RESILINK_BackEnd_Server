@@ -14,4 +14,4 @@ scripts/dechiffreUserMdpAES.js
 Dockerfile
 docker-compose.yml
 .dockerignore
-docker/
+docker/*.log

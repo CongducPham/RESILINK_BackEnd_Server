@@ -1,4 +1,25 @@
 @echo off
+REM
+REM  This file is part of the RESILINK back-end server developed by the PRIMA RESILINK (2022-2026) project.
+REM RESILINK (2022-2026) is a project funded by the PRIMA Programme supported by the European Union. The project web site is https://resilink.eu/"
+REM
+REM
+REM  Copyright (C) 2026 Axel Cazaux, University of Pau, UPPA
+REM
+REM  This program is free software: you can redistribute it and/or modify
+REM  it under the terms of the GNU General Public License as published by
+REM  the Free Software Foundation, either version 3 of the License, or
+REM  (at your option) any later version.
+REM
+REM  This program is distributed in the hope that it will be useful,
+REM  but WITHOUT ANY WARRANTY; without even the implied warranty of
+REM  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+REM  GNU General Public License for more details.
+REM
+REM  You should have received a copy of the GNU General Public License
+REM  along with the program.  If not, see <http://www.gnu.org/licenses/>.
+REM
+REM *****************************************************************************
 REM Resolve project directory from the script's location
 set "SCRIPT_DIR=%~dp0"
 set "PROJECT_DIR=%SCRIPT_DIR%.."
